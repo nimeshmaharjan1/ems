@@ -1,0 +1,26 @@
+@tailwind components;
+@layer components {
+  .or-sign-in {
+    position: relative;
+    &:before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 1px;
+      @apply bg-primary;
+      left: 0;
+      top: 50%;
+      position: absolute;
+    }
+    &:after {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 1px;
+      @apply bg-primary;
+      right: 0;
+      top: 50%;
+      position: absolute;
+    }
+  }
+}

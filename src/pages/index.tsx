@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { Work_Sans } from '@next/font/google';
+import { Poppins } from '@next/font/google';
 import styles from '@/styles/Home.module.css';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { GoLocation } from 'react-icons/go';
@@ -13,7 +13,7 @@ import { ImBooks } from 'react-icons/im';
 import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useTheme } from 'next-themes';
-const workSans = Work_Sans({ subsets: ['latin'] });
+const workSans = Poppins({ weight: ['500', '300', '600', '700', '800'], subsets: ['latin'] });
 
 export default function Home() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
