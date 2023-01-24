@@ -12,7 +12,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
       </Head>
       <div className="h-screen flex items-center justify-center bg-base-300">
         <button
-          className="absolute top-8 right-24"
+          className="absolute top-8 right-12"
           onClick={() => {
             theme === 'night' ? setTheme('light') : setTheme('night');
           }}

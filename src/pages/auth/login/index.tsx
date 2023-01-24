@@ -8,12 +8,16 @@ import { NextPageWithLayout } from '@/pages/_app';
 import AuthLayout from '@/features/auth/layout';
 import { useRouter } from 'next/router';
 import { ILoginWithPassword } from '@/features/auth/interfaces';
-import { supabase } from '@/supabase';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from '@/shared/components/error-message';
 import classNames from 'classnames';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { GetServerSideProps } from 'next';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+
 const Login: NextPageWithLayout = () => {
+  const supabase = useSupabaseClient();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -22,22 +26,19 @@ const Login: NextPageWithLayout = () => {
   const handleSignInWithPassword = async (values: ILoginWithPassword) => {
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
-        options: {
-          emailRedirectTo: 'http://localhost:3000',
-        },
+        password: values.password,
       });
       if (error?.message) {
         showToast(Toast.error, error.message);
         return;
       }
-      showToast(Toast.success, 'Please check your email for the magic link.');
+      router.push('/dashboard');
+      showToast(Toast.success, 'Successfully logged in.');
     } catch (error) {
-      console.log(error);
-      showToast(Toast.error, 'Something went wrong while trying to log in please try again later.');
-    } finally {
       setIsSubmitting(false);
+      showToast(Toast.error, 'Something went wrong while trying to log in please try again later.');
     }
   };
 
@@ -70,7 +71,7 @@ const Login: NextPageWithLayout = () => {
           })}
         ></AiOutlineMail>
       </div>
-      {/* <div className="form-control w-full mb-4 relative">
+      <div className="form-control w-full mb-4 relative">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -98,7 +99,7 @@ const Login: NextPageWithLayout = () => {
             onClick={() => setShowPassword((prev) => !prev)}
           ></FiEyeOff>
         )}
-      </div> */}
+      </div>
       <button
         className={classNames('btn btn-primary btn-block mb-1 btn-square gap-2', {
           loading: isSubmitting,
@@ -106,7 +107,7 @@ const Login: NextPageWithLayout = () => {
         disabled={isSubmitting}
         onClick={handleSubmit(handleSignInWithPassword)}
       >
-        Send Magic Link
+        Sign In
       </button>
       <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer">Forgot password?</p>
       <p className={`text-center my-3 ${styles['or-sign-in']}`}>Or Sign in with</p>
@@ -140,3 +141,24 @@ const Login: NextPageWithLayout = () => {
 export default Login;
 
 Login.getLayout = (page: ReactNode) => <AuthLayout title="Sign In">{page}</AuthLayout>;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  // Create authenticated Supabase Client
+  const supabase = createServerSupabaseClient(ctx);
+  // Check if we have a session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: true,
+      },
+    };
+
+  return {
+    props: {},
+  };
+};

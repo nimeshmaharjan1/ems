@@ -10,9 +10,11 @@ import { useForm } from 'react-hook-form';
 import { IRegister } from '@/features/auth/interfaces';
 import classNames from 'classnames';
 import ErrorMessage from '@/shared/components/error-message';
-import { supabase } from '@/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 
 const Register: NextPageWithLayout = () => {
+  const supabase = useSupabaseClient();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const formValues = {
@@ -29,21 +31,25 @@ const Register: NextPageWithLayout = () => {
   } = useForm<IRegister>({ defaultValues: formValues, mode: 'onChange' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const signUp = async (values: IRegister) => {
-    console.log(values);
     setIsSubmitting(true);
     try {
-      const response = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: values.email,
-        password: values.email,
+        password: values.password,
         options: {
           data: {
             full_name: values.full_name,
             username: values.username,
             phone_number: values.phone_number,
+            role: 'super_admin',
           },
         },
       });
-      console.log(response);
+      if (error) {
+        showToast(Toast.error, error?.message);
+        return;
+      }
+      showToast(Toast.success, 'Check your email for the confirmation link.');
     } catch (error) {
       console.log(error);
     } finally {
