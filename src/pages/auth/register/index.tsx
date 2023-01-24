@@ -41,7 +41,6 @@ const Register: NextPageWithLayout = () => {
             full_name: values.full_name,
             username: values.username,
             phone_number: values.phone_number,
-            role: 'super_admin',
           },
         },
       });

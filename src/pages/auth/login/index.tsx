@@ -34,7 +34,7 @@ const Login: NextPageWithLayout = () => {
         showToast(Toast.error, error.message);
         return;
       }
-      router.push('/dashboard');
+      router.push('/');
       showToast(Toast.success, 'Successfully logged in.');
     } catch (error) {
       setIsSubmitting(false);
