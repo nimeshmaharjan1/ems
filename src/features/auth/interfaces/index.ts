@@ -5,3 +5,8 @@ export interface IRegister {
   password: string;
   phone_number: string;
 }
+
+export interface ILoginWithPassword {
+  email: string;
+  password: string;
+}
