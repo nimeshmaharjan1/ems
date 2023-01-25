@@ -30,6 +30,9 @@ const Login: NextPageWithLayout = () => {
         email: values.email,
         password: values.password,
       });
+      if (error) {
+        setIsSubmitting(false);
+      }
       if (error?.message) {
         showToast(Toast.error, error.message);
         return;
