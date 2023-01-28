@@ -35,10 +35,13 @@ export default function Sidebar({
 
   return (
     <aside
-      className={classnames(`h-screen bg-base-200 shadow-lg relative duration-500 flex justify-between flex-col items-start px-2`, {
-        ['w-[17.5rem]']: !isSidebarCollapsed,
-        ['w-[4.2rem]']: isSidebarCollapsed,
-      })}
+      className={classnames(
+        `sticky left-0 top-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
+        {
+          ['w-[17.5rem]']: !isSidebarCollapsed,
+          ['w-[4.2rem]']: isSidebarCollapsed,
+        }
+      )}
     >
       <div className="upper">
         <div
@@ -48,8 +51,8 @@ export default function Sidebar({
         >
           <GoLocation className={classnames('text-primary text-2xl duration-1000')}></GoLocation>
           <h1
-            className={classnames('text-primary font-bold text-xl duration-300', {
-              ['scale-0']: isSidebarCollapsed,
+            className={classnames('text-primary font-bold text-xl', {
+              hidden: isSidebarCollapsed,
             })}
           >
             Melon

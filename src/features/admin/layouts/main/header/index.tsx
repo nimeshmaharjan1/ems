@@ -10,7 +10,7 @@ const Header: React.FC<{
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const { resolvedTheme, setTheme } = useTheme();
   return (
-    <header className="h-[4.2rem] flex justify-between items-center bg-base-200 w-full shadow px-6">
+    <header className="h-[4.2rem] sticky top-0 flex justify-between items-center bg-base-200 w-full shadow px-6">
       <div
         className=" p-1 cursor-pointer  duration-300"
         onClick={() => {
@@ -18,7 +18,7 @@ const Header: React.FC<{
         }}
       >
         <RiMenuFoldFill
-          className={classNames(`text-secondary text-xl duration-300`, {
+          className={classNames(`text-secondary text-xl `, {
             ['rotate-180']: isSidebarCollapsed,
           })}
         ></RiMenuFoldFill>
