@@ -24,6 +24,7 @@ model Product {
   price       String
   category    PRODUCT_CATEGORY
   company     String
+  quantity    BigInt
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

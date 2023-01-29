@@ -1,7 +1,7 @@
 export enum PRODUCT_CATEGORY {
-  LAPTOP,
-  MOBILE,
-  TABLET,
+  LAPTOP = 'laptop',
+  MOBILE = 'mobile',
+  TABLET = 'tablet',
 }
 export interface IProductCreate {
   image: string | ArrayBuffer | null;
@@ -10,4 +10,5 @@ export interface IProductCreate {
   price: string;
   category: PRODUCT_CATEGORY;
   company: string;
+  quantity: number | null;
 }

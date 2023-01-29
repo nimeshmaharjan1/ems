@@ -2,10 +2,6 @@ import Head from 'next/head';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Sidebar from './sidebar';
 import { Poppins } from '@next/font/google';
-import { RiMenuFoldFill } from 'react-icons/ri';
-import classNames from 'classnames';
-import { useTheme } from 'next-themes';
-import { BsFillMoonFill, BsSun } from 'react-icons/bs';
 import Header from './header';
 import { useUser } from '@supabase/auth-helpers-react';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
@@ -33,7 +29,7 @@ const MainLayout: React.FC<{ children: ReactNode; title?: string }> = ({ childre
           <div className="h-[70px]">
             <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
           </div>
-          <main className="p-8 px-10 min-h-[calc(100vh-70px)]">{children}</main>
+          <main className="m-4 mx-5 p-8 py-5 md:container md:mx-auto min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
         </section>
       </div>
     </>

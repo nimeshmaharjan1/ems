@@ -12,7 +12,6 @@ import { ImBooks } from 'react-icons/im';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useTheme } from 'next-themes';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
@@ -25,7 +24,6 @@ export default function Sidebar({
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
-  const supabase = useSupabaseClient();
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
@@ -38,7 +36,7 @@ export default function Sidebar({
   return (
     <aside
       className={classnames(
-        `sticky left-0 top-0 bottom-0 right-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
+        `sticky z-50 left-0 top-0 bottom-0 right-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
         {
           ['w-[17.5rem]']: !isSidebarCollapsed,
           ['w-[4.2rem]']: isSidebarCollapsed,
@@ -162,16 +160,6 @@ export default function Sidebar({
               ['p-3']: !isSidebarCollapsed,
             }
           )}
-          onClick={() => {
-            supabase.auth
-              .signOut()
-              .then(() => {
-                router.push('/auth/login');
-              })
-              .catch(() => {
-                showToast(Toast.error, 'Something went wrong while trying to logout please try again.');
-              });
-          }}
         >
           <span className="text-2xl block float-left">
             <AiOutlineLogout></AiOutlineLogout>
