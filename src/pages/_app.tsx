@@ -1,8 +1,6 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'next-themes';
-import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { SessionContextProvider, Session } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import { NextPage } from 'next';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,17 +12,14 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
-  pageProps: { initialSession: Session };
+  // pageProps: { initialSession: Session };
 };
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
-  const [supabase] = useState(() => createBrowserSupabaseClient());
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <ThemeProvider>
-      <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession}>
-        {getLayout(<Component {...pageProps} />)}
-        <ToastContainer />
-      </SessionContextProvider>
+      {getLayout(<Component {...pageProps} />)}
+      <ToastContainer />
     </ThemeProvider>
   );
 }

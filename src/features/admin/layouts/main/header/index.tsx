@@ -12,7 +12,7 @@ const Header: React.FC<{
   return (
     <header className="h-[4.2rem] sticky top-0 flex justify-between items-center bg-base-200 w-full shadow px-6">
       <div
-        className=" p-1 cursor-pointer  duration-300"
+        className=" p-1 cursor-pointer  duration-300 hidden lg:block"
         onClick={() => {
           setIsSidebarCollapsed((prev) => !prev);
         }}

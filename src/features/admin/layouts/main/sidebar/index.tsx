@@ -15,6 +15,7 @@ import { useTheme } from 'next-themes';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
 const workSans = Poppins({ weight: ['500', '300', '600', '700', '800'], subsets: ['latin'] });
 
 export default function Sidebar({
@@ -31,12 +32,13 @@ export default function Sidebar({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
   if (!isMounted) return null;
 
   return (
     <aside
       className={classnames(
-        `sticky left-0 top-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
+        `sticky left-0 top-0 bottom-0 right-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
         {
           ['w-[17.5rem]']: !isSidebarCollapsed,
           ['w-[4.2rem]']: isSidebarCollapsed,

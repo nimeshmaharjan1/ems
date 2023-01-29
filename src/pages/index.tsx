@@ -1,9 +1,7 @@
 import React, { ReactNode, useCallback, useEffect } from 'react';
 import { NextPageWithLayout } from './_app';
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 const Home: NextPageWithLayout = () => {
-  const supabase = useSupabaseClient();
   return <div>Home</div>;
 };
 
