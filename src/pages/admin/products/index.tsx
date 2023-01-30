@@ -1,10 +1,29 @@
 import MainLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
+import { PrismaClient } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 import React, { ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
 
-const Products: NextPageWithLayout = () => {
+const prisma = new PrismaClient();
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  let products;
+  try {
+    products = await prisma.product.findMany();
+  } catch (error) {
+    console.log(error);
+  }
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
+};
+
+const Products: NextPageWithLayout<{ products: any }> = ({ products }) => {
+  console.log(products);
   return (
     <div>
       <h2 className="font-semibold text-2xl mb-6">Products</h2>
@@ -12,37 +31,33 @@ const Products: NextPageWithLayout = () => {
         <table className="table table-auto w-full">
           <thead>
             <tr>
-              <th className="border !border-base-300">S.N.</th>
-              <th className="border !border-base-300">Name</th>
-              <th className="border !border-base-300">Job</th>
+              <th className="border !border-base-300">Title</th>
+              <th className="border !border-base-300">Category</th>
+              <th className="border !border-base-300">Quantity</th>
+              <th className="border !border-base-300">Price</th>
               <th className="border !border-base-300 w-48">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th className="border !border-base-300">1</th>
-              <td className="border !border-base-300">Cy Ganderton</td>
-              <td className="border !border-base-300">Quality Control Specialist</td>
-              <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                <button className="btn btn-info btn-sm !normal-case gap-1">
-                  <FaCogs></FaCogs> Edit
-                </button>
-                <button className="btn btn-error btn-sm !normal-case gap-1">
-                  <BsTrash></BsTrash> Delete
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <th className="border !border-base-300">2</th>
-              <td className="border !border-base-300">Hart Hagerty</td>
-              <td className="border !border-base-300">Desktop Support Technician</td>
-              <td className="border !border-base-300">Purple</td>
-            </tr>
-            <tr>
-              <th className="border !border-base-300">3</th>
-              <td className="border !border-base-300">Brice Swyre</td>
-              <td className="border !border-base-300">Tax Accountant</td>
-              <td className="border !border-base-300">Red</td>
+              {products.map((product: any) => {
+                return (
+                  <>
+                    <th className="border !border-base-300">{product.title}</th>
+                    <td className="border !border-base-300">{product.category}</td>
+                    <td className="border !border-base-300">{product.quantity}</td>
+                    <td className="border !border-base-300">{product.price}</td>
+                    <td className="border !border-base-300 flex gap-2 w-48 justify-between">
+                      <button className="btn btn-info btn-sm !normal-case gap-1">
+                        <FaCogs></FaCogs> Edit
+                      </button>
+                      <button className="btn btn-error btn-sm !normal-case gap-1">
+                        <BsTrash></BsTrash> Delete
+                      </button>
+                    </td>
+                  </>
+                );
+              })}
             </tr>
           </tbody>
         </table>

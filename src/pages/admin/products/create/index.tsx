@@ -1,13 +1,15 @@
 import ImageUpload from '@/features/admin/components/image-upload';
 import MainLayout from '@/features/admin/layouts/main';
-import { IProductCreate, PRODUCT_CATEGORY } from '@/features/admin/products/interfaces';
+import { IProductCreate } from '@/features/admin/products/interfaces';
 import { NextPageWithLayout } from '@/pages/_app';
 import FormControl from '@/shared/components/form-control';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
+import classNames from 'classnames';
 import React, { ReactNode, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { FaRupeeSign } from 'react-icons/fa';
+import { PRODUCT_CATEGORY } from '@prisma/client';
 
 const CreateUser: NextPageWithLayout = () => {
   const defaultValues: IProductCreate = {
@@ -21,6 +23,7 @@ const CreateUser: NextPageWithLayout = () => {
   };
   const [isUploading, setIsUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     watch,
@@ -29,6 +32,7 @@ const CreateUser: NextPageWithLayout = () => {
     formState: { errors },
     setError,
     clearErrors,
+    handleSubmit,
   } = useForm<IProductCreate>({ defaultValues, mode: 'onChange' });
   const image = useWatch({
     control,
@@ -38,7 +42,7 @@ const CreateUser: NextPageWithLayout = () => {
     if (!image) return;
     setIsUploading(true);
     try {
-      const { data } = await axios.post('/api/upload-image', { image });
+      const { data } = await axios.post('/api/upload-image', { image, category: watch('category') });
       setImageUrl(data?.url);
       setValue('image', data?.url);
       showToast(Toast.success, data.message);
@@ -47,6 +51,19 @@ const CreateUser: NextPageWithLayout = () => {
       setImageUrl('');
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleCreate = async (values: IProductCreate) => {
+    setIsSubmitting(true);
+    try {
+      const product = await axios.post('/api/products', values);
+      console.log(product);
+    } catch (error) {
+      console.log(error);
+      showToast(Toast.error, 'Something went wrong please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -119,7 +136,8 @@ const CreateUser: NextPageWithLayout = () => {
                   <option value="" defaultChecked>
                     Select company
                   </option>
-                  <option value="Hello">hello</option>
+                  <option value="Acer">Acer</option>
+                  <option value="Asus">Asus</option>
                 </select>
               </FormControl>
             </div>
@@ -132,47 +150,41 @@ const CreateUser: NextPageWithLayout = () => {
                     <FaRupeeSign />
                   </span>
                   <input
-                    type="text"
+                    type="number"
                     pattern="[0-9]*"
                     placeholder="Type here"
                     {...register('price', {
                       required: 'Price is required.',
                     })}
-                    onChange={(e) => {
-                      if (!e.target.validity.valid) {
-                        setError('price', { type: 'custom', message: 'Price should only contain numbers.' });
-                      } else {
-                        clearErrors('price');
-                      }
-                    }}
-                    className={`input input-bordered w-full lg:max-w-[18.5rem] ${errors?.title ? 'input-error' : ''}`}
+                    className={`input input-bordered w-full lg:max-w-[18.5rem] ${errors?.price ? 'input-error' : ''}`}
                   />
                 </label>
               </FormControl>
             </div>
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Quantity" errorMessage={errors?.price?.message}>
+              <FormControl label="Quantity" errorMessage={errors?.quantity?.message}>
                 <input
                   type="text"
                   pattern="[0-9]*"
                   placeholder="Type here"
-                  {...register('price', {
-                    required: 'Price is required.',
+                  {...register('quantity', {
+                    required: 'Quantity is required.',
                   })}
-                  onChange={(e) => {
-                    if (!e.target.validity.valid) {
-                      setError('price', { type: 'custom', message: 'Price should only contain numbers.' });
-                    } else {
-                      clearErrors('price');
-                    }
-                  }}
-                  className={`input input-bordered w-full lg:max-w-[23rem] ${errors?.title ? 'input-error' : ''}`}
+                  className={`input input-bordered w-full lg:max-w-[23rem] ${errors?.quantity ? 'input-error' : ''}`}
                 />
               </FormControl>
             </div>
           </div>
           <div className="col-span-12">
-            <button className="btn btn-primary btn-block">Submit</button>
+            <button
+              className={classNames('btn btn-primary btn-block', {
+                loading: isSubmitting,
+              })}
+              disabled={isSubmitting || isUploading}
+              onClick={handleSubmit(handleCreate)}
+            >
+              Submit
+            </button>
           </div>
         </section>
         <section className="col-span-6">

@@ -1,8 +1,5 @@
-export enum PRODUCT_CATEGORY {
-  LAPTOP = 'laptop',
-  MOBILE = 'mobile',
-  TABLET = 'tablet',
-}
+import { PRODUCT_CATEGORY } from '@prisma/client';
+
 export interface IProductCreate {
   image: string | ArrayBuffer | null;
   title: string;
