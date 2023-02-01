@@ -19,23 +19,22 @@ const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
             return (
               <>
                 <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
                 </div>
                 <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
                 </div>
                 <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
-                </div>
-
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
                 </div>
                 <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
                 </div>
                 <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard key={product.id}></ProductCard>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
+                </div>
+                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                  <ProductCard {...{ product }} key={product.id}></ProductCard>
                 </div>
               </>
             );

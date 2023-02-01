@@ -13,7 +13,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           ['border-b border-b-gray-700']: theme === 'night',
         })}
       >
-        <nav className="container mx-auto flex items-center justify-between h-full px-6 lg:px-0">
+        <nav className="container mx-auto flex items-center justify-between h-full px-6 lg:px-36">
           <section className="left">Logo</section>
           <section className="right">
             {' '}
@@ -32,13 +32,13 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           </section>
         </nav>
       </header>
-      <main className="flex-1 container mx-auto my-6 lg:my-10 px-6 lg:px-0">{children}</main>
+      <main className="flex-1 container mx-auto my-6 md:my-12 px-6 lg:px-36">{children}</main>
       <footer
         className={classNames('h-24 wrapper shadow-lg border-t', {
           ['border-t border-t-gray-700']: theme === 'night',
         })}
       >
-        <div className="flex items-center h-full container mx-auto px-6 lg:px-0">Footer</div>
+        <div className="flex items-center h-full container mx-auto px-6 lg:px-36">Footer</div>
       </footer>
     </div>
   );
