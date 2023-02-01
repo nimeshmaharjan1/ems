@@ -7,7 +7,7 @@ import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
 
 const poppins = Poppins({ weight: ['500', '300', '400', '600', '700', '800'], subsets: ['latin'] });
 
-const MainLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
+const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { height, width: innerWidth } = useWindowDimensions();
   useEffect(() => {
@@ -34,4 +34,4 @@ const MainLayout: React.FC<{ children: ReactNode; title?: string }> = ({ childre
   );
 };
 
-export default MainLayout;
+export default AdminDashboardLayout;

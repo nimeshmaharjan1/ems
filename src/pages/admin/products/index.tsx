@@ -1,4 +1,4 @@
-import MainLayout from '@/features/admin/layouts/main';
+import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import { PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
@@ -66,6 +66,6 @@ const Products: NextPageWithLayout<{ products: any }> = ({ products }) => {
   );
 };
 Products.getLayout = (page: ReactNode) => {
-  return <MainLayout>{page}</MainLayout>;
+  return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };
 export default Products;

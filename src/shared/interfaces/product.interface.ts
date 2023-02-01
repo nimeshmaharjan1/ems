@@ -9,3 +9,15 @@ export interface IProductCreate {
   company: string;
   quantity: number | null;
 }
+
+export interface IProductResponse {
+  image: string;
+  title: string;
+  description: string;
+  price: string;
+  category: PRODUCT_CATEGORY;
+  company: string;
+  quantity: number | null;
+  updatedAt: string;
+  createdAt: string;
+}

@@ -1,5 +1,5 @@
 import ImageUpload from '@/features/admin/components/image-upload';
-import MainLayout from '@/features/admin/layouts/main';
+import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { IProductCreate } from '@/features/admin/products/interfaces';
 import { NextPageWithLayout } from '@/pages/_app';
 import FormControl from '@/shared/components/form-control';
@@ -57,7 +57,7 @@ const CreateUser: NextPageWithLayout = () => {
   const handleCreate = async (values: IProductCreate) => {
     setIsSubmitting(true);
     try {
-      const product = await axios.post('/api/products', values);
+      const product = await axios.post('/api/admin/products', values);
       console.log(product);
     } catch (error) {
       console.log(error);
@@ -200,5 +200,5 @@ const CreateUser: NextPageWithLayout = () => {
 export default CreateUser;
 
 CreateUser.getLayout = (page: ReactNode) => {
-  return <MainLayout>{page}</MainLayout>;
+  return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };
