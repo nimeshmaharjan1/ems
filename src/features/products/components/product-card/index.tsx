@@ -5,7 +5,7 @@ import React from 'react';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (
-    <div className="card w-72 sm:w-[20rem] bg-base-100 shadow-xl border-2">
+    <div className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2">
       <figure>
         <Image src={product.image as string} className="w-72 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
       </figure>

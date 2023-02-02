@@ -10,38 +10,51 @@ const prisma = new PrismaClient();
 const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
   console.log(products);
   return (
-    <div className="grid grid-cols-12 gap-x-4">
-      <div className="col-span-0 md:col-span-3">Filter</div>
-      <div className="col-span-12 md:col-span-9">
-        <header className="border-2 mb-6">Header</header>
-        <div className="grid grid-cols-12 gap-6">
-          {products.map((product, productIndex) => {
-            return (
-              <>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                  <ProductCard {...{ product }} key={product.id}></ProductCard>
-                </div>
-              </>
-            );
-          })}
-        </div>
+    <>
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold relative uppercase pb-1">
+          macbook pro
+          <span
+            className="bg-primary"
+            style={{
+              content: '',
+              width: '70px',
+              height: '3px',
+              display: 'inline-block',
+              position: 'absolute',
+              bottom: '-8px',
+              left: '0',
+            }}
+          ></span>
+        </h1>
+      </header>
+      <div className="grid grid-cols-12 gap-6">
+        {products.map((product, productIndex) => {
+          return (
+            <>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
+              </div>
+            </>
+          );
+        })}
       </div>
-    </div>
+    </>
   );
 };
 

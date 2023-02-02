@@ -1,0 +1,9 @@
+@tailwind components;
+
+@layer components {
+  .top-header-wrapper {
+    p {
+      @apply text-xs cursor-pointer hover:text-primary transition-all;
+    }
+  }
+}

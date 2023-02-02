@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Sidebar from './sidebar';
-import { Poppins } from '@next/font/google';
+import { Roboto } from '@next/font/google';
 import Header from './header';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
 
-const poppins = Poppins({ weight: ['500', '300', '400', '600', '700', '800'], subsets: ['latin'] });
+const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
 
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -21,7 +21,7 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
         <title>{title ? `${title} - EMS` : 'EMS'}</title>
       </Head>
 
-      <div className={`flex ${poppins.className}`}>
+      <div className={`flex ${roboto.className}`}>
         <Sidebar {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Sidebar>
         <section className="flex-1">
           <div className="h-[70px]">
