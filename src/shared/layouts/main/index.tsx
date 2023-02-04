@@ -7,21 +7,26 @@ import { RiMenuFoldFill } from 'react-icons/ri';
 import MainSharedHeader from './header';
 import MainSharedFooter from './footer';
 import ShopByAside from './shop-by';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Head from 'next/head';
+import Breadcrumbs from './breadcrumbs';
 
 // const poppins = Roboto({ weight: ['300', '400', '500', '600', '700', '800'], subsets: ['latin'] });
 const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const router = useRouter();
+
   return (
     <div className={`min-h-screen flex flex-col justify-between ${roboto.className}`}>
+      <Head>
+        <title>EMS</title>
+      </Head>
       <MainSharedHeader></MainSharedHeader>
-      <main className="flex-1 lg:container lg:mx-auto my-6 md:my-12 px-6 lg:px-28">
-        <div className="grid grid-cols-6 gap-8 relative gap-x-12">
-          <div className="col-span-6 md:col-span-2">
-            <ShopByAside></ShopByAside>
-          </div>
-          <div className="col-span-6 md:col-span-4">{children}</div>
-        </div>
+      <main className="flex-1 lg:container lg:mx-auto my-6 px-6 lg:px-28">
+        <Breadcrumbs slug={router.query.slug as string}></Breadcrumbs>
+        {children}
       </main>
       <MainSharedFooter></MainSharedFooter>
     </div>

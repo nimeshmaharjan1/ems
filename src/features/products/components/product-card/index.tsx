@@ -4,10 +4,11 @@ import Image from 'next/image';
 import React from 'react';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  console.log(product);
   return (
     <div className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2">
       <figure>
-        <Image src={product.image as string} className="w-72 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
+        <Image src={product.images?.[0] as string} className="w-72 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
       </figure>
       <div className="card-body !p-4">
         <h2 className="card-title !text-[1.2rem]">

@@ -18,7 +18,7 @@ enum PRODUCT_CATEGORY {
 
 model Product {
   id          String   @id @default(cuid())
-  image       String?
+  images      String[]
   title       String
   description String
   price       String
@@ -27,4 +27,5 @@ model Product {
   quantity    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  slug        String   
 }

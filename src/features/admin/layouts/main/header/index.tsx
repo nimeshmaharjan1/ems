@@ -10,7 +10,7 @@ const Header: React.FC<{
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const { resolvedTheme, setTheme } = useTheme();
   return (
-    <header className="h-[4.2rem] fixed top-0 flex justify-between items-center bg-base-200 w-full shadow px-6">
+    <header className="h-[4.2rem] z-50 fixed top-0 flex justify-between items-center bg-base-200 w-full shadow px-6">
       <div
         className=" p-1 cursor-pointer  duration-300 hidden lg:block"
         onClick={() => {
