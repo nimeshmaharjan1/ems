@@ -12,18 +12,9 @@ const Breadcrumbs: React.FC<{ slug: string }> = ({ slug }) => {
           return (
             <li key={path}>
               {index === paths.length - 1 ? (
-                <span>
-                  {path.charAt(0).toUpperCase() + path.slice(1)} {slug}
-                </span>
+                <span>{slug}</span>
               ) : (
-                <Link
-                  href={`/${paths
-                    .slice(0, index + 1)
-                    .join('/')
-                    .replace(/\/\//g, '/')}`}
-                >
-                  {path.charAt(0).toUpperCase() + path.slice(1)}
-                </Link>
+                <Link href={`/${paths.slice(0, index + 1).join('/')}`}>{path.charAt(0).toUpperCase() + path.slice(1)}</Link>
               )}
             </li>
           );
