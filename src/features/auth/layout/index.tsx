@@ -14,10 +14,10 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
         <button
           className="absolute top-8 right-12"
           onClick={() => {
-            theme === 'business' ? setTheme('light') : setTheme('business');
+            theme === 'night' ? setTheme('light') : setTheme('night');
           }}
         >
-          {theme === 'business' ? (
+          {theme === 'night' ? (
             <BsSun className="text-2xl hover:text-primary transition-all"></BsSun>
           ) : (
             <BsFillMoonFill className="text-xl hover:text-primary transition-all"></BsFillMoonFill>

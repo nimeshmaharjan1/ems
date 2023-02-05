@@ -10,16 +10,15 @@ const ProductCard: React.FC<{ product: Product; handleProductClick: (id: string)
       className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2"
     >
       <figure>
-        <Image src={product.images?.[0] as string} className="w-72 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
+        <Image src={product.images?.[0] as string} className="w-96 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
       </figure>
       <div className="card-body !p-4">
-        <h2 className="card-title !text-[1.2rem]">
-          {product.title}
-          <div className="badge badge-accent">NEW</div>
-        </h2>
+        <h2 className="card-title !text-[1.1rem]">{product.title}</h2>
         <Rating></Rating>
         <p className="py-1 font-bold text-error">&#8377; {new Intl.NumberFormat('en-IN').format(parseInt(product.price))}</p>
         <div className="card-actions justify-end items-center">
+          {/* <div className="badge badge-accent">NEW</div> */}
+
           <button className="btn btn-primary btn-sm">Add To Cart</button>
           {/* <div className="badge badge-sm">Laptops</div> */}
         </div>

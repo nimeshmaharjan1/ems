@@ -5,7 +5,7 @@ const Index = () => {
   const router = useRouter();
   React.useEffect(() => {
     router.push('/products');
-  }, []);
+  }, [router]);
   return null;
 };
 
