@@ -3,10 +3,12 @@ import { Product } from '@prisma/client';
 import Image from 'next/image';
 import React from 'react';
 
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  console.log(product);
+const ProductCard: React.FC<{ product: Product; handleProductClick: (id: string) => void }> = ({ product, handleProductClick }) => {
   return (
-    <div className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2">
+    <div
+      onClick={() => handleProductClick(product.id)}
+      className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2"
+    >
       <figure>
         <Image src={product.images?.[0] as string} className="w-72 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
       </figure>

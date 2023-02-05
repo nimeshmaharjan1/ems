@@ -69,7 +69,6 @@ const CreateUser: NextPageWithLayout = () => {
   };
 
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
-    console.log(values);
     setIsSubmitting(true);
     try {
       await axios.post('/api/admin/products', { ...values, images: imageUrls });

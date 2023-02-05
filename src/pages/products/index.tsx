@@ -1,15 +1,24 @@
-import React, { ReactNode, useCallback, useEffect } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { PrismaClient, Product } from '@prisma/client';
 import MainSharedLayout from '@/shared/layouts/main';
 import ProductCard from '@/features/products/components/product-card';
 import { NextPageWithLayout } from '../_app';
 import ViewAllLayout from '@/shared/layouts/view-all';
+import Router, { useRouter } from 'next/router';
 
 const prisma = new PrismaClient();
 
 const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
-  console.log(products);
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const handleProductClick = (id: string) => {
+    router.push(`/products/${id}`);
+  };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) return null;
   return (
     <>
       <header className="mb-8">
@@ -34,22 +43,7 @@ const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
           return (
             <>
               <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard {...{ product }} key={product.id}></ProductCard>
+                <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
               </div>
             </>
           );

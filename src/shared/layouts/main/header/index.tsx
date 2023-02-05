@@ -11,10 +11,10 @@ const MainSharedHeader = () => {
   return (
     <header
       className={classNames('wrapper shadow', {
-        ['border-b border-b-gray-700']: theme === 'night',
+        ['border-b border-b-gray-700']: theme === 'business',
       })}
     >
-      <div className={`${styles['top-header-wrapper']} border-b ${theme === 'night' ? ' border-b-gray-700' : ''}`}>
+      <div className={`${styles['top-header-wrapper']} border-b ${theme === 'business' ? ' border-b-gray-700' : ''}`}>
         <section className="lg:container lg:mx-auto flex items-center justify-between h-10 px-6 lg:px-28">
           <section className="contact flex">
             <p>Need Help ? 01-5203362</p>
@@ -24,7 +24,7 @@ const MainSharedHeader = () => {
           <section className="account flex">
             <button
               onClick={() => {
-                resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
+                resolvedTheme === 'corporate' ? setTheme('business') : setTheme('corporate');
               }}
               className={classNames('!bg-transparent btn-sm !h-0 !min-h-[2px] !p-0')}
             >
@@ -45,6 +45,7 @@ const MainSharedHeader = () => {
         <section className="left">
           <h1 className="text-2xl font-bold text-primary">EMS</h1>
         </section>
+
         <section className="right flex items-center gap-4">
           <button className="btn btn-ghost btn-sm">Products</button>
           <button className="btn btn-ghost btn-sm">New Arrivals</button>

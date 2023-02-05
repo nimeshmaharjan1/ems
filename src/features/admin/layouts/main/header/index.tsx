@@ -25,7 +25,7 @@ const Header: React.FC<{
       </div>
       <button
         onClick={() => {
-          resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
+          resolvedTheme === 'corporate' ? setTheme('business') : setTheme('corporate');
         }}
         className={classNames('!bg-transparent btn-sm !mr-14')}
       >

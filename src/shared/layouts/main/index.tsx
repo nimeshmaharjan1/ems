@@ -1,4 +1,4 @@
-import { Roboto } from '@next/font/google';
+import { Poppins } from '@next/font/google';
 import classNames from 'classnames';
 import { useTheme } from 'next-themes';
 import React, { Dispatch, ReactNode, SetStateAction } from 'react';
@@ -12,20 +12,20 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Breadcrumbs from './breadcrumbs';
 
-// const poppins = Roboto({ weight: ['300', '400', '500', '600', '700', '800'], subsets: ['latin'] });
-const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
+const poppins = Poppins({ weight: ['300', '400', '500', '600', '700', '800'], subsets: ['latin'] });
+// const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between ${roboto.className}`}>
+    <div className={`min-h-screen flex flex-col justify-between ${poppins.className}`}>
       <Head>
         <title>EMS</title>
       </Head>
       <MainSharedHeader></MainSharedHeader>
       <main className="flex-1 lg:container lg:mx-auto my-6 px-6 lg:px-28">
-        <Breadcrumbs slug={router.query.slug as string}></Breadcrumbs>
+        {/* <Breadcrumbs slug={router.query.slug as string}></Breadcrumbs> */}
         {children}
       </main>
       <MainSharedFooter></MainSharedFooter>
