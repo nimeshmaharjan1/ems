@@ -44,9 +44,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
               </div>
               <div className="flex-1 text-xl font-bold text-primary">EMS</div>
               <div className="flex-none hidden lg:flex items-center gap-4">
-                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Products</button>
-                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Contact</button>
-
                 <button
                   onClick={() => {
                     resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
@@ -59,11 +56,17 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                     <BsSun className="text-lg hover:text-amber-400 duration-300"></BsSun>
                   )}
                 </button>
+                <button className="btn btn-sm btn-ghost !normal-case !font-normal" onClick={() => router.push('/products')}>
+                  Products
+                </button>
+                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Contact</button>
+                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Sign In</button>
+                <button className="btn btn-sm btn-primary !normal-case !font-normal">Sign Up</button>
               </div>
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6  lg:px-28 my-6 md:my-12 md:mb-24">{children}</div>
+            <div className="lg:container lg:mx-auto px-6  lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
 
             <MainSharedFooter></MainSharedFooter>
           </main>

@@ -6,10 +6,13 @@ import ProductCard from '@/features/products/components/product-card';
 import { NextPageWithLayout } from '../_app';
 import ViewAllLayout from '@/shared/layouts/view-all';
 import Router, { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
 
 const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
+  const data = useSession();
+  console.log({ data });
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const handleProductClick = (id: string) => {

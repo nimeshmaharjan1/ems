@@ -36,7 +36,7 @@ const Login: NextPageWithLayout = () => {
         setIsSubmitting(false);
         return;
       }
-      router.push('/products');
+      router.push('/admin/products');
     } catch (error) {
       setIsSubmitting(false);
       showToast(Toast.error, 'Something went wrong while trying to login please try again.');

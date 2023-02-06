@@ -1,60 +1,51 @@
 import React, { ReactNode, useState } from 'react';
 import { AiOutlineMail, AiOutlineGoogle, AiOutlineUser, AiOutlinePhone } from 'react-icons/ai';
-import { FaDiscord } from 'react-icons/fa';
-import { BsFacebook } from 'react-icons/bs';
+
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { NextPageWithLayout } from '@/pages/_app';
 import AuthLayout from '@/features/auth/layout';
 import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { IRegister } from '@/features/auth/interfaces';
 import classNames from 'classnames';
 import ErrorMessage from '@/shared/components/error-message';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import axios from 'axios';
+import { USER_ROLES } from '@prisma/client';
+import { RxLetterCaseCapitalize } from 'react-icons/rx';
+import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
 
 const Register: NextPageWithLayout = () => {
-  const supabase = useSupabaseClient();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const formValues = {
     email: '',
-    full_name: '',
     password: '',
     username: '',
+    full_name: '',
+    phone_number: '',
   } as IRegister;
   const {
     register,
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm<IRegister>({ defaultValues: formValues, mode: 'onChange' });
+  } = useForm<IRegister>({ defaultValues: formValues, mode: 'onSubmit' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const signUp = async (values: IRegister) => {
+
+  const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          data: {
-            full_name: values.full_name,
-            username: values.username,
-            phone_number: values.phone_number,
-          },
-        },
-      });
-      if (error) {
-        showToast(Toast.error, error?.message);
-        return;
-      }
-      showToast(Toast.success, 'Check your email for the confirmation link.');
+      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.ADMIN });
+      showToast(Toast.success, 'User has been successfully created.');
+      router.push('/api/auth/signin');
     } catch (error) {
       console.log(error);
-    } finally {
       setIsSubmitting(false);
+      showToast(Toast.error, 'Something went wrong while trying to create the user.');
     }
   };
+
   return (
     <div className="card-body">
       <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Register</h2>
@@ -65,6 +56,7 @@ const Register: NextPageWithLayout = () => {
             required: 'Full name is required.',
           })}
           type="text"
+          disabled={isSubmitting}
           placeholder="Full Name"
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
@@ -72,11 +64,11 @@ const Register: NextPageWithLayout = () => {
           })}
         />
         <ErrorMessage>{errors?.full_name?.message}</ErrorMessage>
-        <AiOutlineUser
+        <RxLetterCaseCapitalize
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.full_name,
           })}
-        ></AiOutlineUser>
+        ></RxLetterCaseCapitalize>
       </div>
       <div className="form-control w-full mb-2 relative">
         <input
@@ -84,6 +76,7 @@ const Register: NextPageWithLayout = () => {
             required: 'Username is required.',
           })}
           type="text"
+          disabled={isSubmitting}
           placeholder="Username"
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
@@ -101,8 +94,12 @@ const Register: NextPageWithLayout = () => {
         <input
           {...register('email', {
             required: 'Email is required.',
+            validate: {
+              checkEmailFormat: (value) => emailPattern.test(value) || 'Invalid email address format.',
+            },
           })}
           type="email"
+          disabled={isSubmitting}
           placeholder="E-mail"
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
@@ -123,6 +120,7 @@ const Register: NextPageWithLayout = () => {
           })}
           type={`${showPassword ? 'text' : 'password'}`}
           placeholder="Password"
+          disabled={isSubmitting}
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
             'input-error': errors?.password,
@@ -150,8 +148,12 @@ const Register: NextPageWithLayout = () => {
           type="phone"
           {...register('phone_number', {
             required: 'Phone Number is required.',
+            validate: {
+              checkEmailFormat: (value) => phonePattern.test(value) || 'Invalid phone number.',
+            },
           })}
           placeholder="Phone Number"
+          disabled={isSubmitting}
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
             'input-error': errors?.phone_number,
@@ -178,7 +180,7 @@ const Register: NextPageWithLayout = () => {
         Already have an account?{' '}
         <span
           className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300"
-          onClick={() => router.push('/auth/login')}
+          onClick={() => router.push('/api/auth/signin')}
         >
           Sign In now
         </span>
