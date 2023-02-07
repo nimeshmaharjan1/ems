@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { AiOutlineMail, AiOutlineGoogle } from 'react-icons/ai';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaUser } from 'react-icons/fa';
 import { BsFacebook } from 'react-icons/bs';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import styles from './login.module.scss';
@@ -68,11 +68,11 @@ const Login: NextPageWithLayout = () => {
           })}
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
-        <AiOutlineMail
+        <FaUser
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.username,
           })}
-        ></AiOutlineMail>
+        ></FaUser>
       </div>
       <div className="form-control w-full mb-4 relative">
         <input

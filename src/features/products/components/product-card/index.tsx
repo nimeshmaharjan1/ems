@@ -9,8 +9,15 @@ const ProductCard: React.FC<{ product: Product; handleProductClick: (id: string)
       onClick={() => handleProductClick(product.id)}
       className="card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 transition-all hover:shadow-xl hover:scale-105 cursor-pointer border-2"
     >
-      <figure>
-        <Image src={product.images?.[0] as string} className="w-96 lg:w-full h-25 border-b-2" width={250} height={250} alt="Shoes" />
+      <figure className="h-44">
+        <Image
+          quality={100}
+          src={product.images?.[0] as string}
+          className="w-96 lg:w-full border-b-2"
+          width={500}
+          height={500}
+          alt="Shoes"
+        />
       </figure>
       <div className="card-body !p-4">
         <h2 className="card-title !text-[1.1rem]">{product.title}</h2>

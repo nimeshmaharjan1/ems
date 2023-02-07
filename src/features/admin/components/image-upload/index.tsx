@@ -2,7 +2,7 @@ import { ProductSchema } from '@/pages/admin/products/create';
 import { Product } from '@prisma/client';
 import classNames from 'classnames';
 import Image from 'next/legacy/image';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { AiOutlineArrowUp } from 'react-icons/ai';
 interface Props {
@@ -10,8 +10,9 @@ interface Props {
   initialImage: { src: string | ArrayBuffer | null; alt: string };
   accept?: string;
   sizeLimit?: number;
-  onChangePicture: (image: string | ArrayBuffer | null) => void;
+  onChangePicture: (images: any) => void;
   control: Control<ProductSchema>;
+  resetImages: boolean;
 }
 
 const ImageUpload: React.FC<Props> = ({
@@ -21,41 +22,58 @@ const ImageUpload: React.FC<Props> = ({
   sizeLimit = 10 * 1024 * 1024, // 10MB
   onChangePicture,
   control,
+  resetImages,
 }) => {
   const imageRef = React.useRef<HTMLInputElement>(null);
-  const [images, setImages] = React.useState<{ src: string | ArrayBuffer | null; alt: string }[]>([initialImage]);
+  const [images, setImages] = React.useState<any>([initialImage]);
   const [updatingImage, setUpdatingImage] = React.useState(false);
   const [imageError, setPictureError] = React.useState('');
   const handleOnChangePicture = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const reader = new FileReader();
-    const fileName = file?.name?.split('.')?.[0] ?? 'New file';
-    reader.addEventListener(
-      'load',
-      async function () {
-        try {
-          setImages((prev) => [...prev, { src: reader.result as string | ArrayBuffer, alt: fileName }]);
-          if (typeof onChangePicture === 'function') {
-            onChangePicture(reader.result);
-          }
-        } catch (err) {
-          console.log(err);
-        } finally {
-          setUpdatingImage(false);
-        }
-      },
-      false
-    );
+    const files = e.target.files;
+    if (!files) return;
 
-    if (file) {
-      if (file.size <= sizeLimit) {
-        setUpdatingImage(true);
-        setPictureError('');
-        reader.readAsDataURL(file);
-      } else {
-        setPictureError('File size is exceeding 10MB.');
-      }
+    setUpdatingImage(true);
+    setPictureError('');
+
+    const filteredFiles = Array.from(files).filter((file) => file.size <= sizeLimit);
+    const invalidFiles = Array.from(files).filter((file) => file.size > sizeLimit);
+    if (invalidFiles.length > 0) {
+      setPictureError('Some file sizes are exceeding 10MB.');
     }
+
+    const readerPromises = filteredFiles.map((file) => {
+      const reader = new FileReader();
+      const fileName = file.name.split('.')[0] || 'New file';
+      return new Promise((resolve, reject) => {
+        reader.addEventListener(
+          'load',
+          function () {
+            resolve({ src: reader.result as string | ArrayBuffer, alt: fileName });
+          },
+          false
+        );
+        reader.addEventListener(
+          'error',
+          function () {
+            reject(`An error occurred while reading the file: ${file.name}`);
+          },
+          false
+        );
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(readerPromises)
+      .then((images) => {
+        setImages((prev: any) => [...prev, ...images]);
+        setUpdatingImage(false);
+        onChangePicture(images.map((image: any) => image.src));
+      })
+      .catch((error) => {
+        console.error(error);
+        setPictureError(error);
+        setUpdatingImage(false);
+      });
   };
 
   const handleOnClickPicture = () => {
@@ -63,9 +81,15 @@ const ImageUpload: React.FC<Props> = ({
       imageRef.current.click();
     }
   };
+
+  useEffect(() => {
+    if (resetImages) {
+      setImages([{ src: '', alt: '' }]);
+    }
+  }, [resetImages]);
   return (
     <div className="grid grid-cols-6 gap-x-4">
-      {images?.map((image) => (
+      {images?.map((image: any) => (
         <button
           key={image.alt}
           disabled={updatingImage}
@@ -93,6 +117,7 @@ const ImageUpload: React.FC<Props> = ({
                 <input
                   ref={imageRef}
                   type="file"
+                  multiple
                   accept={'.png, .jpg, .jpeg, .gif, .webp'}
                   onChange={handleOnChangePicture}
                   className="hidden"

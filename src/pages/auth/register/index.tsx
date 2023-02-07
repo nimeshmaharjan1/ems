@@ -14,16 +14,19 @@ import axios from 'axios';
 import { USER_ROLES } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
+import { useSession } from 'next-auth/react';
 
 const Register: NextPageWithLayout = () => {
+  const { data: session } = useSession();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const formValues = {
     email: '',
     password: '',
     username: '',
-    full_name: '',
+    name: '',
     phone_number: '',
+    role: USER_ROLES.USER,
   } as IRegister;
   const {
     register,
@@ -36,7 +39,7 @@ const Register: NextPageWithLayout = () => {
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.SUPER_ADMIN });
+      await axios.post('/api/auth/register', { ...values });
       showToast(Toast.success, 'User has been successfully created.');
       router.push('/api/auth/signin');
     } catch (error) {
@@ -52,7 +55,7 @@ const Register: NextPageWithLayout = () => {
       <p className="text-lg text-center w-full mb-4">Hey, enter your details here to create to your account.</p>
       <div className="form-control w-full mb-2 relative">
         <input
-          {...register('full_name', {
+          {...register('name', {
             required: 'Full name is required.',
           })}
           type="text"
@@ -60,13 +63,13 @@ const Register: NextPageWithLayout = () => {
           placeholder="Full Name"
           autoComplete="off"
           className={classNames('input input-bordered w-full', {
-            'input-error': errors?.full_name,
+            'input-error': errors?.name,
           })}
         />
-        <ErrorMessage>{errors?.full_name?.message}</ErrorMessage>
+        <ErrorMessage>{errors?.name?.message}</ErrorMessage>
         <RxLetterCaseCapitalize
           className={classNames('absolute right-4 text-primary text-xl top-3', {
-            'text-error': errors?.full_name,
+            'text-error': errors?.name,
           })}
         ></RxLetterCaseCapitalize>
       </div>
@@ -166,6 +169,16 @@ const Register: NextPageWithLayout = () => {
           })}
         ></AiOutlinePhone>
       </div>
+      {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
+        <select className="select select-bordered w-full" {...register('role')} disabled={isSubmitting}>
+          <option disabled selected>
+            Select Role
+          </option>
+          <option value={USER_ROLES.USER}>User</option>
+          <option value={USER_ROLES.ADMIN}>Admin</option>
+          <option value={USER_ROLES.ADMIN}>Super Admin</option>
+        </select>
+      )}
       <button
         className={classNames('btn btn-primary btn-block mt-3 my-2 btn-square gap-2', {
           loading: isSubmitting,

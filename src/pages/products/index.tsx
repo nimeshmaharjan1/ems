@@ -7,12 +7,11 @@ import { NextPageWithLayout } from '../_app';
 import ViewAllLayout from '@/shared/layouts/view-all';
 import Router, { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
-const prisma = new PrismaClient();
-
-const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
-  const data = useSession();
-  console.log({ data });
+const Home: NextPageWithLayout = () => {
+  const { data: session } = useSession();
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const handleProductClick = (id: string) => {
@@ -21,7 +20,67 @@ const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const {
+    data: productData,
+    isError,
+    isLoading,
+  } = useQuery<{ products: Product[] }, Error>('fetchProducts', async () => {
+    const response = await axios.get('/api/products');
+    return response.data;
+  });
+
   if (!isMounted) return null;
+
+  if (isError) {
+    return (
+      <>
+        <header className="mb-8">
+          <h1 className="text-2xl font-bold text-error relative uppercase pb-1">
+            Error
+            <span
+              className="bg-error"
+              style={{
+                content: '',
+                width: '70px',
+                height: '3px',
+                display: 'inline-block',
+                position: 'absolute',
+                bottom: '-8px',
+                left: '0',
+              }}
+            ></span>
+          </h1>
+        </header>
+        <div>Something went wrong while trying to get the products please try again later.</div>
+      </>
+    );
+  }
+  if (isLoading) {
+    return (
+      <>
+        <div className="grid grid-cols-12 gap-6 mt-10">
+          {Array(6)
+            .fill(0)
+            .map((_, index) => {
+              return (
+                <div key={index} className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center">
+                  <div className="flex flex-col rounded shadow-md w-full sm:w-80 animate-pulse h-96">
+                    <div className="h-48 rounded-t bg-base-200"></div>
+                    <div className="flex-1 px-4 py-8 space-y-4 sm:p-8 bg-base-300">
+                      <div className="w-full h-6 rounded bg-base-200"></div>
+                      <div className="w-full h-6 rounded bg-base-200"></div>
+                      <div className="w-3/4 h-6 rounded bg-base-200"></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <header className="mb-8">
@@ -42,24 +101,14 @@ const Home: NextPageWithLayout<{ products: Product[] }> = ({ products }) => {
         </h1>
       </header>
       <div className="grid grid-cols-12 gap-6">
-        {products.map((product, productIndex) => {
-          return (
-            <>
+        {productData?.products &&
+          productData.products.map((product, productIndex) => {
+            return (
               <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
                 <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
               </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
-              </div>
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
-              </div>
-            </>
-          );
-        })}
+            );
+          })}
       </div>
     </>
   );
@@ -74,16 +123,20 @@ Home.getLayout = (page: ReactNode) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  let products;
-  try {
-    products = await prisma.product.findMany();
-  } catch (error) {
-    console.log(error);
-  }
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   try {
+//     const products = await prisma.product.findMany();
+//     return {
+//       props: {
+//         products: JSON.parse(JSON.stringify(products)),
+//       },
+//     };
+//   } catch (error) {
+//     console.log(error);
+//   }
+//   return {
+//     props: {
+//       products: null,
+//     },
+//   };
+// };

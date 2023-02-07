@@ -1,31 +1,23 @@
-import { Poppins } from '@next/font/google';
-import classNames from 'classnames';
-import { useTheme } from 'next-themes';
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
-import { BsFillMoonFill, BsSun } from 'react-icons/bs';
-import { RiMenuFoldFill } from 'react-icons/ri';
-import MainSharedHeader from './header';
+import { Inter, Poppins } from '@next/font/google';
+import React, { ReactNode, useEffect, useState } from 'react';
 import MainSharedFooter from './footer';
-import ShopByAside from './shop-by';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Head from 'next/head';
-import Breadcrumbs from './breadcrumbs';
 
-import { GiHamburgerMenu } from 'react-icons/gi';
+import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { FaBox, FaLocationArrow, FaUser } from 'react-icons/fa';
-import { AiOutlineUser } from 'react-icons/ai';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { USER_ROLES } from '@prisma/client';
+import ThemeToggler from '@/shared/components/theme-toggler';
+import Image from 'next/image';
+import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 
-const poppins = Poppins({ weight: ['300', '400', '500', '600', '700', '800'], subsets: ['latin'] });
-// const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
+const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
-  const { resolvedTheme, theme, setTheme } = useTheme();
   const [isMounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   useEffect(() => {
@@ -35,7 +27,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   if (!isMounted) return null;
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between ${poppins.className}`}>
+    <div className={`min-h-screen flex flex-col justify-between ${inter.className}`}>
       <Head>
         <title>EMS</title>
       </Head>
@@ -50,50 +42,66 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 </label>
               </div>
               <div className="flex-1 text-xl font-bold text-primary">EMS</div>
-              <div className="flex-none hidden lg:flex items-center gap-4">
-                <button
-                  onClick={() => {
-                    resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
-                  }}
-                  className={classNames('!bg-transparent btn-sm !h-0 !p-0')}
-                >
-                  {resolvedTheme === 'corporate' ? (
-                    <BsFillMoonFill className=" hover:text-primary duration-300"></BsFillMoonFill>
-                  ) : (
-                    <BsSun className="text-lg hover:text-amber-400 duration-300"></BsSun>
-                  )}
-                </button>
-                <button className="btn btn-sm btn-ghost !normal-case !font-normal" onClick={() => router.push('/products')}>
+              <div className="block md:hidden theme mx-4">
+                <ThemeToggler></ThemeToggler>
+              </div>
+              <div className="flex-none hidden lg:flex items-center gap-3">
+                <button className="btn btn-sm btn-ghost !normal-case" onClick={() => router.push('/products')}>
                   Products
                 </button>
-                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Contact</button>
-                {isAdmin && <button className="btn btn-sm btn-ghost !normal-case !font-normal">Dashboard</button>}
+                <button className="btn btn-sm btn-ghost !normal-case">Contact</button>
+                {isAdmin && <button className="btn btn-sm btn-ghost !normal-case">Dashboard</button>}
                 {status === 'unauthenticated' && (
                   <>
-                    {' '}
-                    <button className="btn btn-sm btn-ghost !normal-case !font-normal">Sign In</button>
-                    <button className="btn btn-sm btn-primary !normal-case !font-normal">Sign Up</button>
+                    <button className="btn btn-sm btn-ghost !normal-case">Sign In</button>
+                    <button className="btn btn-sm btn-primary !normal-case">Sign Up</button>
                   </>
                 )}
-                {session?.user?.image ? (
-                  <div className="avatar online">
-                    <div className="w-8 h-8 rounded-full bg-primary p-1">
-                      <img src="/icons/default-user.png" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="avatar placeholder online">
-                    <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
-                      <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
-                    </div>
+                {status === 'authenticated' && (
+                  <div className="dropdown dropdown-end !-ml-0">
+                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                      {session?.user?.image ? (
+                        <div className="avatar online">
+                          <div className="w-8 h-8 rounded-full bg-primary">
+                            <Image src="/icons/default-user.png" className="p-1" height={500} width={500} alt="user" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="avatar placeholder online">
+                          <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
+                            <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
+                          </div>
+                        </div>
+                      )}
+                    </label>
+                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
+                      <li>
+                        <a>
+                          <AiOutlineUser></AiOutlineUser>
+                          Profile
+                        </a>
+                      </li>
+                      <li>
+                        <a>
+                          <GiSettingsKnobs></GiSettingsKnobs>Settings
+                        </a>
+                      </li>
+                      <li onClick={() => signOut({ redirect: false })}>
+                        <a>
+                          <AiOutlineLogout></AiOutlineLogout>Logout
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 )}
+                <div className="!ml-1">
+                  <ThemeToggler></ThemeToggler>
+                </div>
               </div>
             </div>
           </div>
           <main className="flex-1 ">
             <div className="lg:container lg:mx-auto px-6  lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
-
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

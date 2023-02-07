@@ -1,5 +1,15 @@
 {
   "extends": ["next/core-web-vitals"],
   "plugins": ["react", "@typescript-eslint", "autofix"],
-  "parser": "@typescript-eslint/parser"
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false
+      }
+    ]
+  }
 }

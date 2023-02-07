@@ -41,38 +41,40 @@ const CreateUser: NextPageWithLayout = () => {
     control,
     setValue,
     formState: { errors },
-    setError,
-    clearErrors,
-    getValues,
+    reset,
     handleSubmit,
   } = useForm<ProductSchema>({ mode: 'onChange', resolver: zodResolver(productSchema), defaultValues });
   const [isUploading, setIsUploading] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const images = useWatch({
     control,
     name: 'images',
   });
-  const upload = async (image: string | ArrayBuffer | null) => {
-    if (!image) return;
+  const upload = async (images: (string | ArrayBuffer | null)[]) => {
+    const filteredImages = images.filter((image) => image !== null);
+    if (filteredImages.length === 0) return;
     setIsUploading(true);
     try {
-      const { data } = await axios.post('/api/upload-image', { image });
-      setImageUrls((prev) => [...prev, data?.url]);
-      setValue('images', [...(watch().images as string[]), data?.url]);
-      showToast(Toast.success, data.message);
+      const uploadPromises = filteredImages.map((image) => axios.post('/api/upload-image', { image }));
+      const responses = await Promise.all(uploadPromises);
+      const urls = responses.map((response) => response.data.url);
+      setValue('images', [...(watch().images as string[]), ...urls]);
+      showToast(Toast.success, 'All images uploaded successfully.');
     } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the image please try again.');
+      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
     } finally {
       setIsUploading(false);
     }
   };
 
+  const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/admin/products', { ...values, images: imageUrls });
+      await axios.post('/api/admin/products', { ...values });
       showToast(Toast.success, 'Product has been created.');
+      reset();
+      setResetImages(true);
     } catch (error) {
       console.log(error);
       showToast(Toast.error, 'Something went wrong please try again.');
@@ -183,7 +185,7 @@ const CreateUser: NextPageWithLayout = () => {
         </section>
         <section className="col-span-6">
           <FormControl label="Upload Product Image">
-            <ImageUpload {...{ control }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
+            <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
           </FormControl>
 
           <FormControl label="Product Slug" errorMessage={errors?.slug?.message as string}>
