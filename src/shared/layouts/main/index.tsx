@@ -15,16 +15,23 @@ import Breadcrumbs from './breadcrumbs';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { FaBox, FaLocationArrow, FaUser } from 'react-icons/fa';
 import { AiOutlineUser } from 'react-icons/ai';
+import { useSession } from 'next-auth/react';
+import { USER_ROLES } from '@prisma/client';
 
 const poppins = Poppins({ weight: ['300', '400', '500', '600', '700', '800'], subsets: ['latin'] });
 // const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
-
+  const { data: session, status } = useSession();
+  const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
   const { resolvedTheme, theme, setTheme } = useTheme();
   const [isMounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setIsAdmin(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
+  }, [session?.user?.role]);
+
   if (!isMounted) return null;
 
   return (
@@ -60,8 +67,27 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                   Products
                 </button>
                 <button className="btn btn-sm btn-ghost !normal-case !font-normal">Contact</button>
-                <button className="btn btn-sm btn-ghost !normal-case !font-normal">Sign In</button>
-                <button className="btn btn-sm btn-primary !normal-case !font-normal">Sign Up</button>
+                {isAdmin && <button className="btn btn-sm btn-ghost !normal-case !font-normal">Dashboard</button>}
+                {status === 'unauthenticated' && (
+                  <>
+                    {' '}
+                    <button className="btn btn-sm btn-ghost !normal-case !font-normal">Sign In</button>
+                    <button className="btn btn-sm btn-primary !normal-case !font-normal">Sign Up</button>
+                  </>
+                )}
+                {session?.user?.image ? (
+                  <div className="avatar online">
+                    <div className="w-8 h-8 rounded-full bg-primary p-1">
+                      <img src="/icons/default-user.png" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="avatar placeholder online">
+                    <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
+                      <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

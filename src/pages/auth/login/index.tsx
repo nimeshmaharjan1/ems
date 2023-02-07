@@ -21,10 +21,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 const Login: NextPageWithLayout = () => {
-  const data = useSession();
+  const { data: session } = useSession();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-
+  console.log({ session });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin: SubmitHandler<ILoginWithPassword> = async (values) => {
@@ -38,6 +38,7 @@ const Login: NextPageWithLayout = () => {
       }
       router.push('/products');
     } catch (error) {
+      console.error(error);
       setIsSubmitting(false);
       showToast(Toast.error, 'Something went wrong while trying to login please try again.');
     }
@@ -147,7 +148,6 @@ Login.getLayout = (page: ReactNode) => <AuthLayout title="Sign In">{page}</AuthL
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
-  console.log(session);
   if (session?.user?.role === USER_ROLES.ADMIN)
     return {
       redirect: {

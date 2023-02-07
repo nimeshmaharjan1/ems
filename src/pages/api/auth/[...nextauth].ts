@@ -3,7 +3,7 @@ import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, USER_ROLES } from '@prisma/client';
 import Credentials from 'next-auth/providers/credentials';
 import { verify } from 'argon2';
 
@@ -42,16 +42,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt(params: any) {
+    jwt(params) {
       if (params?.user?.role) {
         params.token.username = params.user.username;
         params.token.role = params.user.role;
       }
       return params.token;
     },
-    session: (params: any) => {
-      params.session.user.username = params.token.username;
-      params.session.user.role = params.token.role;
+    session: (params) => {
+      if (params.session?.user) {
+        params.session.user.username = params.token.username;
+        params.session.user.role = params.token.role;
+      }
       return params.session;
     },
   },

@@ -1,25 +1,21 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { USER_ROLES } from '@prisma/client';
+import { withAuth } from 'next-auth/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+export default withAuth(
+  function middleware(req: NextRequest) {
+    console.log(req.url);
+    if (req.url === '/admin/dashboard') {
+      return null;
+    }
+    return NextResponse.rewrite(new URL('/admin/dashboard', req.url));
+  },
+  {
+    callbacks: {
+      authorized: (params: any) => {
+        return params.token?.role === USER_ROLES.ADMIN || params.token?.role === USER_ROLES.SUPER_ADMIN;
+      },
+    },
+  }
+);
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  // const supabase = createMiddlewareSupabaseClient({ req, res });
-  // const {
-  //   data: { session },
-  //   error,
-  // } = await supabase.auth.getSession();
-  // if (session?.user) {
-  //   return res;
-  // }
-
-  // // Auth condition not met, redirect to home page.
-  // const redirectUrl = req.nextUrl.clone();
-  // redirectUrl.pathname = '/auth/login';
-  // redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname);
-  // return NextResponse.redirect(redirectUrl);
-  return res;
-}
-
-export const config = {
-  matcher: ['/', '/admin/:path*'],
-};
+export const config = { matcher: ['/admin/:path*'] };

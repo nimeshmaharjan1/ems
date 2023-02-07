@@ -23,14 +23,15 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <ThemeProvider>
-      {getLayout(
-        <>
-          <NextNProgress options={{ showSpinner: false }} showOnShallow height={4} />
-          <AuthProvider session={session}>
+      <AuthProvider session={session}>
+        {getLayout(
+          <>
+            <NextNProgress options={{ showSpinner: false }} showOnShallow height={4} />
             <Component {...pageProps} />
-          </AuthProvider>
-        </>
-      )}
+          </>
+        )}
+      </AuthProvider>
+
       <ToastContainer />
     </ThemeProvider>
   );

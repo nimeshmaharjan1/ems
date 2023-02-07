@@ -14,6 +14,7 @@ import axios from 'axios';
 import { USER_ROLES } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
+import { useSession } from 'next-auth/react';
 
 const Register: NextPageWithLayout = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +25,7 @@ const Register: NextPageWithLayout = () => {
     username: '',
     full_name: '',
     phone_number: '',
+    role: USER_ROLES.USER,
   } as IRegister;
   const {
     register,
@@ -36,16 +38,17 @@ const Register: NextPageWithLayout = () => {
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.SUPER_ADMIN });
+      await axios.post('/api/auth/register', { ...values });
       showToast(Toast.success, 'User has been successfully created.');
       router.push('/api/auth/signin');
     } catch (error) {
-      console.log(error);
       setIsSubmitting(false);
       showToast(Toast.error, 'Something went wrong while trying to create the user.');
     }
   };
 
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <div className="card-body">
       <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Register</h2>
