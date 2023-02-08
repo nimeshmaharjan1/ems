@@ -129,6 +129,7 @@ export default function Sidebar({
                 ['p-3']: !isSidebarCollapsed,
               }
             )}
+            onClick={() => router.push('/admin/settings')}
           >
             <span className="text-2xl block float-left">
               <FiSettings></FiSettings>
@@ -143,11 +144,12 @@ export default function Sidebar({
                 ['p-3']: !isSidebarCollapsed,
               }
             )}
+            onClick={() => router.push('/admin/products')}
           >
             <span className="text-2xl block float-left">
               <ImBooks></ImBooks>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Projects</span>
+            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
           </li>
         </ul>
       </div>

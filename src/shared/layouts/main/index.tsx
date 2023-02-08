@@ -101,7 +101,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6  lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

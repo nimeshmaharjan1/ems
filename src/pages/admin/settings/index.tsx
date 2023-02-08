@@ -1,0 +1,36 @@
+import AdminDashboardLayout from '@/features/admin/layouts/main';
+import { SETTING_TAB } from '@/features/admin/settings/types';
+import { NextPageWithLayout } from '@/pages/_app';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import SettingCategory from './categories';
+
+const Settings: NextPageWithLayout = () => {
+  const [selectedTab, setSelectedTab] = useState<SETTING_TAB>(SETTING_TAB.CATEGORY);
+  return (
+    <>
+      <div className="tabs">
+        {Object.values(SETTING_TAB).map((tab) => {
+          return (
+            <a
+              className={classNames('tab tab-bordered', {
+                'tab-active': tab === selectedTab,
+              })}
+              onClick={() => setSelectedTab(tab)}
+              key={tab}
+            >
+              {tab}
+            </a>
+          );
+        })}
+      </div>
+      <section className="mt-5">{selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}</section>
+    </>
+  );
+};
+
+export default Settings;
+
+Settings.getLayout = (page) => {
+  return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
+};

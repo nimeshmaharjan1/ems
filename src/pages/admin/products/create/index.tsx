@@ -10,9 +10,12 @@ import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BsBagPlus, BsPlus } from 'react-icons/bs';
+
 import CategoriesCard from '@/features/admin/categories/components/categories-card';
 import CompaniesCard from '@/features/admin/companies/components/companies-card';
+import { useQuery } from 'react-query';
+import { Category, Company } from '@prisma/client';
+
 const productSchema = z.object({
   categoryId: z.string().min(1, { message: 'Product category is required.' }),
   title: z.string().min(1, { message: 'Product title is required.' }),
@@ -77,12 +80,30 @@ const CreateUser: NextPageWithLayout = () => {
       reset();
       setResetImages(true);
     } catch (error) {
-      console.log(error);
       showToast(Toast.error, 'Something went wrong please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const {
+    data: categories,
+    isError: categoryError,
+    isLoading: isCategoryLoading,
+  } = useQuery<Category[], Error>('fetchCategories', async () => {
+    const response = await axios.get('/api/admin/categories');
+    return response.data.categories;
+  });
+
+  const {
+    data: companies,
+    isError: companyError,
+    isLoading: isCompanyLoading,
+  } = useQuery<Company[], Error>('fetchCompanies', async () => {
+    const response = await axios.get('/api/admin/companies');
+    return response.data.companies;
+  });
+
   return (
     <div className="min-h-screen">
       <h2 className="font-semibold text-3xl ">Add Products</h2>
@@ -119,6 +140,7 @@ const CreateUser: NextPageWithLayout = () => {
             <div className="col-span-12 lg:col-span-6">
               <FormControl label="Category" errorMessage={errors?.categoryId?.message as string}>
                 <select
+                  disabled={isCategoryLoading}
                   placeholder="Type here"
                   {...register('categoryId', {
                     required: 'Category is required.',
@@ -128,12 +150,16 @@ const CreateUser: NextPageWithLayout = () => {
                   <option value="" defaultChecked>
                     Select Category
                   </option>
+                  {categories?.map((category) => {
+                    return <option key={category.id}>{category.name}</option>;
+                  })}
                 </select>
               </FormControl>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <FormControl label="Company" errorMessage={errors?.companyId?.message as string}>
                 <select
+                  disabled={isCompanyLoading}
                   placeholder="Type here"
                   {...register('companyId', {
                     required: 'Company is required.',
@@ -143,9 +169,9 @@ const CreateUser: NextPageWithLayout = () => {
                   <option value="" defaultChecked>
                     Select company
                   </option>
-                  <option value="Acer">Acer</option>
-                  <option value="Asus">Asus</option>
-                  <option value="Apple">Apple</option>
+                  {companies?.map((company) => {
+                    return <option key={company.id}>{company.name}</option>;
+                  })}
                 </select>
               </FormControl>
             </div>
