@@ -12,6 +12,7 @@ import axios from 'axios';
 
 const Home: NextPageWithLayout = () => {
   const { data: session } = useSession();
+  console.log(session);
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const handleProductClick = (id: string) => {
@@ -79,6 +80,10 @@ const Home: NextPageWithLayout = () => {
         </div>
       </>
     );
+  }
+
+  if (productData?.products?.length === 0) {
+    return <div className="md:mt-16 text-warning">No products available at this moment.</div>;
   }
 
   return (

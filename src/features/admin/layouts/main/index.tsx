@@ -1,14 +1,13 @@
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Sidebar from './sidebar';
-import { Roboto } from '@next/font/google';
+import { Inter, Roboto } from '@next/font/google';
 import Header from './header';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-const roboto = Roboto({ weight: ['300', '400', '500', '700', '900'], subsets: ['latin'] });
-
+const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { height, width: innerWidth } = useWindowDimensions();
@@ -27,7 +26,7 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
         <title>{title ? `${title} - EMS` : 'EMS'}</title>
       </Head>
 
-      <div className={`flex ${roboto.className}`}>
+      <div className={`flex ${inter.className}`}>
         <Sidebar {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Sidebar>
         <section className="flex-1">
           <div className="h-[70px]">

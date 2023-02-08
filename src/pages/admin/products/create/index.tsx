@@ -8,14 +8,15 @@ import classNames from 'classnames';
 import React, { ReactNode, useState } from 'react';
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaRupeeSign } from 'react-icons/fa';
-import { PRODUCT_CATEGORY } from '@prisma/client';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { BsBagPlus, BsPlus } from 'react-icons/bs';
+import CategoriesCard from '@/features/admin/categories/components/categories-card';
+import CompaniesCard from '@/features/admin/companies/components/companies-card';
 const productSchema = z.object({
-  category: z.enum([PRODUCT_CATEGORY.LAPTOP, PRODUCT_CATEGORY.MOBILE, PRODUCT_CATEGORY.TABLET]),
+  categoryId: z.string().min(1, { message: 'Product category is required.' }),
   title: z.string().min(1, { message: 'Product title is required.' }),
-  company: z.string().min(1, { message: 'Company is required.' }),
-  // image: z.string().optional(),
+  companyId: z.string().min(1, { message: 'Company is required.' }),
   images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
   price: z.string().min(1, { message: 'Price is required.' }),
   quantity: z.string().min(1, { message: 'Quantity is required.' }),
@@ -26,8 +27,8 @@ export type ProductSchema = z.infer<typeof productSchema>;
 
 const CreateUser: NextPageWithLayout = () => {
   const defaultValues: ProductSchema = {
-    category: PRODUCT_CATEGORY.LAPTOP,
-    company: '',
+    categoryId: '',
+    companyId: '',
     description: '',
     images: [],
     price: '',
@@ -85,8 +86,8 @@ const CreateUser: NextPageWithLayout = () => {
   return (
     <div className="min-h-screen">
       <h2 className="font-semibold text-3xl ">Add Products</h2>
-      <div className="grid gap-x-12 grid-cols-1 md:grid-cols-12 my-6">
-        <section className="col-span-6 flex flex-col gap-1">
+      <div className="grid gap-x-12 grid-cols-6 my-6">
+        <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
             <input
               type="text"
@@ -116,28 +117,28 @@ const CreateUser: NextPageWithLayout = () => {
           </FormControl>
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Category" errorMessage={errors?.category?.message as string}>
+              <FormControl label="Category" errorMessage={errors?.categoryId?.message as string}>
                 <select
                   placeholder="Type here"
-                  {...register('category', {
+                  {...register('categoryId', {
                     required: 'Category is required.',
                   })}
                   className={`select select-bordered w-full lg:max-w-[24rem] ${errors?.description ? 'input-error' : ''}`}
                 >
-                  <option value={PRODUCT_CATEGORY.LAPTOP} defaultChecked>
-                    Laptop
+                  <option value="" defaultChecked>
+                    Select Category
                   </option>
                 </select>
               </FormControl>
             </div>
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Company" errorMessage={errors?.company?.message as string}>
+              <FormControl label="Company" errorMessage={errors?.companyId?.message as string}>
                 <select
                   placeholder="Type here"
-                  {...register('company', {
+                  {...register('companyId', {
                     required: 'Company is required.',
                   })}
-                  className={`select select-bordered w-full lg:max-w-[22rem] ${errors?.description ? 'input-error' : ''}`}
+                  className={`select select-bordered w-full ${errors?.description ? 'input-error' : ''}`}
                 >
                   <option value="" defaultChecked>
                     Select company
@@ -163,7 +164,7 @@ const CreateUser: NextPageWithLayout = () => {
                     {...register('price', {
                       required: 'Price is required.',
                     })}
-                    className={`input input-bordered w-full lg:max-w-[18.5rem] ${errors?.price ? 'input-error' : ''}`}
+                    className={`input input-bordered w-full ${errors?.price ? 'input-error' : ''}`}
                   />
                 </label>
               </FormControl>
@@ -177,40 +178,45 @@ const CreateUser: NextPageWithLayout = () => {
                   {...register('quantity', {
                     required: 'Quantity is required.',
                   })}
-                  className={`input input-bordered w-full lg:max-w-[23rem] ${errors?.quantity ? 'input-error' : ''}`}
+                  className={`input input-bordered w-full ${errors?.quantity ? 'input-error' : ''}`}
                 />
               </FormControl>
             </div>
           </div>
         </section>
-        <section className="col-span-6">
-          <FormControl label="Upload Product Image">
-            <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
-          </FormControl>
+        <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
+          <div className="image-section col-span-6 lg:col-span-3">
+            <FormControl label="Upload Product Image">
+              <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
+            </FormControl>
 
-          <FormControl label="Product Slug" errorMessage={errors?.slug?.message as string}>
-            <label className="input-group">
+            <FormControl label="Product Slug" errorMessage={errors?.slug?.message as string}>
               <input
                 type="text"
                 placeholder="Type here"
                 {...register('slug')}
-                className={`input input-bordered w-full lg:max-w-[18.5rem] ${errors?.slug ? 'input-error' : ''}`}
+                className={`input input-bordered w-full  ${errors?.slug ? 'input-error' : ''}`}
               />
-            </label>
-          </FormControl>
+            </FormControl>
+          </div>
+          <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">
+            <CategoriesCard></CategoriesCard>
+            <div className="divider"></div>
+            <CompaniesCard></CompaniesCard>
+          </section>
         </section>
+      </div>
 
-        <div className="col-span-6">
-          <button
-            className={classNames('btn btn-primary btn-block', {
-              loading: isSubmitting,
-            })}
-            disabled={isSubmitting || isUploading}
-            onClick={handleSubmit(handleCreate)}
-          >
-            Submit
-          </button>
-        </div>
+      <div>
+        <button
+          className={classNames('btn btn-primary btn-block', {
+            loading: isSubmitting,
+          })}
+          disabled={isSubmitting || isUploading}
+          onClick={handleSubmit(handleCreate)}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
