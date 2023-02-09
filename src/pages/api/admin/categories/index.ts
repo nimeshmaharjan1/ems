@@ -9,11 +9,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   if (req.method === 'POST') {
     try {
-      const { name } = req.body;
+      const { name, products, companies } = req.body;
       const category = await prisma.category.create({
-        data: { name },
+        data: { name, companies, products },
       });
       res.status(200).json({ message: 'Category successfully created.', category });
+    } catch (e) {
+      res.status(500).json({ message: 'Something went wrong' });
+    }
+  } else if (req.method === 'PUT') {
+    try {
+      const { id, name, products, companies } = req.body;
+      const category = await prisma.category.update({
+        where: { id },
+        data: { name, companies, products },
+      });
+      res.status(200).json({ message: 'Category successfully updated.', category });
     } catch (e) {
       res.status(500).json({ message: 'Something went wrong' });
     }

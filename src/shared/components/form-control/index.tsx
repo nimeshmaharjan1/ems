@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-const FormControl: React.FC<{ children: ReactNode; label: string; errorMessage?: string } & React.HTMLAttributes<HTMLDivElement>> = ({
+const FormControl: React.FC<{ children: ReactNode; label?: string; errorMessage?: string } & React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   label,
   errorMessage,
@@ -8,7 +8,7 @@ const FormControl: React.FC<{ children: ReactNode; label: string; errorMessage?:
 }) => {
   return (
     <div className="form-control w-full gap-1" {...rest}>
-      <label className="label">{label}</label>
+      {label && <label className="label">{label}</label>}
       {children}
       <label className="label text-sm font-[400] opacity-80 text-error">{errorMessage}</label>
     </div>

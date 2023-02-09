@@ -1,11 +1,9 @@
-import { PRODUCT_CATEGORY } from '@prisma/client';
-
 export interface IProductCreate {
   image: string | ArrayBuffer | null;
   title: string;
   description: string;
   price: string;
-  category: PRODUCT_CATEGORY;
+  category: string;
   company: string;
   quantity: number | null;
 }
@@ -15,7 +13,7 @@ export interface IProductResponse {
   title: string;
   description: string;
   price: string;
-  category: PRODUCT_CATEGORY;
+  category: string;
   company: string;
   quantity: number | null;
   updatedAt: string;

@@ -2,11 +2,18 @@ import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { SETTING_TAB } from '@/features/admin/settings/types';
 import { NextPageWithLayout } from '@/pages/_app';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SettingCategory from './categories';
 
 const Settings: NextPageWithLayout = () => {
   const [selectedTab, setSelectedTab] = useState<SETTING_TAB>(SETTING_TAB.CATEGORY);
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) {
+    return null;
+  }
   return (
     <>
       <div className="tabs">
