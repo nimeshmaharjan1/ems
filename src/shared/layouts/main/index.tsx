@@ -50,7 +50,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                   Products
                 </button>
                 <button className="btn btn-sm btn-ghost !normal-case">Contact</button>
-                {isAdmin && <button className="btn btn-sm btn-ghost !normal-case">Dashboard</button>}
+                {isAdmin && (
+                  <button className="btn btn-sm btn-ghost !normal-case" onClick={() => router.push('/admin/dashboard')}>
+                    Dashboard
+                  </button>
+                )}
                 {status === 'unauthenticated' && (
                   <>
                     <button className="btn btn-sm btn-ghost !normal-case">Sign In</button>

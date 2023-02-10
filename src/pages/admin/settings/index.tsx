@@ -4,6 +4,7 @@ import { NextPageWithLayout } from '@/pages/_app';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import SettingCategory from './categories';
+import SettingCompany from './companies';
 
 const Settings: NextPageWithLayout = () => {
   const [selectedTab, setSelectedTab] = useState<SETTING_TAB>(SETTING_TAB.CATEGORY);
@@ -31,7 +32,8 @@ const Settings: NextPageWithLayout = () => {
           );
         })}
       </div>
-      <section className="mt-5">{selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}</section>
+      <section className="mt-3">{selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}</section>
+      <section className="mt-3">{selectedTab === SETTING_TAB.COMPANY && <SettingCompany></SettingCompany>}</section>
     </>
   );
 };

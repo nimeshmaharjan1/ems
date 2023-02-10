@@ -2,6 +2,7 @@ import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import { PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
@@ -23,10 +24,20 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 const Products: NextPageWithLayout<{ products: any }> = ({ products }) => {
-  console.log(products);
+  const router = useRouter();
   return (
     <div>
-      <h2 className="font-semibold text-2xl mb-6">Products</h2>
+      <div className="flex items-center justify-between  mb-6">
+        <h2 className="font-semibold text-2xl">Products</h2>
+        <button
+          className="btn btn-sm btn-secondary"
+          onClick={() => {
+            router.push('/admin/products/create');
+          }}
+        >
+          Create
+        </button>
+      </div>
       <div className="overflow-x-scroll">
         <table className="table table-auto w-full">
           <thead>

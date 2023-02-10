@@ -1,35 +1,44 @@
-import { useTheme } from 'next-themes';
 import React from 'react';
-import Select, { StylesConfig } from 'react-select';
+import ReactSelect, { Props as SelectProps } from 'react-select';
 
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' },
-];
+interface Props {
+  placeholder: string;
+}
 
-const MultiSelect = () => {
-  const { resolvedTheme } = useTheme();
-  const customStyles: StylesConfig = {
-    control: (base, state) => ({
-      ...base,
-      '&:hover': { borderColor: '#b2b2b2' },
-      borderColor: state.isFocused ? '#5a67d8' : '#b2b2b2',
-      '&:active': { borderColor: '#5a67d8' },
-    }),
-    option: (base, state) => ({
-      ...base,
-      '&:hover': { backgroundColor: '#5a67d8', color: '#fff' },
-      className: state.isSelected ? 'bg-red-500' : 'bg-white',
-    }),
-  };
+const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, ...rest }) => {
   return (
-    <Select
-      options={options}
-      styles={customStyles}
-      className="max-w-xs shadow-md  focus:!outline-none transition duration-300 ease-in-out"
-    />
+    <ReactSelect
+      {...rest}
+      classNames={{
+        control: () => {
+          return 'min-h-[48px] block border-neutral-focus max-w-xs border rounded-lg';
+        },
+
+        menuList: () => {
+          return 'max-w-xs border rounded-lg bg-base-200';
+        },
+        container: () => {
+          return 'bg-base-300 min-h-[48px] rounded-lg bg-transparent';
+        },
+        option: () => {
+          return 'hover:bg-primary hover:text-white px-2 py-1';
+        },
+        valueContainer: () => 'flex gap-2 p-2',
+
+        multiValue: () => 'bg-primary text-white rounded-lg px-2 text-sm',
+        singleValue: () => 'text-sm px-1',
+        indicatorsContainer: () => 'px-2',
+        placeholder: () => 'px-1 mb-1 opacity-80 text-sm',
+      }}
+      unstyled
+      placeholder={placeholder}
+      options={[
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' },
+      ]}
+    ></ReactSelect>
   );
 };
 
-export default MultiSelect;
+export default StyledReactSelect;

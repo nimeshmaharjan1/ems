@@ -1,6 +1,8 @@
+import { ICategoryResponse } from './../../../../shared/interfaces/category.interface';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
+import { string } from 'zod';
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const authenticated = await isAuthenticated(req, res);
@@ -30,16 +32,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'GET') {
     try {
+      const { page = 1, pageSize = 25 } = req.query;
+
+      const totalRecords = (await prisma.category.count()) as number;
+      const totalPages = Math.ceil(totalRecords / (pageSize as number));
+
       const categories = await prisma.category.findMany({
+        skip: (Number(page) - 1) * (pageSize as number),
         include: {
-          companies: true,
           products: true,
-          _count: true,
+          companies: true,
         },
+        take: pageSize as number,
       });
-      res.status(201).json({ categories });
+      const response = {
+        data: categories,
+        limit: pageSize as number,
+        page: Number(page),
+        totalPages,
+        totalRecords,
+      };
+
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+    }
+  } else if (req.method === 'DELETE') {
+    try {
+      const id = req.query.id as string;
+      await prisma.category.delete({ where: { id } });
+      res.status(201).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Something went wrong while trying to delete category.' });
     }
   } else {
     res.setHeader('Allow', ['POST']);

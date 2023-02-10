@@ -1,11 +1,11 @@
-import { addCategory, deleteCategory, getCategories, updateCategory } from '@/features/admin/services/categories.service';
+import { addCompany, deleteCompany, getCompanies, updateCompany } from '@/features/admin/services/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
-import StyledReactSelect from '@/shared/components/multi-select';
-import { ICategoryResponse } from '@/shared/interfaces/category.interface';
+import MultiSelect from '@/shared/components/multi-select';
+import { ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import { Category } from '@prisma/client';
+import { Company } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -14,7 +14,7 @@ import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ReactSelect from 'react-select';
 
-const SettingCategory = () => {
+const SettingCompany = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
     id: '',
@@ -27,37 +27,37 @@ const SettingCategory = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<Category>({ defaultValues, mode: 'onChange' });
+  } = useForm<Company>({ defaultValues, mode: 'onChange' });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedAction, setSelectedAction] = useState<SELECTED_ACTION>(SELECTED_ACTION.ADD);
 
   const {
-    data: categoryData,
-    isLoading: isCategoryLoading,
-    isError: isCategoryError,
-    isFetching: isCategoryFetching,
-  } = useQuery<ICategoryResponse, Error>('getCategories', getCategories);
+    data: companyData,
+    isLoading: isCompanyLoading,
+    isError: isCompanyError,
+    isFetching: isCompanyRefetching,
+  } = useQuery<ICompanyResponse, Error>('getCompanies', getCompanies);
 
-  const addCategoryMutation = useMutation(addCategory, {
+  const addCompanyMutation = useMutation(addCompany, {
     onSuccess: () => {
-      showToast(Toast.success, 'Category added successfully');
+      showToast(Toast.success, 'Company added successfully');
       reset();
-      queryClient.invalidateQueries(['getCategories']);
+      queryClient.invalidateQueries(['getCompanies']);
     },
     onError: () => {
-      showToast(Toast.error, 'Something went wrong while trying to add category');
+      showToast(Toast.error, 'Something went wrong while trying to add company');
     },
   });
 
-  const onSubmit: SubmitHandler<Category> = async (values) => {
+  const onSubmit: SubmitHandler<Company> = async (values) => {
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
-        await addCategoryMutation.mutateAsync(values);
+        await addCompanyMutation.mutateAsync(values);
         break;
       case SELECTED_ACTION.EDIT:
-        await updateCategory(values);
+        await updateCompany(values);
         reset();
         break;
       default:
@@ -68,23 +68,24 @@ const SettingCategory = () => {
   return (
     <div className="grid grid-cols-6 gap-6">
       <section className="overflow-x-auto col-span-6 lg:col-span-4 shadow">
-        {/* <table className="table w-full shadow">
+        <table className="table w-full shadow">
           <thead>
             <tr className="bg-base-100">
               <th>SN</th>
               <th>Name</th>
-              <th>Companies</th>
+              <th>Categories</th>
+              {/* <th>Products</th> */}
               <th>Created On</th>
               <th>Actions</th>
             </tr>
           </thead>
-          {isCategoryError ? (
+          {isCompanyError ? (
             <tr>
               <td className="text-error" colSpan={5}>
                 Something went wrong while trying to get the categories.
               </td>
             </tr>
-          ) : isCategoryLoading || isCategoryFetching ? (
+          ) : isCompanyLoading || isCompanyRefetching ? (
             Array.from({ length: 5 })
               .fill(0)
               .map((_, index) => {
@@ -100,21 +101,22 @@ const SettingCategory = () => {
               })
           ) : (
             <tbody>
-              {categoryData?.data?.map((category, categoryIndex) => {
+              {companyData?.data?.map((company, CompanyIndex) => {
                 return (
-                  <tr key={category.id}>
-                    <td>{categoryIndex + 1}</td>
-                    <td>{category.name}</td>
+                  <tr key={company.id}>
+                    <td>{CompanyIndex + 1}</td>
+                    <td>{company.name}</td>
 
-                    <td>{category.companies?.length ? category.name : '-'}</td>
-                    <td>{category.createdAt ? getDateWithWeekDay(category.createdAt) : '-'}</td>
+                    <td>{company.categories?.length ? company.name : '-'}</td>
+                    {/* <td>{company.products?.length ? company.name : '-'}</td> */}
+                    <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
                     <td className="flex gap-2">
                       <button
                         className="btn btn-sm btn-primary gap-1 items-center !font-medium"
                         onClick={() => {
                           setSelectedAction(SELECTED_ACTION.EDIT);
-                          setValue('id', category.id);
-                          setValue('name', category.name);
+                          setValue('id', company.id);
+                          setValue('name', company.name);
                         }}
                       >
                         <FiSettings></FiSettings>
@@ -127,7 +129,7 @@ const SettingCategory = () => {
                         onClick={async () => {
                           setIsSubmitting(true);
                           try {
-                            const data = await deleteCategory(category.id);
+                            const data = await deleteCompany(company.id);
                             showToast(Toast.success, data.message);
                           } catch (error) {
                             console.log(error);
@@ -144,13 +146,13 @@ const SettingCategory = () => {
               })}
             </tbody>
           )}
-        </table> */}
+        </table>
       </section>
       <section className="col-span-6 lg:col-span-2">
         <div className="card bg-base-100 shadow !rounded-none">
           <div className="card-body">
             <div className="card-title justify-between items-center">
-              {selectedAction === SELECTED_ACTION.ADD ? 'Add Category' : 'Edit Category'}
+              {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
               {selectedAction === SELECTED_ACTION.EDIT && (
                 <button
                   className="btn btn-sm"
@@ -163,15 +165,14 @@ const SettingCategory = () => {
                 </button>
               )}
             </div>
-            <StyledReactSelect isMulti placeholder="Select companies"></StyledReactSelect>
             <div className="mt-1">
               <FormControl errorMessage={errors?.name?.message}>
                 <input
                   type="text"
                   {...register('name', {
-                    required: 'Category name is required.',
+                    required: 'Company name is required.',
                   })}
-                  placeholder="Category name"
+                  placeholder="Company name"
                   className="input input-bordered max-w-xs"
                 />
               </FormControl>
@@ -184,10 +185,10 @@ const SettingCategory = () => {
             <div className="card-actions">
               <button
                 className={classNames('btn btn-primary btn-block btn-sm', {
-                  loading: addCategoryMutation.isLoading,
+                  loading: addCompanyMutation.isLoading,
                 })}
                 onClick={handleSubmit(onSubmit)}
-                disabled={addCategoryMutation.isLoading}
+                disabled={addCompanyMutation.isLoading}
               >
                 Submit
               </button>
@@ -199,4 +200,4 @@ const SettingCategory = () => {
   );
 };
 
-export default SettingCategory;
+export default SettingCompany;

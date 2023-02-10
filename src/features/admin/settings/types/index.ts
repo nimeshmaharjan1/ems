@@ -3,3 +3,8 @@ export enum SETTING_TAB {
   COMPANY = 'Company',
   ORDERS = 'Orders',
 }
+
+export enum SELECTED_ACTION {
+  ADD,
+  EDIT,
+}

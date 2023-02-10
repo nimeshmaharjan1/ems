@@ -1,30 +1,67 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
+import isAuthenticated from '@/features/admin/hof/is-authenticated';
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const authenticated = await isAuthenticated(req, res);
+  if (!authenticated) {
+    return;
+  }
   if (req.method === 'POST') {
     try {
-      const { name } = req.body;
-      const product = await prisma.company.create({
-        data: { name },
+      const { name, products, categories } = req.body;
+      const company = await prisma.company.create({
+        data: { name, categories, products },
       });
-      res.status(200).json({ message: 'Company successfully created.', product });
+      res.status(200).json({ message: 'Company successfully created.', company });
     } catch (e) {
-      console.log(e);
+      res.status(500).json({ message: 'Something went wrong' });
+    }
+  } else if (req.method === 'PUT') {
+    try {
+      const { id, name, products, categories } = req.body;
+      const company = await prisma.company.update({
+        where: { id },
+        data: { name, categories, products },
+      });
+      res.status(200).json({ message: 'Company successfully updated.', company });
+    } catch (e) {
       res.status(500).json({ message: 'Something went wrong' });
     }
   } else if (req.method === 'GET') {
     try {
-      const companies = await prisma.company.findMany({
+      const { page = 1, pageSize = 25 } = req.query;
+
+      const totalRecords = (await prisma.company.count()) as number;
+      const totalPages = Math.ceil(totalRecords / (pageSize as number));
+
+      const categories = await prisma.company.findMany({
+        skip: (Number(page) - 1) * (pageSize as number),
         include: {
           products: true,
           categories: true,
-          _count: true,
         },
+        take: pageSize as number,
       });
-      res.status(201).json({ companies });
+      const response = {
+        data: categories,
+        limit: pageSize as number,
+        page: Number(page),
+        totalPages,
+        totalRecords,
+      };
+
+      res.status(200).json(response);
     } catch (error) {
-      res.status(500).json({ message: 'Something went wrong while trying to fetch companies.' });
+      res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+    }
+  } else if (req.method === 'DELETE') {
+    try {
+      const id = req.query.id as string;
+      await prisma.company.delete({ where: { id } });
+      res.status(201).json({ message: 'Company deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Something went wrong while trying to delete company.' });
     }
   } else {
     res.setHeader('Allow', ['POST']);
