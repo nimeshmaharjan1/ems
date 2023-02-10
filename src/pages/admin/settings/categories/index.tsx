@@ -1,25 +1,29 @@
 import { addCategory, deleteCategory, getCategories, updateCategory } from '@/features/admin/services/categories.service';
+import { getCompanies } from '@/features/admin/services/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
-import StyledReactSelect from '@/shared/components/multi-select';
-import { ICategoryResponse } from '@/shared/interfaces/category.interface';
+import StyledReactSelect from '@/shared/components/styled-react-select';
+import { ICategory, ICategoryResponse } from '@/shared/interfaces/category.interface';
+import { ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Category } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import ReactSelect from 'react-select';
 
 const SettingCategory = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
     id: '',
     name: '',
+    companies: [],
+    products: [],
   };
+
   const {
     register,
     handleSubmit,
@@ -27,7 +31,8 @@ const SettingCategory = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<Category>({ defaultValues, mode: 'onChange' });
+    control,
+  } = useForm<ICategory>({ defaultValues, mode: 'onChange' });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,6 +57,8 @@ const SettingCategory = () => {
   });
 
   const onSubmit: SubmitHandler<Category> = async (values) => {
+    console.log(values);
+    return;
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
         await addCategoryMutation.mutateAsync(values);
@@ -65,10 +72,39 @@ const SettingCategory = () => {
     }
   };
 
+  const loadCompanies = async (searchValue: string, loadedData: any, { page }: any) => {
+    try {
+      const companyData = await getCompanies({ page, limit: 5 });
+      let filteredOptions: any;
+      if (!searchValue) {
+        filteredOptions = companyData.data;
+      } else {
+        filteredOptions = companyData.data.filter((option: any) => option.name.toLowerCase().includes(searchValue.toLowerCase()));
+      }
+      return {
+        options: filteredOptions.map((option: any) => {
+          return {
+            value: option.id,
+            label: option.name,
+          };
+        }),
+        hasMore: companyData.page < companyData.totalPages ? true : false,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return {
+        options: [],
+        hasMore: false,
+      };
+    }
+  };
+
   return (
     <div className="grid grid-cols-6 gap-6">
       <section className="overflow-x-auto col-span-6 lg:col-span-4 shadow">
-        {/* <table className="table w-full shadow">
+        <table className="table w-full shadow">
           <thead>
             <tr className="bg-base-100">
               <th>SN</th>
@@ -84,7 +120,7 @@ const SettingCategory = () => {
                 Something went wrong while trying to get the categories.
               </td>
             </tr>
-          ) : isCategoryLoading || isCategoryFetching ? (
+          ) : isCategoryLoading ? (
             Array.from({ length: 5 })
               .fill(0)
               .map((_, index) => {
@@ -98,6 +134,10 @@ const SettingCategory = () => {
                   </tr>
                 );
               })
+          ) : !categoryData?.data.length ? (
+            <tr>
+              <td colSpan={5}>No data available.</td>
+            </tr>
           ) : (
             <tbody>
               {categoryData?.data?.map((category, categoryIndex) => {
@@ -144,11 +184,11 @@ const SettingCategory = () => {
               })}
             </tbody>
           )}
-        </table> */}
+        </table>
       </section>
       <section className="col-span-6 lg:col-span-2">
         <div className="card bg-base-100 shadow !rounded-none">
-          <div className="card-body">
+          <div className="card-body !gap-4">
             <div className="card-title justify-between items-center">
               {selectedAction === SELECTED_ACTION.ADD ? 'Add Category' : 'Edit Category'}
               {selectedAction === SELECTED_ACTION.EDIT && (
@@ -163,7 +203,6 @@ const SettingCategory = () => {
                 </button>
               )}
             </div>
-            <StyledReactSelect isMulti placeholder="Select companies"></StyledReactSelect>
             <div className="mt-1">
               <FormControl errorMessage={errors?.name?.message}>
                 <input
@@ -176,11 +215,24 @@ const SettingCategory = () => {
                 />
               </FormControl>
             </div>
-            <FormControl>
-              <select className="select select-bordered max-w-xs">
-                <option value="">Select companies</option>
-              </select>
-            </FormControl>
+            <Controller
+              control={control}
+              name="companies"
+              render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
+                <StyledReactSelect
+                  onChange={(values: any) =>
+                    onChange(
+                      values.map((value: { label: string; value: string }) => ({
+                        id: value.value,
+                      }))
+                    )
+                  }
+                  loadOptions={loadCompanies}
+                  isMulti
+                  placeholder="Select companies"
+                ></StyledReactSelect>
+              )}
+            ></Controller>
             <div className="card-actions">
               <button
                 className={classNames('btn btn-primary btn-block btn-sm', {

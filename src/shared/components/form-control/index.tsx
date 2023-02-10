@@ -10,7 +10,7 @@ const FormControl: React.FC<{ children: ReactNode; label?: string; errorMessage?
     <div className="form-control w-full gap-1" {...rest}>
       {label && <label className="label">{label}</label>}
       {children}
-      <label className="label text-sm font-[400] opacity-80 text-error">{errorMessage}</label>
+      {errorMessage && <label className="label text-sm font-[400] opacity-80 text-error">{errorMessage}</label>}
     </div>
   );
 };

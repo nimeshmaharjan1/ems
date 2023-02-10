@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
+
 const prisma = new PrismaClient();
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const authenticated = await isAuthenticated(req, res);
   if (!authenticated) {
@@ -30,22 +32,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'GET') {
     try {
-      const { page = 1, pageSize = 25 } = req.query;
+      const { page = 1 } = req.query;
+      const limit = parseInt(req.query.limit as string);
 
       const totalRecords = (await prisma.company.count()) as number;
-      const totalPages = Math.ceil(totalRecords / (pageSize as number));
+      const totalPages = Math.ceil(totalRecords / (limit as number));
 
       const categories = await prisma.company.findMany({
-        skip: (Number(page) - 1) * (pageSize as number),
+        skip: (Number(page) - 1) * (limit as number),
         include: {
           products: true,
           categories: true,
         },
-        take: pageSize as number,
+        take: limit as number,
       });
       const response = {
         data: categories,
-        limit: pageSize as number,
+        limit: limit as number,
         page: Number(page),
         totalPages,
         totalRecords,
@@ -53,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json(response);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
     }
   } else if (req.method === 'DELETE') {

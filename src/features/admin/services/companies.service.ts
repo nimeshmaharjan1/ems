@@ -1,5 +1,5 @@
 import { Toast, showToast } from './../../../shared/utils/toast.util';
-import { Company } from '@prisma/client';
+import { Company, Category } from '@prisma/client';
 import axios from 'axios';
 import { useMutation } from 'react-query';
 
@@ -21,11 +21,12 @@ export const updateCompany = async (data: Company) => {
   }
 };
 
-export const getCompanies = async () => {
+export const getCompanies = async (params: { page: string; limit: number }) => {
   try {
-    const response = await axios.get('/api/admin/companies');
+    const response = await axios.get(`/api/admin/companies?page=${params.page}&limit=${params.limit}`);
     return response.data;
   } catch (error) {
+    console.log(error);
     showToast(Toast.error, 'Something went wrong while getting companies');
   }
 };

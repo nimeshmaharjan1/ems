@@ -88,7 +88,7 @@ model OrderItem {
 
 model Company {
   id         String     @id @default(cuid())
-  name       String
+  name       String     @unique
   products   Product[]
   categories Category[]
   createdAt  DateTime   @default(now())
@@ -97,7 +97,7 @@ model Company {
 
 model Category {
   id        String    @id @default(cuid())
-  name      String
+  name      String    @unique
   companies Company[]
   products  Product[]
   createdAt DateTime  @default(now())

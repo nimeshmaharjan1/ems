@@ -24,6 +24,7 @@ specifiers:
   bcrypt: ^5.1.0
   classnames: ^2.3.2
   daisyui: ^2.47.0
+  ems: 'link:'
   eslint: 8.32.0
   eslint-config-next: 13.1.4
   eslint-plugin-autofix: ^1.1.0
@@ -72,6 +73,7 @@ dependencies:
   bcrypt: 5.1.0
   classnames: 2.3.2
   daisyui: 2.47.0_gbtt6ss3tbiz4yjtvdr6fbrj44
+  ems: 'link:'
   eslint-config-next: 13.1.4_7uibuqfxkfaozanbtbziikiqje
   faunadb: 4.7.1
   luxon: 3.2.1

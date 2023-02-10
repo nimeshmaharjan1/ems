@@ -1,7 +1,7 @@
 import { addCompany, deleteCompany, getCompanies, updateCompany } from '@/features/admin/services/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
-import MultiSelect from '@/shared/components/multi-select';
+import MultiSelect from '@/shared/components/styled-react-select';
 import { ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
