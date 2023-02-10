@@ -148,20 +148,22 @@ Login.getLayout = (page: ReactNode) => <AuthLayout title="Sign In">{page}</AuthL
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
-  if (session?.user?.role === USER_ROLES.ADMIN)
+  if (session?.user?.role === USER_ROLES.ADMIN || session?.user?.role === USER_ROLES.SUPER_ADMIN) {
     return {
       redirect: {
         destination: '/admin/products',
         permanent: true,
       },
     };
-  if (session?.user?.role === USER_ROLES.USER)
+  }
+  if (session?.user?.role === USER_ROLES.USER) {
     return {
       redirect: {
         destination: '/products',
         permanent: true,
       },
     };
+  }
   return {
     props: {},
   };

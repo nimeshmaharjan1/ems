@@ -10,7 +10,7 @@ import { IRegister } from '@/features/auth/interfaces';
 import classNames from 'classnames';
 import ErrorMessage from '@/shared/components/error-message';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { USER_ROLES } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
@@ -39,12 +39,15 @@ const Register: NextPageWithLayout = () => {
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/auth/register', { ...values });
+      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.SUPER_ADMIN });
       showToast(Toast.success, 'User has been successfully created.');
       router.push('/api/auth/signin');
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       setIsSubmitting(false);
+      if (error?.response?.data?.message) {
+        return showToast(Toast.error, error.response.data.message);
+      }
       showToast(Toast.error, 'Something went wrong while trying to create the user.');
     }
   };

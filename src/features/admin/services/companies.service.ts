@@ -21,7 +21,7 @@ export const updateCompany = async (data: Company) => {
   }
 };
 
-export const getCompanies = async (params: { page: string; limit: number }) => {
+export const getCompanies = async (params: { page: number; limit: number }) => {
   try {
     const response = await axios.get(`/api/admin/companies?page=${params.page}&limit=${params.limit}`);
     return response.data;

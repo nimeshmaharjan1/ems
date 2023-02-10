@@ -5,9 +5,10 @@ import { AsyncPaginate, LoadOptions } from 'react-select-async-paginate';
 interface Props {
   placeholder: string;
   loadOptions: LoadOptions<any, any, any>;
+  passedRef: any;
 }
 
-const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOptions, ...rest }) => {
+const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOptions, passedRef, ...rest }) => {
   return (
     <AsyncPaginate
       {...rest}
@@ -41,6 +42,7 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
         indicatorsContainer: () => 'px-2',
         placeholder: () => 'px-1 mb-1 opacity-80 ',
       }}
+      selectRef={passedRef}
       unstyled
       placeholder={placeholder}
     ></AsyncPaginate>

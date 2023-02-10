@@ -1,32 +1,33 @@
 import { Toast, showToast } from './../../../shared/utils/toast.util';
-import { Category } from '@prisma/client';
+import { Company, Category } from '@prisma/client';
 import axios from 'axios';
 import { useMutation } from 'react-query';
 
-export const addCategory = async (data: Category) => {
+export const addCategory = async (data: Company) => {
   try {
     const response = await axios.post('/api/admin/categories', data);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while adding the category');
+    showToast(Toast.error, 'Something went wrong while adding the company');
   }
 };
 
-export const updateCategory = async (data: Category) => {
+export const updateCategory = async (data: Company) => {
   try {
     const response = await axios.put(`/api/admin/categories?id=${data.id}`, data);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while updating category');
+    showToast(Toast.error, 'Something went wrong while updating company');
   }
 };
 
-export const getCategories = async () => {
+export const getCategories = async (params: { page: number; limit: number }) => {
   try {
-    const response = await axios.get('/api/admin/categories');
+    const response = await axios.get(`/api/admin/categories?page=${params.page}&limit=${params.limit}`);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while getting categories');
+    console.log(error);
+    showToast(Toast.error, 'Something went wrong while getting companies');
   }
 };
 
@@ -35,6 +36,6 @@ export const deleteCategory = async (id: string) => {
     const response = await axios.delete(`/api/admin/categories?id=${id}`);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while deleting category');
+    showToast(Toast.error, 'Something went wrong while deleting company');
   }
 };

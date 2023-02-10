@@ -1,3 +1,4 @@
+import { ReactSelectReturn } from './../../../../shared/interfaces/common.interface';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
@@ -12,8 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { name, products, categories } = req.body;
+      const categoryIds = categories.map((category: ReactSelectReturn) => ({ id: category.value })) ?? [];
       const company = await prisma.company.create({
-        data: { name, categories, products },
+        data: { name, categories: { connect: categoryIds }, products },
       });
       res.status(200).json({ message: 'Company successfully created.', company });
     } catch (e) {
@@ -33,13 +35,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'GET') {
     try {
       const { page = 1 } = req.query;
-      const limit = parseInt(req.query.limit as string);
+      const limit = parseInt(req.query.limit as string) || 5;
 
       const totalRecords = (await prisma.company.count()) as number;
       const totalPages = Math.ceil(totalRecords / (limit as number));
 
       const categories = await prisma.company.findMany({
-        skip: (Number(page) - 1) * (limit as number),
+        skip: (Number(page) - 1) * (limit as number) || 0,
         include: {
           products: true,
           categories: true,

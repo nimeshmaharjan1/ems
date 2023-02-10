@@ -4,7 +4,7 @@ import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICategory, ICategoryResponse } from '@/shared/interfaces/category.interface';
-import { ICompanyResponse } from '@/shared/interfaces/company.interface';
+
 import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Category } from '@prisma/client';
@@ -18,10 +18,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 const SettingCategory = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
-    id: '',
     name: '',
-    companies: [],
-    products: [],
   };
 
   const {
@@ -43,7 +40,7 @@ const SettingCategory = () => {
     isLoading: isCategoryLoading,
     isError: isCategoryError,
     isFetching: isCategoryFetching,
-  } = useQuery<ICategoryResponse, Error>('getCategories', getCategories);
+  } = useQuery<ICategoryResponse, Error>('getCategories', async () => await getCategories({ page: 1, limit: 10 }));
 
   const addCategoryMutation = useMutation(addCategory, {
     onSuccess: () => {
@@ -57,8 +54,6 @@ const SettingCategory = () => {
   });
 
   const onSubmit: SubmitHandler<Category> = async (values) => {
-    console.log(values);
-    return;
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
         await addCategoryMutation.mutateAsync(values);
@@ -146,7 +141,15 @@ const SettingCategory = () => {
                     <td>{categoryIndex + 1}</td>
                     <td>{category.name}</td>
 
-                    <td>{category.companies?.length ? category.name : '-'}</td>
+                    <td className="flex gap-2 flex-wrap">
+                      {category.companies?.length
+                        ? category.companies.map((company) => (
+                            <span className="badge badge-primary" key={company.id}>
+                              {company.name}
+                            </span>
+                          ))
+                        : '-'}
+                    </td>
                     <td>{category.createdAt ? getDateWithWeekDay(category.createdAt) : '-'}</td>
                     <td className="flex gap-2">
                       <button
@@ -220,13 +223,9 @@ const SettingCategory = () => {
               name="companies"
               render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
                 <StyledReactSelect
-                  onChange={(values: any) =>
-                    onChange(
-                      values.map((value: { label: string; value: string }) => ({
-                        id: value.value,
-                      }))
-                    )
-                  }
+                  onChange={onChange}
+                  passedRef={ref}
+                  name={name}
                   loadOptions={loadCompanies}
                   isMulti
                   placeholder="Select companies"
