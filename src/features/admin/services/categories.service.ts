@@ -14,7 +14,7 @@ export const addCategory = async (data: Company) => {
 
 export const updateCategory = async (data: Company) => {
   try {
-    const response = await axios.put(`/api/admin/categories?id=${data.id}`, data);
+    const response = await axios.put(`/api/admin/categories/${data.id}`, data);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while updating company');
@@ -26,16 +26,25 @@ export const getCategories = async (params: { page: number; limit: number }) => 
     const response = await axios.get(`/api/admin/categories?page=${params.page}&limit=${params.limit}`);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     showToast(Toast.error, 'Something went wrong while getting companies');
   }
 };
 
 export const deleteCategory = async (id: string) => {
   try {
-    const response = await axios.delete(`/api/admin/categories?id=${id}`);
+    const response = await axios.delete(`/api/admin/categories/${id}`);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while deleting company');
+  }
+};
+
+export const getCategory = async (id: string) => {
+  try {
+    const response = await axios.get(`/api/admin/categories/${id}`);
+    return response.data;
+  } catch (error) {
+    showToast(Toast.error, 'Something went wrong while getting company');
   }
 };

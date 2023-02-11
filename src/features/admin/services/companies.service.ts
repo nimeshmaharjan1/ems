@@ -26,8 +26,17 @@ export const getCompanies = async (params: { page: number; limit: number }) => {
     const response = await axios.get(`/api/admin/companies?page=${params.page}&limit=${params.limit}`);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     showToast(Toast.error, 'Something went wrong while getting companies');
+  }
+};
+
+export const getCompany = async (id: string) => {
+  try {
+    const response = await axios.get(`/api/admin/companies/${id}`);
+    return response.data;
+  } catch (error) {
+    showToast(Toast.error, 'Something went wrong while getting the company.');
   }
 };
 

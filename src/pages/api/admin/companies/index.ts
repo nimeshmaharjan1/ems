@@ -19,20 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       res.status(200).json({ message: 'Company successfully created.', company });
     } catch (e) {
-      console.log(e);
+      console.error(e);
 
       res.status(500).json({ error: e, message: 'Something went wrong' });
-    }
-  } else if (req.method === 'PUT') {
-    try {
-      const { id, name, products, categories } = req.body;
-      const company = await prisma.company.update({
-        where: { id },
-        data: { name, categories, products },
-      });
-      res.status(200).json({ message: 'Company successfully updated.', company });
-    } catch (e) {
-      res.status(500).json({ message: 'Something went wrong' });
     }
   } else if (req.method === 'GET') {
     try {
@@ -60,19 +49,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json(response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: 'Something went wrong while trying to fetch companies.' });
     }
-  } else if (req.method === 'DELETE') {
-    try {
-      const id = req.query.id as string;
-      await prisma.company.delete({ where: { id } });
-      res.status(201).json({ message: 'Company deleted successfully' });
-    } catch (error) {
-      res.status(500).json({ message: 'Something went wrong while trying to delete company.' });
-    }
   } else {
-    res.setHeader('Allow', ['POST']);
     res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });
   }
 }

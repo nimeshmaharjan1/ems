@@ -13,24 +13,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { name, products, companies } = req.body;
-      const companyIds = companies.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];
+      const companyIds = companies?.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];
       const category = await prisma.category.create({
         data: { name, companies: { connect: companyIds }, products },
       });
       res.status(200).json({ message: 'Category successfully created.', category });
     } catch (e) {
+      console.error(e);
       res.status(500).json({ error: e, message: 'Something went wrong' });
-    }
-  } else if (req.method === 'PUT') {
-    try {
-      const { id, name, products, companies } = req.body;
-      const category = await prisma.category.update({
-        where: { id },
-        data: { name, companies, products },
-      });
-      res.status(200).json({ message: 'Category successfully updated.', category });
-    } catch (e) {
-      res.status(500).json({ message: 'Something went wrong' });
     }
   } else if (req.method === 'GET') {
     try {
@@ -58,19 +48,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json(response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
     }
-  } else if (req.method === 'DELETE') {
-    try {
-      const id = req.query.id as string;
-      await prisma.category.delete({ where: { id } });
-      res.status(201).json({ message: 'Category deleted successfully' });
-    } catch (error) {
-      res.status(500).json({ message: 'Something went wrong while trying to delete category.' });
-    }
   } else {
-    res.setHeader('Allow', ['POST']);
     res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });
   }
 }

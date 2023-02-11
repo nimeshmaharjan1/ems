@@ -1,5 +1,5 @@
 import { getCategories } from '@/features/admin/services/categories.service';
-import { addCompany, deleteCompany, getCompanies, updateCompany } from '@/features/admin/services/companies.service';
+import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
@@ -8,7 +8,7 @@ import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
@@ -47,27 +47,78 @@ const SettingCategory = () => {
   const addCompanyMutation = useMutation(addCompany, {
     onSuccess: () => {
       showToast(Toast.success, 'Company added successfully');
-      reset();
       queryClient.invalidateQueries(['getCompanies']);
     },
     onError: () => {
       showToast(Toast.error, 'Something went wrong while trying to add company');
+    },
+    onSettled: () => {
+      reset();
+      setIsSubmitting(false);
+    },
+  });
+
+  const deleteCompanyMutation = useMutation(deleteCompany, {
+    onSuccess: () => {
+      showToast(Toast.success, 'Company deleted successfully');
+      queryClient.invalidateQueries(['getCompanies']);
+    },
+    onError: () => {
+      showToast(Toast.error, 'Something went wrong while trying to delete company');
+    },
+    onSettled: () => setIsSubmitting(false),
+  });
+
+  const updateCompanyMutation = useMutation(updateCompany, {
+    onSuccess: () => {
+      showToast(Toast.success, 'Company updated successfully');
+      queryClient.invalidateQueries(['getCompanies']);
+    },
+    onError: () => {
+      showToast(Toast.error, 'Something went wrong while trying to update company');
+    },
+    onSettled: () => {
+      setIsSubmitting(false);
+      reset();
+      setSelectedCompanyId('');
     },
   });
 
   const onSubmit: SubmitHandler<Company> = async (values) => {
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
-        await addCompanyMutation.mutateAsync(values);
+        addCompanyMutation.mutate(values);
         break;
       case SELECTED_ACTION.EDIT:
-        await updateCompany(values);
-        reset();
+        updateCompanyMutation.mutate(values);
         break;
       default:
         break;
     }
   };
+
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('');
+  const {
+    data: selectedCompany,
+    isLoading: isSelectedCompanyLoading,
+    isError: isSelectedCompanyError,
+    isFetching: isSelectedCompanyFetching,
+  } = useQuery<{ company: ICompany }, Error>(['getCompany', selectedCompanyId], async () => await getCompany(selectedCompanyId), {
+    enabled: !!selectedCompanyId,
+  });
+
+  useEffect(() => {
+    if (isSelectedCompanyError) {
+      reset();
+      setSelectedAction(SELECTED_ACTION.ADD);
+    }
+  }, [isSelectedCompanyError]);
+
+  useEffect(() => {
+    if (selectedCompany?.company.categories) {
+      setValue('categories', selectedCompany.company.categories);
+    }
+  }, [selectedCompany?.company.categories]);
 
   const loadCategories = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
@@ -112,29 +163,35 @@ const SettingCategory = () => {
             </tr>
           </thead>
           {isCompanyError ? (
-            <tr>
-              <td className="text-error" colSpan={5}>
-                Something went wrong while trying to get the categories.
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className="text-error" colSpan={5}>
+                  Something went wrong while trying to get the categories.
+                </td>
+              </tr>
+            </tbody>
           ) : isCompanyLoading ? (
             Array.from({ length: 5 })
               .fill(0)
               .map((_, index) => {
                 return (
-                  <tr key={index}>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                  </tr>
+                  <tbody key={index}>
+                    <tr>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                    </tr>
+                  </tbody>
                 );
               })
           ) : !companyData?.data.length ? (
-            <tr>
-              <td colSpan={5}>No data available.</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td colSpan={5}>No data available.</td>
+              </tr>
+            </tbody>
           ) : (
             <tbody>
               {companyData?.data?.map((company, categoryIndex) => {
@@ -146,7 +203,7 @@ const SettingCategory = () => {
                     <td className="flex gap-2 flex-wrap">
                       {company.categories?.length
                         ? company.categories.map((category) => (
-                            <span className="badge badge-primary" key={category.id}>
+                            <span className="badge badge-secondary" key={category.id}>
                               {category.name}
                             </span>
                           ))
@@ -160,6 +217,7 @@ const SettingCategory = () => {
                           setSelectedAction(SELECTED_ACTION.EDIT);
                           setValue('id', company.id);
                           setValue('name', company.name);
+                          setSelectedCompanyId(company.id);
                         }}
                       >
                         <FiSettings></FiSettings>
@@ -171,14 +229,7 @@ const SettingCategory = () => {
                         disabled={isSubmitting}
                         onClick={async () => {
                           setIsSubmitting(true);
-                          try {
-                            const data = await deleteCompany(company.id);
-                            showToast(Toast.success, data.message);
-                          } catch (error) {
-                            showToast(Toast.error, 'Something went wrong while trying to delete company');
-                          } finally {
-                            setIsSubmitting(false);
-                          }
+                          deleteCompanyMutation.mutate(company.id);
                         }}
                       >
                         <BsTrash></BsTrash>
@@ -192,60 +243,70 @@ const SettingCategory = () => {
         </table>
       </section>
       <section className="col-span-6 lg:col-span-2">
-        <div className="card bg-base-100 shadow !rounded-none">
-          <div className="card-body !gap-4">
-            <div className="card-title justify-between items-center">
-              {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
-              {selectedAction === SELECTED_ACTION.EDIT && (
-                <button
-                  className="btn btn-sm"
-                  onClick={() => {
-                    setSelectedAction(SELECTED_ACTION.ADD);
-                    reset();
-                  }}
-                >
-                  Add
-                </button>
-              )}
-            </div>
-            <div className="mt-1">
-              <FormControl errorMessage={errors?.name?.message as string}>
-                <input
-                  type="text"
-                  {...register('name', {
-                    required: 'Company name is required.',
-                  })}
-                  placeholder="Company name"
-                  className="input input-bordered max-w-xs"
-                />
-              </FormControl>
-            </div>
-            <Controller
-              control={control}
-              name="categories"
-              render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
-                <StyledReactSelect
-                  onChange={onChange}
-                  name={name}
-                  loadOptions={loadCategories}
-                  isMulti
-                  placeholder="Select categories"
-                ></StyledReactSelect>
-              )}
-            ></Controller>
-            <div className="card-actions ">
-              <button
-                className={classNames('btn btn-primary btn-block btn-sm', {
-                  loading: addCompanyMutation.isLoading,
-                })}
-                onClick={handleSubmit(onSubmit)}
-                disabled={addCompanyMutation.isLoading}
-              >
-                Submit
-              </button>
+        {isSelectedCompanyLoading ? (
+          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+            <div className="card-body">
+              <button className="btn btn-ghost loading"></button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+            <div className="card-body !gap-4">
+              <div className="card-title justify-between items-center">
+                {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
+                {selectedAction === SELECTED_ACTION.EDIT && (
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => {
+                      setSelectedAction(SELECTED_ACTION.ADD);
+                      reset();
+                    }}
+                  >
+                    Add
+                  </button>
+                )}
+              </div>
+              <div className="mt-1">
+                <FormControl errorMessage={errors?.name?.message as string}>
+                  <input
+                    type="text"
+                    {...register('name', {
+                      required: 'Company name is required.',
+                    })}
+                    placeholder="Company name"
+                    className="input input-bordered max-w-xs"
+                  />
+                </FormControl>
+              </div>
+              <Controller
+                control={control}
+                name="categories"
+                defaultValue={[]}
+                render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
+                  <StyledReactSelect
+                    onChange={onChange}
+                    name={name}
+                    value={value}
+                    loadOptions={loadCategories}
+                    isMulti
+                    placeholder="Select categories"
+                  ></StyledReactSelect>
+                )}
+              ></Controller>
+              <div className="card-actions ">
+                <button
+                  className={classNames('btn btn-primary btn-block btn-sm', {
+                    loading: addCompanyMutation.isLoading || updateCompanyMutation.isLoading,
+                  })}
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

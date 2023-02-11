@@ -57,7 +57,14 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 )}
                 {status === 'unauthenticated' && (
                   <>
-                    <button className="btn btn-sm btn-ghost !normal-case">Sign In</button>
+                    <button
+                      className="btn btn-sm btn-ghost !normal-case"
+                      onClick={() => {
+                        router.push('/api/auth/signin');
+                      }}
+                    >
+                      Sign In
+                    </button>
                     <button className="btn btn-sm btn-primary !normal-case">Sign Up</button>
                   </>
                 )}

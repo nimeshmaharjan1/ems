@@ -31,7 +31,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
 };
 
 const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
-  console.log(product);
   return <div>Product</div>;
 };
 

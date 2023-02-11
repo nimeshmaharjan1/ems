@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const products = await prisma.product.findMany();
       res.status(200).json({ products });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       res.status(500).json({ message: 'Something went wrong while trying to fetch the products.' });
     }
   } else {

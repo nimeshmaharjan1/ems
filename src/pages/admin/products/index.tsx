@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   try {
     products = await prisma.product.findMany();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return {
     props: {

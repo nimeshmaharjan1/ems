@@ -43,7 +43,7 @@ const Register: NextPageWithLayout = () => {
       showToast(Toast.success, 'User has been successfully created.');
       router.push('/api/auth/signin');
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       setIsSubmitting(false);
       if (error?.response?.data?.message) {
         return showToast(Toast.error, error.response.data.message);

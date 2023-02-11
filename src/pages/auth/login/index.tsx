@@ -24,7 +24,6 @@ const Login: NextPageWithLayout = () => {
   const { data: session } = useSession();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  console.log({ session });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin: SubmitHandler<ILoginWithPassword> = async (values) => {

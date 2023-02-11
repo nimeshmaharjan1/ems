@@ -12,7 +12,6 @@ import axios from 'axios';
 
 const Home: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  console.log(session);
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const handleProductClick = (id: string) => {
@@ -137,7 +136,7 @@ Home.getLayout = (page: ReactNode) => {
 //       },
 //     };
 //   } catch (error) {
-//     console.log(error);
+//     console.error(error);
 //   }
 //   return {
 //     props: {
