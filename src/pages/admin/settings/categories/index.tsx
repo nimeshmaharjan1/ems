@@ -57,6 +57,7 @@ const SettingCategory = () => {
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
         await addCategoryMutation.mutateAsync(values);
+        setValue('companies', []);
         break;
       case SELECTED_ACTION.EDIT:
         await updateCategory(values);
@@ -98,8 +99,8 @@ const SettingCategory = () => {
 
   return (
     <div className="grid grid-cols-6 gap-6">
-      <section className="overflow-x-auto col-span-6 lg:col-span-4 shadow">
-        <table className="table w-full shadow">
+      <section className="overflow-x-auto col-span-6 lg:col-span-4">
+        <table className="table w-full">
           <thead>
             <tr className="bg-base-100">
               <th>SN</th>
@@ -110,29 +111,35 @@ const SettingCategory = () => {
             </tr>
           </thead>
           {isCategoryError ? (
-            <tr>
-              <td className="text-error" colSpan={5}>
-                Something went wrong while trying to get the categories.
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className="text-error" colSpan={5}>
+                  Something went wrong while trying to get the categories.
+                </td>
+              </tr>
+            </tbody>
           ) : isCategoryLoading ? (
             Array.from({ length: 5 })
               .fill(0)
               .map((_, index) => {
                 return (
-                  <tr key={index}>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                    <td className="animate-pulse bg-base-100"></td>
-                  </tr>
+                  <tbody key={index}>
+                    <tr>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                    </tr>
+                  </tbody>
                 );
               })
           ) : !categoryData?.data.length ? (
-            <tr>
-              <td colSpan={5}>No data available.</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td colSpan={5}>No data available.</td>
+              </tr>
+            </tbody>
           ) : (
             <tbody>
               {categoryData?.data?.map((category, categoryIndex) => {
@@ -141,46 +148,50 @@ const SettingCategory = () => {
                     <td>{categoryIndex + 1}</td>
                     <td>{category.name}</td>
 
-                    <td className="flex gap-2 flex-wrap">
-                      {category.companies?.length
-                        ? category.companies.map((company) => (
-                            <span className="badge badge-primary" key={company.id}>
-                              {company.name}
-                            </span>
-                          ))
-                        : '-'}
+                    <td>
+                      <div className="flex gap-2 flex-wrap ">
+                        {category.companies?.length
+                          ? category.companies.map((company) => (
+                              <span className="badge badge-secondary" key={company.id}>
+                                {company.name}
+                              </span>
+                            ))
+                          : '-'}
+                      </div>
                     </td>
                     <td>{category.createdAt ? getDateWithWeekDay(category.createdAt) : '-'}</td>
-                    <td className="flex gap-2">
-                      <button
-                        className="btn btn-sm btn-primary gap-1 items-center !font-medium"
-                        onClick={() => {
-                          setSelectedAction(SELECTED_ACTION.EDIT);
-                          setValue('id', category.id);
-                          setValue('name', category.name);
-                        }}
-                      >
-                        <FiSettings></FiSettings>
-                      </button>
-                      <button
-                        className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
-                          loading: isSubmitting,
-                        })}
-                        disabled={isSubmitting}
-                        onClick={async () => {
-                          setIsSubmitting(true);
-                          try {
-                            const data = await deleteCategory(category.id);
-                            showToast(Toast.success, data.message);
-                          } catch (error) {
-                            console.log(error);
-                          } finally {
-                            setIsSubmitting(false);
-                          }
-                        }}
-                      >
-                        <BsTrash></BsTrash>
-                      </button>
+                    <td className="h-full">
+                      <div className="btn-group">
+                        <button
+                          className="btn btn-sm btn-primary gap-1 items-center !font-medium"
+                          onClick={() => {
+                            setSelectedAction(SELECTED_ACTION.EDIT);
+                            setValue('id', category.id);
+                            setValue('name', category.name);
+                          }}
+                        >
+                          <FiSettings></FiSettings>
+                        </button>
+                        <button
+                          className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
+                            loading: isSubmitting,
+                          })}
+                          disabled={isSubmitting}
+                          onClick={async () => {
+                            setIsSubmitting(true);
+                            try {
+                              const data = await deleteCategory(category.id);
+                              showToast(Toast.success, data.message);
+                            } catch (error) {
+                              console.log(error);
+                            } finally {
+                              setIsSubmitting(false);
+                            }
+                          }}
+                        >
+                          <BsTrash></BsTrash>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -190,7 +201,7 @@ const SettingCategory = () => {
         </table>
       </section>
       <section className="col-span-6 lg:col-span-2">
-        <div className="card bg-base-100 shadow !rounded-none">
+        <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
           <div className="card-body !gap-4">
             <div className="card-title justify-between items-center">
               {selectedAction === SELECTED_ACTION.ADD ? 'Add Category' : 'Edit Category'}
@@ -214,7 +225,7 @@ const SettingCategory = () => {
                     required: 'Category name is required.',
                   })}
                   placeholder="Category name"
-                  className="input input-bordered max-w-xs"
+                  className="input input-bordered "
                 />
               </FormControl>
             </div>
@@ -224,8 +235,8 @@ const SettingCategory = () => {
               render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
                 <StyledReactSelect
                   onChange={onChange}
-                  passedRef={ref}
                   name={name}
+                  value={value}
                   loadOptions={loadCompanies}
                   isMulti
                   placeholder="Select companies"

@@ -5,7 +5,6 @@ import { Inter, Roboto } from '@next/font/google';
 import Header from './header';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
@@ -32,8 +31,8 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
           <div className="h-[70px]">
             <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
           </div>
-          <div className="text-sm breadcrumbs my-2 mt-3 mx-7">
-            <ul>
+          <div className="text-sm breadcrumbs my-2 mt-1 mx-7">
+            {/* <ul>
               {paths.map((path, index) => {
                 return (
                   <li key={path}>
@@ -43,9 +42,9 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
                   </li>
                 );
               })}
-            </ul>
+            </ul> */}
           </div>
-          <main className="m-4 mx-8 mb-6 !mt-3 p-8 py-6 min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
+          <main className="m-4 mx-8 mb-8 !mt-3 p-8 py-6 min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
         </section>
       </div>
     </>

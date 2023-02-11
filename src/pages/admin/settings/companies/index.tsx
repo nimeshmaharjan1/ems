@@ -100,8 +100,8 @@ const SettingCategory = () => {
 
   return (
     <div className="grid grid-cols-6 gap-6">
-      <section className="overflow-x-auto col-span-6 lg:col-span-4 shadow">
-        <table className="table w-full shadow">
+      <section className="overflow-x-auto col-span-6 lg:col-span-4 ">
+        <table className="table w-full">
           <thead>
             <tr className="bg-base-100">
               <th>SN</th>
@@ -225,14 +225,7 @@ const SettingCategory = () => {
               name="categories"
               render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
                 <StyledReactSelect
-                  onChange={(values: any) =>
-                    onChange(
-                      values.map((value: { label: string; value: string }) => ({
-                        id: value.value,
-                      }))
-                    )
-                  }
-                  passedRef={ref}
+                  onChange={onChange}
                   name={name}
                   loadOptions={loadCategories}
                   isMulti
@@ -240,7 +233,7 @@ const SettingCategory = () => {
                 ></StyledReactSelect>
               )}
             ></Controller>
-            <div className="card-actions">
+            <div className="card-actions ">
               <button
                 className={classNames('btn btn-primary btn-block btn-sm', {
                   loading: addCompanyMutation.isLoading,

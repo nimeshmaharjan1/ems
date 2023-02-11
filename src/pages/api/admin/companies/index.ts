@@ -13,13 +13,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { name, products, categories } = req.body;
-      const categoryIds = categories.map((category: ReactSelectReturn) => ({ id: category.value })) ?? [];
+      const categoryIds = categories?.map((category: ReactSelectReturn) => ({ id: category.value })) ?? [];
       const company = await prisma.company.create({
         data: { name, categories: { connect: categoryIds }, products },
       });
       res.status(200).json({ message: 'Company successfully created.', company });
     } catch (e) {
-      res.status(500).json({ message: 'Something went wrong' });
+      console.log(e);
+
+      res.status(500).json({ error: e, message: 'Something went wrong' });
     }
   } else if (req.method === 'PUT') {
     try {
@@ -40,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const totalRecords = (await prisma.company.count()) as number;
       const totalPages = Math.ceil(totalRecords / (limit as number));
 
-      const categories = await prisma.company.findMany({
+      const companies = await prisma.company.findMany({
         skip: (Number(page) - 1) * (limit as number) || 0,
         include: {
           products: true,
@@ -49,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         take: limit as number,
       });
       const response = {
-        data: categories,
+        data: companies,
         limit: limit as number,
         page: Number(page),
         totalPages,
@@ -59,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(response);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+      res.status(500).json({ message: 'Something went wrong while trying to fetch companies.' });
     }
   } else if (req.method === 'DELETE') {
     try {
