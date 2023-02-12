@@ -16,6 +16,7 @@ import { getCompanies } from '@/features/admin/services/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories.service';
 import { GetServerSideProps } from 'next';
+import { IProductResponse } from '@/shared/interfaces/product.interface';
 
 const prisma = new PrismaClient();
 
@@ -63,18 +64,9 @@ const productSchema = z.object({
 });
 export type ProductSchema = z.infer<typeof productSchema>;
 
-const EditProduct: NextPageWithLayout<{ product: Product }> = ({ product }) => {
+const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   console.log(product);
-  const defaultValues: ProductSchema = {
-    category: { label: 'Select category', value: '' },
-    company: { label: 'Select company', value: '' },
-    description: '',
-    images: [],
-    price: '',
-    title: '',
-    quantity: '',
-    slug: '',
-  };
+  const defaultValues: ProductSchema = product;
   const {
     register,
     watch,
