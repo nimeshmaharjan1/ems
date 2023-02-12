@@ -11,6 +11,7 @@ import { USER_ROLES } from '@prisma/client';
 import ThemeToggler from '@/shared/components/theme-toggler';
 import Image from 'next/image';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import Link from 'next/link';
 
 const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 
@@ -120,21 +121,21 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
           <ul className="menu p-4 w-64 bg-base-100">
             <li>
-              <a className="text-sm">
+              <Link href="/admin/dashboard" className="text-sm">
                 <FaBox></FaBox>
                 Products
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="text-sm">
+              <Link href="/admin/dashboard" className="text-sm">
                 <FaLocationArrow />
                 Contact
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="text-sm">
-                <FaUser /> Account
-              </a>
+              <Link href="/admin/dashboard" className="text-sm">
+                <FaUser /> Dashboard
+              </Link>
             </li>
           </ul>
         </div>

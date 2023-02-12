@@ -9,6 +9,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: 'Something went wrong while trying to fetch the products.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.setHeader('Allow', ['POST']);

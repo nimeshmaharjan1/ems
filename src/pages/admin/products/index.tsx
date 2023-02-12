@@ -1,7 +1,9 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
-import { PrismaClient } from '@prisma/client';
+import { IProductResponse } from '@/shared/interfaces/product.interface';
+import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
@@ -10,20 +12,29 @@ import { FaCogs } from 'react-icons/fa';
 const prisma = new PrismaClient();
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  let products;
   try {
-    products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      include: {
+        category: true,
+        company: true,
+      },
+    });
+    return {
+      props: {
+        products: JSON.parse(JSON.stringify(products)),
+      },
+    };
   } catch (error) {
     console.error(error);
   }
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
+      products: null,
     },
   };
 };
 
-const Products: NextPageWithLayout<{ products: any }> = ({ products }) => {
+const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ products }) => {
   const router = useRouter();
   return (
     <div>
@@ -38,41 +49,45 @@ const Products: NextPageWithLayout<{ products: any }> = ({ products }) => {
           Create
         </button>
       </div>
-      <div className="overflow-x-scroll">
-        <table className="table table-auto w-full">
+      <section className="overflow-x-auto">
+        <table className="table w-full">
           <thead>
             <tr>
               <th className="border !border-base-300">Title</th>
               <th className="border !border-base-300">Category</th>
+              <th className="border !border-base-300">Company</th>
               <th className="border !border-base-300">Quantity</th>
               <th className="border !border-base-300">Price</th>
               <th className="border !border-base-300 w-48">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              {products.map((product: any) => {
-                return (
-                  <>
-                    <th className="border !border-base-300">{product.title}</th>
-                    <td className="border !border-base-300">{product.category}</td>
-                    <td className="border !border-base-300">{product.quantity}</td>
-                    <td className="border !border-base-300">{product.price}</td>
-                    <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                      <button className="btn btn-info btn-sm !normal-case gap-1">
-                        <FaCogs></FaCogs> Edit
-                      </button>
-                      <button className="btn btn-error btn-sm !normal-case gap-1">
-                        <BsTrash></BsTrash> Delete
-                      </button>
-                    </td>
-                  </>
-                );
-              })}
-            </tr>
+            {products.map((product) => {
+              return (
+                <tr key={product.id}>
+                  <td className="border !border-base-300">
+                    {product.title}
+                    {/* {product.title.substring(0, 20)}
+                    {product.title.length > 20 ? '...' : ''} */}
+                  </td>
+                  <td className="border !border-base-300">{product.category?.name}</td>
+                  <td className="border !border-base-300">{product.company?.name}</td>
+                  <td className="border !border-base-300">{product.quantity}</td>
+                  <td className="border !border-base-300">{product.price}</td>
+                  <td className="border !border-base-300 flex gap-2 w-48 justify-between">
+                    <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm !normal-case gap-1">
+                      <FaCogs></FaCogs> Edit
+                    </Link>
+                    <button className="btn btn-error btn-sm !normal-case gap-1">
+                      <BsTrash></BsTrash> Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </div>
+      </section>
     </div>
   );
 };

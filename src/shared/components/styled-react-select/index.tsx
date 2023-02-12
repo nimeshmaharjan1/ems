@@ -6,10 +6,17 @@ import { AsyncPaginate, LoadOptions } from 'react-select-async-paginate';
 interface Props {
   placeholder: string;
   loadOptions: LoadOptions<any, any, any>;
+  isRequired?: boolean;
 }
 
-const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOptions, ...rest }) => {
+const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOptions, isRequired, ...rest }) => {
   const { theme } = useTheme();
+
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) return null;
 
   return (
     <AsyncPaginate
@@ -25,14 +32,16 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
       }}
       classNames={{
         control: () => {
-          return `min-h-[50px] block ${theme === 'night' ? 'border-neutral-focus' : 'border'}  border rounded-lg`;
+          return `min-h-[40px] block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${
+            isRequired ? 'border-error' : ''
+          } border rounded-lg`;
         },
 
         menuList: () => {
           return 'border rounded-lg bg-base-200';
         },
         container: () => {
-          return 'bg-base-300 min-h-[50px] rounded-lg bg-transparent';
+          return 'bg-base-300 min-h-[40px] rounded-lg bg-transparent';
         },
         option: () => {
           return 'hover:bg-primary hover:text-white px-2 py-1';
@@ -40,11 +49,12 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
         valueContainer: () => 'flex gap-2 p-2',
 
         multiValue: () => 'bg-primary text-white rounded-lg px-2 ',
-        singleValue: () => ' px-1',
+        singleValue: () => `px-1 ${isRequired ? 'text-error' : ''}`,
         indicatorsContainer: () => 'px-2',
         placeholder: () => 'px-1 opacity-80 ',
       }}
       unstyled
+      instanceId={'styled-react-select'}
       placeholder={placeholder}
     ></AsyncPaginate>
   );

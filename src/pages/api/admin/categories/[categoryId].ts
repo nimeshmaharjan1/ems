@@ -1,9 +1,7 @@
 import { ReactSelectReturn } from './../../../../shared/interfaces/common.interface';
-import { ICategoryResponse } from './../../../../shared/interfaces/category.interface';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
-import { string } from 'zod';
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.categoryId as string;
@@ -22,6 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error(error);
       res.status(500).json({ error, message: 'Something went wrong' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else if (req.method === 'GET') {
     try {
@@ -31,6 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Something went wrong while trying to fetch company.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else if (req.method === 'DELETE') {
     try {
@@ -38,6 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(201).json({ message: 'Category deleted successfully' });
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong while trying to delete category.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.setHeader('Allow', ['POST']);

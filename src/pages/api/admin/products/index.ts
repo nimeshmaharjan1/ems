@@ -5,14 +5,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { images, title, description, price, category, company, quantity, slug } = req.body;
+      const categoryId = category?.value;
+      const companyId = company?.value;
       const product = await prisma.product.create({
         data: {
           images,
           title,
           description,
           price,
-          category,
-          company,
+          categoryId,
+          companyId,
           quantity,
           slug,
         },

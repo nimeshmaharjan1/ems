@@ -101,12 +101,13 @@ export default function Sidebar({
                 ['p-3']: !isSidebarCollapsed,
               }
             )}
+            onClick={() => router.push('/admin/products')}
           >
             <span className="text-2xl block float-left">
-              <ImProfile></ImProfile>
+              <ImBooks></ImBooks>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
-          </li>{' '}
+            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
+          </li>
           <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
@@ -117,10 +118,11 @@ export default function Sidebar({
             )}
           >
             <span className="text-2xl block float-left">
-              <MdAccessTime></MdAccessTime>
+              <ImProfile></ImProfile>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Time Log</span>
-          </li>{' '}
+            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
+          </li>
+
           <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
@@ -135,21 +137,6 @@ export default function Sidebar({
               <FiSettings></FiSettings>
             </span>
             <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Settings</span>
-          </li>{' '}
-          <li
-            className={classnames(
-              'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
-              {
-                ['w-10']: isSidebarCollapsed,
-                ['p-3']: !isSidebarCollapsed,
-              }
-            )}
-            onClick={() => router.push('/admin/products')}
-          >
-            <span className="text-2xl block float-left">
-              <ImBooks></ImBooks>
-            </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
           </li>
         </ul>
       </div>

@@ -203,37 +203,39 @@ const SettingCategory = () => {
                     <td className="flex gap-2 flex-wrap">
                       {company.categories?.length
                         ? company.categories.map((category) => (
-                            <span className="badge badge-secondary" key={category.id}>
+                            <span className="badge badge-accent !text-white" key={category.id}>
                               {category.name}
                             </span>
                           ))
                         : '-'}
                     </td>
                     <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
-                    <td className="flex gap-2">
-                      <button
-                        className="btn btn-sm btn-primary gap-1 items-center !font-medium"
-                        onClick={() => {
-                          setSelectedAction(SELECTED_ACTION.EDIT);
-                          setValue('id', company.id);
-                          setValue('name', company.name);
-                          setSelectedCompanyId(company.id);
-                        }}
-                      >
-                        <FiSettings></FiSettings>
-                      </button>
-                      <button
-                        className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
-                          loading: isSubmitting,
-                        })}
-                        disabled={isSubmitting}
-                        onClick={async () => {
-                          setIsSubmitting(true);
-                          deleteCompanyMutation.mutate(company.id);
-                        }}
-                      >
-                        <BsTrash></BsTrash>
-                      </button>
+                    <td>
+                      <div className="btn-group">
+                        <button
+                          className="btn btn-sm btn-primary gap-1 items-center !font-medium"
+                          onClick={() => {
+                            setSelectedAction(SELECTED_ACTION.EDIT);
+                            setValue('id', company.id);
+                            setValue('name', company.name);
+                            setSelectedCompanyId(company.id);
+                          }}
+                        >
+                          <FiSettings></FiSettings>
+                        </button>
+                        <button
+                          className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
+                            loading: isSubmitting,
+                          })}
+                          disabled={isSubmitting}
+                          onClick={async () => {
+                            setIsSubmitting(true);
+                            deleteCompanyMutation.mutate(company.id);
+                          }}
+                        >
+                          <BsTrash></BsTrash>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

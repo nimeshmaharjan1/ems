@@ -11,10 +11,38 @@ import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
-import { Category, Company } from '@prisma/client';
+import { Category, Company, PrismaClient, Product } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories.service';
+import { GetServerSideProps } from 'next';
+
+const prisma = new PrismaClient();
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const id = context?.params?.productId as string;
+    const product = await prisma.product.findUnique({ where: { id }, include: { category: true, company: true } });
+    const reactSelectCompany = {
+      label: product?.company.name,
+      value: product?.company.id,
+    };
+    const reactSelectCategory = {
+      label: product?.category.name,
+      value: product?.category.id,
+    };
+    return {
+      props: { product: JSON.parse(JSON.stringify({ ...product, company: reactSelectCompany, category: reactSelectCategory })) },
+    };
+  } catch (error) {
+    console.error('error: ', error);
+  }
+  return {
+    props: {
+      product: null,
+    },
+  };
+};
 
 const productSchema = z.object({
   // categoryId: z.string().min(1, { message: 'Product category is required.' }),
@@ -35,7 +63,8 @@ const productSchema = z.object({
 });
 export type ProductSchema = z.infer<typeof productSchema>;
 
-const CreateUser: NextPageWithLayout = () => {
+const EditProduct: NextPageWithLayout<{ product: Product }> = ({ product }) => {
+  console.log(product);
   const defaultValues: ProductSchema = {
     category: { label: 'Select category', value: '' },
     company: { label: 'Select company', value: '' },
@@ -312,8 +341,8 @@ const CreateUser: NextPageWithLayout = () => {
   );
 };
 
-export default CreateUser;
+export default EditProduct;
 
-CreateUser.getLayout = (page: ReactNode) => {
+EditProduct.getLayout = (page: ReactNode) => {
   return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };

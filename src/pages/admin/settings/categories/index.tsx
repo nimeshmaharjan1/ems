@@ -199,7 +199,7 @@ const SettingCategory = () => {
                       <div className="flex gap-2 flex-wrap ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                              <span className="badge badge-secondary" key={company.id}>
+                              <span className="badge badge-accent !text-white" key={company.id}>
                                 {company.name}
                               </span>
                             ))

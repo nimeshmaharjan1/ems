@@ -21,6 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (e) {
       console.error(e);
       res.status(500).json({ error: e, message: 'Something went wrong' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else if (req.method === 'GET') {
     try {
@@ -50,6 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });
