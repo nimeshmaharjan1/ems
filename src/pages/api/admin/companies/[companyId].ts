@@ -37,6 +37,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'DELETE') {
     try {
+      const company = await prisma.company.findUnique({ where: { id } });
+      if (!company) {
+        res.status(404).json({ message: 'Company has already been deleted please try refreshing the page.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Something went wrong while trying to delete company.' });
+    }
+    try {
       await prisma.company.delete({ where: { id } });
       res.status(201).json({ message: 'Company deleted successfully' });
     } catch (error) {

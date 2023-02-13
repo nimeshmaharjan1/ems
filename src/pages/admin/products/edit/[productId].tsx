@@ -11,15 +11,17 @@ import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
-import { Category, Company, PrismaClient, Product } from '@prisma/client';
+import { Category, Company, PrismaClient } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories.service';
 import { GetServerSideProps } from 'next';
-import { IProductResponse } from '@/shared/interfaces/product.interface';
 
 const prisma = new PrismaClient();
 
+/**
+ * @author Nimesh Maharjan
+ */
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const id = context?.params?.productId as string;
@@ -87,7 +89,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
     if (filteredImages.length === 0) return;
     setIsUploading(true);
     try {
-      const uploadPromises = filteredImages.map((image) => axios.post('/api/upload-image', { image }));
+      const uploadPromises = filteredImages.map((image) => axios.post('/api/image-upload', { image }));
       const responses = await Promise.all(uploadPromises);
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);

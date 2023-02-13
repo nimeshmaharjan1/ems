@@ -36,6 +36,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'DELETE') {
     try {
+      const category = await prisma.category.findUnique({ where: { id } });
+      if (!category) {
+        res.status(404).json({ message: 'Category has already been deleted please try refreshing the page.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Something went wrong while trying to delete category.' });
+    }
+    try {
       await prisma.category.delete({ where: { id } });
       res.status(201).json({ message: 'Category deleted successfully' });
     } catch (error) {

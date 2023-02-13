@@ -6,7 +6,6 @@ import isAuthenticated from '@/features/admin/hof/is-authenticated';
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('here');
   const id = req.query.productId as string;
   console.log({ id });
   const authenticated = await isAuthenticated(req, res);

@@ -66,7 +66,7 @@ const CreateUser: NextPageWithLayout = () => {
     if (filteredImages.length === 0) return;
     setIsUploading(true);
     try {
-      const uploadPromises = filteredImages.map((image) => axios.post('/api/upload-image', { image }));
+      const uploadPromises = filteredImages.map((image) => axios.post('/api/image-upload', { image }));
       const responses = await Promise.all(uploadPromises);
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);

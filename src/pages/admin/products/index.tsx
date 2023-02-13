@@ -1,6 +1,7 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import { IProductResponse } from '@/shared/interfaces/product.interface';
+import { currency, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -58,6 +59,7 @@ const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ produc
               <th className="border !border-base-300">Company</th>
               <th className="border !border-base-300">Quantity</th>
               <th className="border !border-base-300">Price</th>
+              <th className="border !border-base-300">Created On</th>
               <th className="border !border-base-300 w-48">Actions</th>
             </tr>
           </thead>
@@ -66,14 +68,13 @@ const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ produc
               return (
                 <tr key={product.id}>
                   <td className="border !border-base-300">
-                    {product.title}
-                    {/* {product.title.substring(0, 20)}
-                    {product.title.length > 20 ? '...' : ''} */}
+                    {`${product.title.substring(0, 40)}${product.title.length > 40 ? '...' : ''}`}
                   </td>
                   <td className="border !border-base-300">{product.category?.name}</td>
                   <td className="border !border-base-300">{product.company?.name}</td>
                   <td className="border !border-base-300">{product.quantity}</td>
-                  <td className="border !border-base-300">{product.price}</td>
+                  <td className="border !border-base-300">&#8377; {formatPrice(product.price)}</td>
+                  <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
                   <td className="border !border-base-300 flex gap-2 w-48 justify-between">
                     <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm !normal-case gap-1">
                       <FaCogs></FaCogs> Edit

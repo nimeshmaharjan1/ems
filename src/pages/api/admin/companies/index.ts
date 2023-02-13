@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { page = 1 } = req.query;
       const limit = parseInt(req.query.limit as string) || 5;
 
-      const totalRecords = (await prisma.company.count()) as number;
+      const totalRecords = ((await prisma.company.count()) as number) ?? 0;
       const totalPages = Math.ceil(totalRecords / (limit as number));
 
       const companies = await prisma.company.findMany({

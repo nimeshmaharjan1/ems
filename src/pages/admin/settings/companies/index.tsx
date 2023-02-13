@@ -61,7 +61,7 @@ const SettingCategory = () => {
   const deleteCompanyMutation = useMutation(deleteCompany, {
     onSuccess: () => {
       showToast(Toast.success, 'Company deleted successfully');
-      queryClient.invalidateQueries(['getCompanies']);
+      queryClient.refetchQueries('getCompanies');
     },
     onError: () => {
       showToast(Toast.error, 'Something went wrong while trying to delete company');

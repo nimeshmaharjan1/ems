@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method, body } = req;
   switch (method) {
     case 'POST':
-      let { image, category } = body;
+      let { image } = body;
       if (!image) {
         return res.status(500).json({ message: 'No image provided' });
       }
