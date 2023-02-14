@@ -13,7 +13,12 @@ import Image from 'next/image';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import Link from 'next/link';
 
-const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
+const inter = Inter({
+  preload: false,
+  fallback: ['system-ui'],
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700', '800'],
+});
 
 const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();

@@ -1,21 +1,14 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { Poppins } from '@next/font/google';
-import { AiOutlineArrowLeft, AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineLogout } from 'react-icons/ai';
 import { GoLocation } from 'react-icons/go';
-import { BsSearch, BsFillMoonFill, BsSun } from 'react-icons/bs';
-import { RiDashboardFill } from 'react-icons/ri';
+import { BsSearch } from 'react-icons/bs';
+import { HiOutlineUsers } from 'react-icons/hi2';
 import { ImProfile } from 'react-icons/im';
-import { FiSettings } from 'react-icons/fi';
-import { MdAccessTime } from 'react-icons/md';
-import { ImBooks } from 'react-icons/im';
+import { FiBox, FiSettings } from 'react-icons/fi';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
-import { Toast, showToast } from '@/shared/utils/toast.util';
-import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
-const workSans = Poppins({ weight: ['500', '300', '600', '700', '800'], subsets: ['latin'] });
+import { RxDashboard } from 'react-icons/rx';
 
 export default function Sidebar({
   isSidebarCollapsed,
@@ -25,7 +18,6 @@ export default function Sidebar({
   setIsSidebarCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-  const { resolvedTheme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -89,7 +81,7 @@ export default function Sidebar({
             )}
           >
             <span className="text-2xl block float-left">
-              <RiDashboardFill></RiDashboardFill>
+              <RxDashboard></RxDashboard>
             </span>
             <span className={`font-medium  flex-1 ${isSidebarCollapsed && 'hidden'}`}>Dashboard</span>
           </li>
@@ -104,9 +96,24 @@ export default function Sidebar({
             onClick={() => router.push('/admin/products')}
           >
             <span className="text-2xl block float-left">
-              <ImBooks></ImBooks>
+              <FiBox></FiBox>
             </span>
             <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
+          </li>
+          <li
+            className={classnames(
+              'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
+              {
+                ['w-10']: isSidebarCollapsed,
+                ['p-3']: !isSidebarCollapsed,
+              }
+            )}
+            onClick={() => router.push('/admin/products')}
+          >
+            <span className="text-2xl block float-left">
+              <HiOutlineUsers></HiOutlineUsers>
+            </span>
+            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Users</span>
           </li>
           <li
             className={classnames(
