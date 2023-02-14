@@ -67,7 +67,6 @@ const productSchema = z.object({
 export type ProductSchema = z.infer<typeof productSchema>;
 
 const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
-  console.log(product);
   const defaultValues: ProductSchema = product;
   const {
     register,
