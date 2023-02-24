@@ -14,7 +14,7 @@ export const addCompany = async (data: Company) => {
 
 export const updateCompany = async (data: Company) => {
   try {
-    const response = await axios.put(`/api/admin/companies?id=${data.id}`, data);
+    const response = await axios.put(`/api/admin/companies/${data.id}`, data);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while updating company');

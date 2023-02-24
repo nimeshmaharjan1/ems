@@ -14,7 +14,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
         <button
           className="absolute top-8 right-12"
           onClick={() => {
-            theme === 'night' ? setTheme('light') : setTheme('night');
+            theme === 'night' ? setTheme('corporate') : setTheme('night');
           }}
         >
           {theme === 'night' ? (

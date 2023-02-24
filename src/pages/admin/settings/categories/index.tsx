@@ -177,6 +177,16 @@ const SettingCategory = () => {
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
                     </tr>
                   </tbody>
                 );
@@ -199,7 +209,7 @@ const SettingCategory = () => {
                       <div className="flex gap-2 flex-wrap ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                              <span className="badge badge-accent !text-white" key={company.id}>
+                              <span className="badge badge-accent badge-sm !text-white" key={company.id}>
                                 {company.name}
                               </span>
                             ))
@@ -297,7 +307,7 @@ const SettingCategory = () => {
               ></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-block btn-sm', {
+                  className={classNames('btn btn-primary btn-block', {
                     loading: addCategoryMutation.isLoading || updateCompanyMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}
