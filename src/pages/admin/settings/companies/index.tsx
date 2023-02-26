@@ -1,5 +1,5 @@
-import { getCategories } from '@/features/admin/services/categories.service';
-import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies.service';
+import { getCategories } from '@/features/admin/services/categories/categories.service';
+import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
@@ -173,7 +173,7 @@ const SettingCategory = () => {
               </tr>
             </tbody>
           ) : isCompanyLoading ? (
-            Array.from({ length: 5 })
+            Array.from({ length: 10 })
               .fill(0)
               .map((_, index) => {
                 return (
@@ -215,7 +215,7 @@ const SettingCategory = () => {
                       <div className="flex gap-2 flex-wrap">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
+                              <span className="badge badge-accent !text-white" key={category.id}>
                                 {category.name}
                               </span>
                             ))

@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.productId as string;
-  console.log({ id });
   const authenticated = await isAuthenticated(req, res);
   if (!authenticated) {
     return;

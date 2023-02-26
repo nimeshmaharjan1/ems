@@ -1,9 +1,9 @@
-import { Toast, showToast } from './../../../shared/utils/toast.util';
-import { Company, Category, Product } from '@prisma/client';
+import { Toast, showToast } from '../../../../shared/utils/toast.util';
+import { Company, Category } from '@prisma/client';
 import axios from 'axios';
 import { useMutation } from 'react-query';
 
-export const addProduct = async (data: Product) => {
+export const addCompany = async (data: Company) => {
   try {
     const response = await axios.post('/api/admin/companies', data);
     return response.data;
@@ -12,9 +12,9 @@ export const addProduct = async (data: Product) => {
   }
 };
 
-export const updateProduct = async (data: Product) => {
+export const updateCompany = async (data: Company) => {
   try {
-    const response = await axios.put(`/api/admin/companies?id=${data.id}`, data);
+    const response = await axios.put(`/api/admin/companies/${data.id}`, data);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while updating company');
@@ -31,9 +31,9 @@ export const getCompanies = async (params: { page: number; limit: number }) => {
   }
 };
 
-export const getProduct = async (id: string) => {
+export const getCompany = async (id: string) => {
   try {
-    const response = await axios.get(`/api/admin/products/${id}`);
+    const response = await axios.get(`/api/admin/companies/${id}`);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while getting the company.');

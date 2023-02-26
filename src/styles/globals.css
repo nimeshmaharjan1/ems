@@ -23,3 +23,15 @@ body::-webkit-scrollbar-thumb {
       transparent 75%,
       transparent)
 }
+
+@layer base {
+  button {
+    @apply !normal-case
+  }
+}
+
+@layer components {
+  .active-nav-link {
+    @apply text-base-100 bg-secondary
+  }
+}

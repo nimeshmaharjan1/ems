@@ -1,5 +1,11 @@
-import { addCategory, deleteCategory, getCategories, getCategory, updateCategory } from '@/features/admin/services/categories.service';
-import { getCompanies } from '@/features/admin/services/companies.service';
+import {
+  addCategory,
+  deleteCategory,
+  getCategories,
+  getCategory,
+  updateCategory,
+} from '@/features/admin/services/categories/categories.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
@@ -166,7 +172,7 @@ const SettingCategory = () => {
               </tr>
             </tbody>
           ) : isCategoryLoading ? (
-            Array.from({ length: 5 })
+            Array.from({ length: 10 })
               .fill(0)
               .map((_, index) => {
                 return (
@@ -209,7 +215,7 @@ const SettingCategory = () => {
                       <div className="flex gap-2 flex-wrap ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                              <span className="badge badge-accent badge-sm !text-white" key={company.id}>
+                              <span className="badge badge-accent !text-white" key={company.id}>
                                 {company.name}
                               </span>
                             ))
@@ -283,7 +289,9 @@ const SettingCategory = () => {
                       required: 'Category name is required.',
                     })}
                     placeholder="Category name"
-                    className="input input-bordered "
+                    className={classNames('input input-bordered', {
+                      'input-error': errors?.name,
+                    })}
                   />
                 </FormControl>
               </div>
@@ -307,7 +315,7 @@ const SettingCategory = () => {
               ></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-block', {
+                  className={classNames('btn btn-primary btn-block btn-sm', {
                     loading: addCategoryMutation.isLoading || updateCompanyMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}
