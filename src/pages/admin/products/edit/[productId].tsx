@@ -12,9 +12,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
 import { Category, Company, PrismaClient } from '@prisma/client';
-import { getCompanies } from '@/features/admin/services/companies.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
-import { getCategories } from '@/features/admin/services/categories.service';
+import { getCategories } from '@/features/admin/services/categories/categories.service';
 import { GetServerSideProps } from 'next';
 
 const prisma = new PrismaClient();
@@ -193,7 +193,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
 
   return (
     <div className="min-h-screen">
-      <h2 className="font-semibold text-3xl ">Add Products</h2>
+      <h2 className="font-semibold text-3xl ">Edit Product</h2>
       <div className="grid gap-x-12 grid-cols-6 my-6">
         <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
@@ -300,7 +300,11 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
         <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
           <div className="image-section col-span-6 lg:col-span-6">
             <FormControl label="Upload Product Image">
-              <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
+              <ImageUpload
+                {...{ control, resetImages }}
+                initialImage={images?.map((image) => ({ src: image as string, alt: '' }))}
+                onChangePicture={upload}
+              />
             </FormControl>
 
             <FormControl label="Product Slug" className="lg:mt-3" errorMessage={errors?.slug?.message as string}>

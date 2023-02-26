@@ -1,7 +1,7 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import { IProductResponse } from '@/shared/interfaces/product.interface';
-import { currency, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
+import { formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';

@@ -1,5 +1,5 @@
-import { getCategories } from '@/features/admin/services/categories.service';
-import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies.service';
+import { getCategories } from '@/features/admin/services/categories/categories.service';
+import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
@@ -71,8 +71,10 @@ const SettingCategory = () => {
 
   const updateCompanyMutation = useMutation(updateCompany, {
     onSuccess: () => {
+      setSelectedAction(SELECTED_ACTION.ADD);
       showToast(Toast.success, 'Company updated successfully');
       queryClient.invalidateQueries(['getCompanies']);
+      reset();
     },
     onError: () => {
       showToast(Toast.error, 'Something went wrong while trying to update company');
@@ -171,12 +173,22 @@ const SettingCategory = () => {
               </tr>
             </tbody>
           ) : isCompanyLoading ? (
-            Array.from({ length: 5 })
+            Array.from({ length: 10 })
               .fill(0)
               .map((_, index) => {
                 return (
                   <tbody key={index}>
                     <tr>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
@@ -199,15 +211,16 @@ const SettingCategory = () => {
                   <tr key={company.id}>
                     <td>{categoryIndex + 1}</td>
                     <td>{company.name}</td>
-
-                    <td className="flex gap-2 flex-wrap">
-                      {company.categories?.length
-                        ? company.categories.map((category) => (
-                            <span className="badge badge-accent !text-white" key={category.id}>
-                              {category.name}
-                            </span>
-                          ))
-                        : '-'}
+                    <td>
+                      <div className="flex gap-2 flex-wrap">
+                        {company.categories?.length
+                          ? company.categories.map((category) => (
+                              <span className="badge badge-accent !text-white" key={category.id}>
+                                {category.name}
+                              </span>
+                            ))
+                          : '-'}
+                      </div>
                     </td>
                     <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
                     <td>
@@ -276,7 +289,7 @@ const SettingCategory = () => {
                       required: 'Company name is required.',
                     })}
                     placeholder="Company name"
-                    className="input input-bordered max-w-xs"
+                    className="input input-bordered"
                   />
                 </FormControl>
               </div>
@@ -297,7 +310,7 @@ const SettingCategory = () => {
               ></Controller>
               <div className="card-actions ">
                 <button
-                  className={classNames('btn btn-primary btn-block btn-sm', {
+                  className={classNames('btn btn-primary btn-block', {
                     loading: addCompanyMutation.isLoading || updateCompanyMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}

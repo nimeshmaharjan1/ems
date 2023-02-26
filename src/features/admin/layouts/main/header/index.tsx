@@ -10,7 +10,7 @@ const Header: React.FC<{
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const { resolvedTheme, setTheme } = useTheme();
   return (
-    <header className="h-[4.2rem] z-50 fixed top-0 flex justify-between items-center bg-base-200 w-full shadow px-6">
+    <header className="h-[4.2rem] flex justify-between items-center bg-base-200 w-full shadow px-6">
       <div
         className=" p-1 cursor-pointer  duration-300 hidden lg:block"
         onClick={() => {
@@ -27,7 +27,7 @@ const Header: React.FC<{
         onClick={() => {
           resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
         }}
-        className={classNames('!bg-transparent btn-sm !mr-14')}
+        className={classNames('!bg-transparent btn-sm')}
       >
         {resolvedTheme === 'corporate' ? (
           <BsFillMoonFill className="text-lg hover:text-primary duration-300"></BsFillMoonFill>

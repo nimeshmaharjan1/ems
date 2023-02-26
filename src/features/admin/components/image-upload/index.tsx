@@ -7,7 +7,7 @@ import { Control, Controller } from 'react-hook-form';
 import { AiOutlineArrowUp } from 'react-icons/ai';
 interface Props {
   label?: string;
-  initialImage: { src: string | ArrayBuffer | null; alt: string };
+  initialImage: any;
   accept?: string;
   sizeLimit?: number;
   onChangePicture: (images: any) => void;
@@ -25,7 +25,7 @@ const ImageUpload: React.FC<Props> = ({
   resetImages,
 }) => {
   const imageRef = React.useRef<HTMLInputElement>(null);
-  const [images, setImages] = React.useState<any>([initialImage]);
+  const [images, setImages] = React.useState<any>(!initialImage?.length ? [initialImage] : [...initialImage]);
   const [updatingImage, setUpdatingImage] = React.useState(false);
   const [imageError, setPictureError] = React.useState('');
   const handleOnChangePicture = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +91,7 @@ const ImageUpload: React.FC<Props> = ({
     <div className="grid grid-cols-6 gap-x-4">
       {images?.map((image: any) => (
         <button
-          key={image.alt}
+          key={image?.src}
           disabled={updatingImage}
           onClick={handleOnClickPicture}
           className={classNames(

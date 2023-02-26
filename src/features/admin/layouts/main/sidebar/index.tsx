@@ -9,6 +9,7 @@ import classnames from 'classnames';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 import { RxDashboard } from 'react-icons/rx';
+import { DASHBOARD_LINKS } from '@/features/admin/enums';
 
 export default function Sidebar({
   isSidebarCollapsed,
@@ -22,7 +23,7 @@ export default function Sidebar({
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  const [isActive, setIsActive] = useState<DASHBOARD_LINKS>(DASHBOARD_LINKS.dashboard);
   if (!isMounted) return null;
 
   return (
@@ -30,7 +31,7 @@ export default function Sidebar({
       className={classnames(
         `sticky z-50 left-0 top-0 bottom-0 right-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
         {
-          ['w-[17.5rem]']: !isSidebarCollapsed,
+          ['w-[15.5rem]']: !isSidebarCollapsed,
           ['w-[4.2rem]']: isSidebarCollapsed,
         }
       )}
@@ -77,8 +78,13 @@ export default function Sidebar({
               {
                 ['w-10']: isSidebarCollapsed,
                 ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.dashboard,
               }
             )}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.dashboard);
+              router.push(DASHBOARD_LINKS.dashboard);
+            }}
           >
             <span className="text-2xl block float-left">
               <RxDashboard></RxDashboard>
@@ -91,9 +97,13 @@ export default function Sidebar({
               {
                 ['w-10']: isSidebarCollapsed,
                 ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.products,
               }
             )}
-            onClick={() => router.push('/admin/products')}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.products);
+              router.push(DASHBOARD_LINKS.products);
+            }}
           >
             <span className="text-2xl block float-left">
               <FiBox></FiBox>
@@ -106,9 +116,13 @@ export default function Sidebar({
               {
                 ['w-10']: isSidebarCollapsed,
                 ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.users,
               }
             )}
-            onClick={() => router.push('/admin/products')}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.users);
+              router.push(DASHBOARD_LINKS.users);
+            }}
           >
             <span className="text-2xl block float-left">
               <HiOutlineUsers></HiOutlineUsers>
@@ -121,8 +135,13 @@ export default function Sidebar({
               {
                 ['w-10']: isSidebarCollapsed,
                 ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.myProfile,
               }
             )}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.myProfile);
+              router.push(DASHBOARD_LINKS.myProfile);
+            }}
           >
             <span className="text-2xl block float-left">
               <ImProfile></ImProfile>
@@ -136,9 +155,13 @@ export default function Sidebar({
               {
                 ['w-10']: isSidebarCollapsed,
                 ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.settings,
               }
             )}
-            onClick={() => router.push('/admin/settings')}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.settings);
+              router.push(DASHBOARD_LINKS.settings);
+            }}
           >
             <span className="text-2xl block float-left">
               <FiSettings></FiSettings>

@@ -1,5 +1,11 @@
-import { addCategory, deleteCategory, getCategories, getCategory, updateCategory } from '@/features/admin/services/categories.service';
-import { getCompanies } from '@/features/admin/services/companies.service';
+import {
+  addCategory,
+  deleteCategory,
+  getCategories,
+  getCategory,
+  updateCategory,
+} from '@/features/admin/services/categories/categories.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
 import StyledReactSelect from '@/shared/components/styled-react-select';
@@ -166,12 +172,22 @@ const SettingCategory = () => {
               </tr>
             </tbody>
           ) : isCategoryLoading ? (
-            Array.from({ length: 5 })
+            Array.from({ length: 10 })
               .fill(0)
               .map((_, index) => {
                 return (
                   <tbody key={index}>
                     <tr>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
+                      <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
@@ -273,7 +289,9 @@ const SettingCategory = () => {
                       required: 'Category name is required.',
                     })}
                     placeholder="Category name"
-                    className="input input-bordered "
+                    className={classNames('input input-bordered', {
+                      'input-error': errors?.name,
+                    })}
                   />
                 </FormControl>
               </div>

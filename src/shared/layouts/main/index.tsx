@@ -12,6 +12,7 @@ import ThemeToggler from '@/shared/components/theme-toggler';
 import Image from 'next/image';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import Link from 'next/link';
+import { RxDashboard } from 'react-icons/rx';
 
 const inter = Inter({
   preload: false,
@@ -56,11 +57,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                   Products
                 </button>
                 <button className="btn btn-sm btn-ghost !normal-case">Contact</button>
-                {isAdmin && (
-                  <button className="btn btn-sm btn-ghost !normal-case" onClick={() => router.push('/admin/dashboard')}>
-                    Dashboard
-                  </button>
-                )}
+
                 {status === 'unauthenticated' && (
                   <>
                     <button
@@ -92,6 +89,14 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                       )}
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
+                      {isAdmin && (
+                        <li>
+                          <Link href="/admin/dashboard">
+                            <RxDashboard></RxDashboard>
+                            Dashboard
+                          </Link>
+                        </li>
+                      )}
                       <li>
                         <a>
                           <AiOutlineUser></AiOutlineUser>

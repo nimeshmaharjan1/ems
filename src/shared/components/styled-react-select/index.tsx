@@ -32,16 +32,14 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
       }}
       classNames={{
         control: () => {
-          return `min-h-[40px] block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${
-            isRequired ? 'border-error' : ''
-          } border rounded-lg`;
+          return `block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${isRequired ? 'border-error' : ''} border rounded-sm p-1`;
         },
 
         menuList: () => {
           return 'border rounded-lg bg-base-200';
         },
         container: () => {
-          return 'bg-base-300 min-h-[40px] rounded-lg bg-transparent';
+          return 'bg-base-300 rounded-lg bg-transparent';
         },
         option: () => {
           return 'hover:bg-primary hover:text-white px-2 py-1';

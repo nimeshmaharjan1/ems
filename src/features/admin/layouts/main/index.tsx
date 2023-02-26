@@ -31,8 +31,8 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
           <div className="h-[70px]">
             <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
           </div>
-          <div className="text-sm breadcrumbs my-2 mt-1 mx-7">
-            {/* <ul>
+          {/* <div className="text-sm breadcrumbs my-2 mt-1 mx-7">
+            <ul>
               {paths.map((path, index) => {
                 return (
                   <li key={path}>
@@ -42,9 +42,9 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
                   </li>
                 );
               })}
-            </ul> */}
-          </div>
-          <main className="m-4 mx-8 mb-8 !mt-3 p-8 py-6 min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
+            </ul>
+          </div> */}
+          <main className="p-8 py-6 min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
         </section>
       </div>
     </>

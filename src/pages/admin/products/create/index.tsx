@@ -12,9 +12,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
 import { Category, Company } from '@prisma/client';
-import { getCompanies } from '@/features/admin/services/companies.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
-import { getCategories } from '@/features/admin/services/categories.service';
+import { getCategories } from '@/features/admin/services/categories/categories.service';
 
 const productSchema = z.object({
   // categoryId: z.string().min(1, { message: 'Product category is required.' }),
@@ -171,7 +171,7 @@ const CreateUser: NextPageWithLayout = () => {
 
   return (
     <div className="min-h-screen">
-      <h2 className="font-semibold text-3xl ">Add Products</h2>
+      <h2 className="font-semibold text-3xl ">Add Product</h2>
       <div className="grid gap-x-12 grid-cols-6 my-6">
         <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
