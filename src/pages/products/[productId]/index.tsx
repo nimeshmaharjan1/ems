@@ -62,13 +62,13 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
       <section className="grid-cols-6 grid gap-10 gap-x-12">
         <section className="carousel-section col-span-6 md:col-span-3">
           <div className="selected-image mb-4 rounded-box">
-            <Image className="rounded-box" width={800} height={300} alt="Product" src={selectedImage} />
+            <Image className="rounded-box" width={800} priority height={300} alt="Product" src={selectedImage} />
           </div>
           <div className="carousel h-[19rem] carousel-center space-x-6 p-4">
             {product.images.map((image) => {
               return (
                 <div className="carousel-item cursor-pointer" key={image} onClick={() => setSelectedImage(image)}>
-                  <Image width={300} height={200} alt="Product" className="rounded-box" src={image} />
+                  <Image width={300} height={200} alt="Product" className="rounded-box h-auto w-auto" src={image} />
                 </div>
               );
             })}
@@ -84,7 +84,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
               <button className="px-2 py-1 bg-base-300 rounded-l-lg" onClick={decreaseQuantity}>
                 -
               </button>
-              <input className="px-4 py-1 bg-base-300 w-[3rem] max-w-[5rem]" value={quantity} />
+              <input className="px-4 py-1 bg-base-300 w-[3rem] max-w-[5rem]" defaultValue={quantity} readOnly />
               <button className="px-2 py-1 bg-base-300 rounded-r-lg" onClick={increaseQuantity}>
                 +
               </button>

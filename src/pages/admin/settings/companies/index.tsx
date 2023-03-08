@@ -45,6 +45,10 @@ const SettingCategory = () => {
   });
 
   const addCompanyMutation = useMutation(addCompany, {
+    onMutate: (values) => {
+      const prevCompanies = queryClient.getQueryData('getCompanies') as ICompany[];
+      queryClient.setQueryData('getCompanies', (values: any) => [...prevCompanies, { ...values }]);
+    },
     onSuccess: () => {
       showToast(Toast.success, 'Company added successfully');
       queryClient.invalidateQueries(['getCompanies']);
@@ -179,14 +183,6 @@ const SettingCategory = () => {
                 return (
                   <tbody key={index}>
                     <tr>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>

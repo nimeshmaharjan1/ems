@@ -34,4 +34,12 @@ body::-webkit-scrollbar-thumb {
   .active-nav-link {
     @apply text-base-100 bg-secondary
   }
+
+  .btn {
+    @apply font-normal
+  }
+
+  .btn-error {
+    @apply text-gray-200
+  }
 }

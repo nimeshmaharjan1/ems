@@ -12,10 +12,8 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import ErrorMessage from '@/shared/components/error-message';
 import classNames from 'classnames';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { GetServerSideProps } from 'next';
 import { signIn, useSession } from 'next-auth/react';
-import { getRandomValues } from 'crypto';
 import { USER_ROLES } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -113,7 +111,7 @@ const Login: NextPageWithLayout = () => {
         Sign In
       </button>
       <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer">Forgot password?</p>
-      <p className={`text-center my-3 ${styles['or-sign-in']}`}>Or Sign in with</p>
+      <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
         <button className="btn !normal-case gap-2 hover:text-primary">
           <AiOutlineGoogle className="text-lg" />
