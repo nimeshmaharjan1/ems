@@ -6,7 +6,7 @@ const Rating = ({ rating = 4 }) => {
   for (let i = 0; i < 5; i++) {
     if (i < rating) {
       stars.push(
-        <i key={i} className="fas fa-star text-yellow-500">
+        <i key={i} className="fas fa-star text-yellow-400">
           <AiFillStar />
         </i>
       );

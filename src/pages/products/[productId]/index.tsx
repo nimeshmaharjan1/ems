@@ -1,3 +1,4 @@
+import ReviewsSection from '@/features/products/components/reviews-section';
 import { NextPageWithLayout } from '@/pages/_app';
 import MainSharedLayout from '@/shared/layouts/main';
 import ViewOneLayout from '@/shared/layouts/view-one';
@@ -99,6 +100,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
         </section>
       </section>
       <section className="specification-section"></section>
+      <ReviewsSection></ReviewsSection>
     </>
   );
 };
