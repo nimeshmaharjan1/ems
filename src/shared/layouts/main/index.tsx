@@ -1,17 +1,17 @@
-import { Inter, Poppins } from '@next/font/google';
+import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 import MainSharedFooter from './footer';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
 
-import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
-import { FaBox, FaLocationArrow, FaUser } from 'react-icons/fa';
-import { signOut, useSession } from 'next-auth/react';
-import { USER_ROLES } from '@prisma/client';
 import ThemeToggler from '@/shared/components/theme-toggler';
+import { USER_ROLES } from '@prisma/client';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import Link from 'next/link';
+import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { FaBox, FaLocationArrow, FaUser } from 'react-icons/fa';
+import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { RxDashboard } from 'react-icons/rx';
 
 const inter = Inter({
@@ -64,8 +64,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                       className="btn btn-sm btn-ghost !normal-case"
                       onClick={() => {
                         router.push('/api/auth/signin');
-                      }}
-                    >
+                      }}>
                       Sign In
                     </button>
                     <button className="btn btn-sm btn-primary !normal-case">Sign Up</button>
