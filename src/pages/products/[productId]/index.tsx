@@ -100,7 +100,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
         </section>
       </section>
       <section className="specification-section"></section>
-      <ReviewsSection></ReviewsSection>
+      <ReviewsSection productId={product.id}></ReviewsSection>
     </>
   );
 };

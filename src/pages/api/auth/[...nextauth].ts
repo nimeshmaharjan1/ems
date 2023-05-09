@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
       if (params?.user?.role) {
         params.token.username = params.user.username;
         params.token.role = params.user.role;
+        params.token.id = params.user?.id;
       }
       return params.token;
     },
@@ -54,6 +55,7 @@ export const authOptions: NextAuthOptions = {
       if (params.session?.user) {
         params.session.user.username = params.token.username;
         params.session.user.role = params.token.role;
+        params.session.user.id = params.token?.id;
       }
       return params.session;
     },

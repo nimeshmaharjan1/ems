@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           userId,
         },
       });
-      res.status(201).json({ message: 'Your review has been added.', review });
+      res.status(201).json({ message: 'Your review has been added.' });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to create review.' });

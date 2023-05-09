@@ -7,13 +7,16 @@ import RatingSummary from './rating-summary';
 import UserReview from './user-review';
 import WriteReviewModal from './write-review-modal';
 
-const ReviewsSection = () => {
+const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
+  console.log({ productId });
+  const { data: session } = useSession();
   const defaultValues = {
     rating: '',
     comment: '',
-    productId: '',
-    userId: '',
+    productId: productId,
+    userId: session?.user?.id,
   };
+  console.log(session);
   const reviewUseForm = useForm<SubmitReview>({ defaultValues });
 
   return (
