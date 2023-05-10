@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { AiOutlineMail, AiOutlineGoogle } from 'react-icons/ai';
-import { FaDiscord, FaUser } from 'react-icons/fa';
+import { FaDiscord, FaGithub, FaUser } from 'react-icons/fa';
 import { BsFacebook } from 'react-icons/bs';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import styles from './login.module.scss';
@@ -17,6 +17,8 @@ import { signIn, useSession } from 'next-auth/react';
 import { USER_ROLES } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { BuiltInProviderType, RedirectableProviderType } from 'next-auth/providers';
+import Link from 'next/link';
 
 const Login: NextPageWithLayout = () => {
   const { data: session } = useSession();
@@ -40,6 +42,22 @@ const Login: NextPageWithLayout = () => {
       showToast(Toast.error, 'Something went wrong while trying to login please try again.');
     }
   };
+  const handleLoginWithProviders = async (provider: BuiltInProviderType) => {
+    setIsSubmitting(true);
+    try {
+      await signIn(provider);
+    } catch (error) {
+      console.error(error);
+      setIsSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (session) {
+      setIsSubmitting(true);
+      router.push('/products');
+    }
+  }, [session, router]);
 
   const {
     register,
@@ -68,8 +86,7 @@ const Login: NextPageWithLayout = () => {
         <FaUser
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.username,
-          })}
-        ></FaUser>
+          })}></FaUser>
       </div>
       <div className="form-control w-full mb-4 relative">
         <input
@@ -90,15 +107,13 @@ const Login: NextPageWithLayout = () => {
             className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
-            onClick={() => setShowPassword((prev) => !prev)}
-          ></FiEye>
+            onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
             className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
-            onClick={() => setShowPassword((prev) => !prev)}
-          ></FiEyeOff>
+            onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
       <button
@@ -106,35 +121,33 @@ const Login: NextPageWithLayout = () => {
           loading: isSubmitting,
         })}
         disabled={isSubmitting}
-        onClick={handleSubmit(handleLogin)}
-      >
+        onClick={handleSubmit(handleLogin)}>
         Sign In
       </button>
-      <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer">Forgot password?</p>
+      <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer mt-2">Forgot password?</p>
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
-        <button className="btn !normal-case gap-2 hover:text-primary">
+        <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
           Google
         </button>
-        <button className="btn !normal-case gap-2 hover:text-primary">
-          <FaDiscord className="text-lg" />
-          Discord
+        <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('github')}>
+          <FaGithub className="text-lg" />
+          Github
         </button>
-        <button className="btn !normal-case gap-2 hover:text-primary">
+        {/* <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting}>
           <BsFacebook className="text-lg" />
           Facebook
-        </button>
+        </button> */}
       </div>
-      <p className="mt-3 text-sm text-center">
-        Don&apos;t have an account?{' '}
-        <span
-          className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300"
-          onClick={() => router.push('/auth/register')}
-        >
-          Register now
-        </span>
-      </p>
+      {!isSubmitting && (
+        <p className="mt-3 text-sm text-center">
+          Don&apos;t have an account?{' '}
+          <Link href="/auth/register" className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300">
+            Register now
+          </Link>
+        </p>
+      )}
     </div>
   );
 };

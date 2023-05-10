@@ -56,7 +56,7 @@ model User {
   password      String
   name          String?
   email         String?    @unique
-  phone_number  String     @unique
+  phone_number  String?    @unique
   emailVerified DateTime?
   role          USER_ROLES
   image         String?
