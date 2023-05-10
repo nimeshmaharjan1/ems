@@ -31,6 +31,7 @@ const Login: NextPageWithLayout = () => {
     try {
       const response = await signIn('credentials', { ...values, redirect: false });
       if (response?.error) {
+        console.log(response);
         showToast(Toast.error, response?.error);
         setIsSubmitting(false);
         return;
