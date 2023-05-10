@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Inter } from '@next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';

@@ -1,10 +1,10 @@
-import Head from 'next/head';
-import React, { ReactNode, useEffect, useState } from 'react';
-import Sidebar from './sidebar';
-import { Inter, IBM_Plex_Serif, IBM_Plex_Sans } from 'next/font/google';
-import Header from './header';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
+import { Inter } from '@next/font';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
+import React, { ReactNode, useEffect, useState } from 'react';
+import Header from './header';
+import Sidebar from './sidebar';
 
 const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 

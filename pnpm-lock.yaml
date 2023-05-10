@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@hookform/resolvers': ^2.9.10
   '@next-auth/prisma-adapter': ^1.0.5
+  '@next/font': 13.1.4
   '@prisma/client': ^4.10.0
   '@supabase/auth-helpers-nextjs': ^0.5.4
   '@supabase/auth-helpers-react': ^0.3.1
@@ -54,6 +55,7 @@ specifiers:
 dependencies:
   '@hookform/resolvers': 2.9.10_react-hook-form@7.42.1
   '@next-auth/prisma-adapter': 1.0.5_dg7vpluvw26u4z34xat624ruwa
+  '@next/font': 13.1.4
   '@prisma/client': 4.10.0_prisma@4.10.0
   '@supabase/auth-helpers-nextjs': 0.5.4_l3gewy5tlkgvrrn24rowenxrli
   '@supabase/auth-helpers-react': 0.3.1_l3gewy5tlkgvrrn24rowenxrli
@@ -351,6 +353,10 @@ packages:
     resolution: {integrity: sha512-a/T30+7Q1scom5t3L+wEBkYzCa+bhT/3DTxzxlNy4Xckw2InzcckQGeIi/larDgh5r2fSSJswhYAZEcKtuJiig==}
     dependencies:
       glob: 7.1.7
+    dev: false
+
+  /@next/font/13.1.4:
+    resolution: {integrity: sha512-NfqQPAIFJhssdaZEsP0MADZKN+tc040jOkNKVlDZHtVjJWBJSgbe8UHg3w0S6YuQr7PHc0ACbFeVCBQeG4MEvg==}
     dev: false
 
   /@next/swc-android-arm-eabi/13.1.4:
