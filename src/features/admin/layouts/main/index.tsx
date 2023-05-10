@@ -1,18 +1,13 @@
-import Head from 'next/head';
-import React, { ReactNode, useEffect, useState } from 'react';
-import Sidebar from './sidebar';
-import { Inter, IBM_Plex_Serif } from 'next/font/google';
-import Header from './header';
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
+import { Inter } from '@next/font/google';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
+import React, { ReactNode, useEffect, useState } from 'react';
+import Header from './header';
+import Sidebar from './sidebar';
 
-const inter = IBM_Plex_Serif({
-  preload: false,
-  fallback: ['system-ui'],
-  subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600'],
-});
-// const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
+const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
+
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { height, width: innerWidth } = useWindowDimensions();

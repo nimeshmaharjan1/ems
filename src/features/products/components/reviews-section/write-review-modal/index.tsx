@@ -1,19 +1,20 @@
 import { SubmitReview } from '@/shared/interfaces/reviews.interface';
+import { showToast, Toast } from '@/shared/utils/toast.util';
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import React, { useRef } from 'react';
-import { UseFormReturn, SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import React, { useEffect, useRef } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { AiOutlineClose } from 'react-icons/ai';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import WriteReviewRating from '../write-review-rating';
-import { Review } from '@prisma/client';
-import axios from 'axios';
-import { showToast, Toast } from '@/shared/utils/toast.util';
 
 const WriteReviewModal: React.FC<{ reviewUseForm: UseFormReturn<SubmitReview> }> = ({ reviewUseForm }) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const closeModalRef = useRef<HTMLInputElement>(null);
-
+  const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation(
     async (data: any) => {
       const response = await axios.post(`/api/products/reviews`, data);
@@ -24,17 +25,28 @@ const WriteReviewModal: React.FC<{ reviewUseForm: UseFormReturn<SubmitReview> }>
         closeModalRef?.current?.click();
         showToast(Toast.success, data?.message);
         reviewUseForm.reset();
+        queryClient.invalidateQueries({ queryKey: ['getAllReviews'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+        if (error?.response?.status === 401) {
+          router.push('/api/auth/signin');
+        }
       },
     }
   );
   const submitReview = (data: SubmitReview) => {
-    console.log(data);
-    const newData = { ...data, rating: Number(data.rating) };
+    const newData = { ...data, rating: Number(data.rating), userId: session?.user?.id as string };
     mutate(newData);
   };
+  useEffect(() => {
+    return () => {
+      reviewUseForm.reset();
+    };
+  }, [reviewUseForm]);
   return (
     <>
-      <input type="checkbox" id="write-a-review-modal" className="modal-toggle" ref={closeModalRef} />
+      <input type="checkbox" id="write-a-review-modal" className="modal-toggle" ref={closeModalRef} onClick={() => reviewUseForm.reset()} />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box relative">
           <label htmlFor="write-a-review-modal" className="btn btn-outline btn-sm btn-circle absolute right-3 top-3">
@@ -44,7 +56,7 @@ const WriteReviewModal: React.FC<{ reviewUseForm: UseFormReturn<SubmitReview> }>
           <div className="review-body flex flex-col gap-3 items-center mt-6">
             <div className="avatar online">
               <div className="w-16 h-16 rounded-full shadow-md">
-                <Image src="/icons/default-user.png" className="p-1" height={500} width={500} alt="user" />
+                <Image src={session?.user?.image || '/icons/default-user.png'} height={500} width={500} alt="user" />
               </div>
             </div>
             <h4 className="font-medium text-xl">{session?.user?.username}</h4>

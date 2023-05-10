@@ -11,7 +11,7 @@ const WriteReviewRating: React.FC<{ reviewUseForm: UseFormReturn<SubmitReview> }
   // Watch for changes to the rating input and update the state
 
   return (
-    <div className="flex gap-2 mt-1">
+    <div className="flex gap-2">
       {[1, 2, 3, 4, 5].map((value) => (
         <AiFillStar
           key={value}

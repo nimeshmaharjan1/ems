@@ -9,7 +9,7 @@ const RatingSummary: React.FC<{ number: string; percentage: string }> = ({ numbe
         <AiFillStar />
       </i>
       <progress className="progress progress-accent" value={percentage} max="100"></progress>
-      <span className="text-xs ml-3 font-light">{percentage}%</span>
+      <span className="text-xs ml-3 font-light">{percentage !== 'NaN' ? <>{percentage}%</> : <></>}</span>
     </div>
   );
 };

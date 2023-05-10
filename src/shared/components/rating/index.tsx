@@ -1,7 +1,7 @@
 import React from 'react';
 import { AiFillStar } from 'react-icons/ai';
 
-const Rating: React.FC<{ rating?: number }> = ({ rating = 4 }) => {
+const Rating: React.FC<{ rating?: number }> = ({ rating = 5 }) => {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     if (i < rating) {
