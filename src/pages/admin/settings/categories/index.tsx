@@ -59,7 +59,7 @@ const SettingCategory = () => {
     },
   });
 
-  const updateCompanyMutation = useMutation(updateCategory, {
+  const updateCategoryMutation = useMutation(updateCategory, {
     onSuccess: () => {
       showToast(Toast.success, 'Company updated successfully');
       queryClient.invalidateQueries(['getCategories']);
@@ -77,7 +77,7 @@ const SettingCategory = () => {
   const deleteCategoryMutation = useMutation(deleteCategory, {
     onSuccess: () => {
       showToast(Toast.success, 'Company deleted successfully');
-      queryClient.invalidateQueries(['getCompanies']);
+      queryClient.invalidateQueries(['getCategories']);
     },
     onError: () => {
       showToast(Toast.error, 'Something went wrong while trying to delete company');
@@ -114,7 +114,7 @@ const SettingCategory = () => {
         addCategoryMutation.mutate(values);
         break;
       case SELECTED_ACTION.EDIT:
-        updateCompanyMutation.mutate(values);
+        updateCategoryMutation.mutate(values);
         break;
       default:
         break;
@@ -178,15 +178,6 @@ const SettingCategory = () => {
                 return (
                   <tbody key={index}>
                     <tr>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
                       <td className="animate-pulse bg-base-100"></td>
@@ -316,10 +307,10 @@ const SettingCategory = () => {
               <div className="card-actions">
                 <button
                   className={classNames('btn btn-primary btn-block btn-sm', {
-                    loading: addCategoryMutation.isLoading || updateCompanyMutation.isLoading,
+                    loading: addCategoryMutation.isLoading || updateCategoryMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}
-                  disabled={addCategoryMutation.isLoading || updateCompanyMutation.isLoading}
+                  disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}
                 >
                   Submit
                 </button>

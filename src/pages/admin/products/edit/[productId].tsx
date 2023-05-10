@@ -296,9 +296,21 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               </FormControl>
             </div>
           </div>
+
+          <div className="hidden lg:block col-span-12 mt-4">
+            <button
+              className={classNames('btn btn-primary btn-block', {
+                loading: isSubmitting,
+              })}
+              disabled={isSubmitting || isUploading}
+              onClick={handleSubmit(handleCreate)}
+            >
+              Submit
+            </button>
+          </div>
         </section>
         <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
-          <div className="image-section col-span-6 lg:col-span-6">
+          <div className="image-section col-span-6 lg:col-span-6 mt-4 lg:mt-0">
             <FormControl label="Upload Product Image">
               <ImageUpload
                 {...{ control, resetImages }}
@@ -323,7 +335,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
           </section> */}
         </section>
       </div>
-      <div>
+      <div className="block lg:hidden">
         <button
           className={classNames('btn btn-primary btn-block', {
             loading: isSubmitting,

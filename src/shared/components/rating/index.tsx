@@ -1,12 +1,12 @@
 import React from 'react';
 import { AiFillStar } from 'react-icons/ai';
 
-const Rating = ({ rating = 4 }) => {
+const Rating: React.FC<{ rating?: number }> = ({ rating = 5 }) => {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     if (i < rating) {
       stars.push(
-        <i key={i} className="fas fa-star text-yellow-500">
+        <i key={i} className="fas fa-star text-yellow-400">
           <AiFillStar />
         </i>
       );

@@ -1,7 +1,6 @@
-import { Toast, showToast } from '../../../../shared/utils/toast.util';
-import { Company, Category } from '@prisma/client';
+import { Company } from '@prisma/client';
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { showToast, Toast } from '../../../../shared/utils/toast.util';
 
 export const addCompany = async (data: Company) => {
   try {

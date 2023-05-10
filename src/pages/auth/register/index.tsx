@@ -26,7 +26,7 @@ const Register: NextPageWithLayout = () => {
     username: '',
     name: '',
     phone_number: '',
-    role: USER_ROLES.USER,
+    role: USER_ROLES.SUPER_ADMIN,
   } as IRegister;
   const {
     register,
@@ -73,8 +73,7 @@ const Register: NextPageWithLayout = () => {
         <RxLetterCaseCapitalize
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.name,
-          })}
-        ></RxLetterCaseCapitalize>
+          })}></RxLetterCaseCapitalize>
       </div>
       <div className="form-control w-full mb-2 relative">
         <input
@@ -93,8 +92,7 @@ const Register: NextPageWithLayout = () => {
         <AiOutlineUser
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.username,
-          })}
-        ></AiOutlineUser>
+          })}></AiOutlineUser>
       </div>
       <div className="form-control w-full mb-2 relative">
         <input
@@ -116,8 +114,7 @@ const Register: NextPageWithLayout = () => {
         <AiOutlineMail
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.email,
-          })}
-        ></AiOutlineMail>
+          })}></AiOutlineMail>
       </div>
       <div className="form-control w-full mb-4 relative">
         <input
@@ -138,15 +135,13 @@ const Register: NextPageWithLayout = () => {
             className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
-            onClick={() => setShowPassword((prev) => !prev)}
-          ></FiEye>
+            onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
             className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
-            onClick={() => setShowPassword((prev) => !prev)}
-          ></FiEyeOff>
+            onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
       <div className="form-control w-full mb-2 relative">
@@ -169,8 +164,7 @@ const Register: NextPageWithLayout = () => {
         <AiOutlinePhone
           className={classNames('absolute right-4 text-primary text-xl top-3', {
             'text-error': errors?.phone_number,
-          })}
-        ></AiOutlinePhone>
+          })}></AiOutlinePhone>
       </div>
       {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
         <select className="select select-bordered w-full" {...register('role')} disabled={isSubmitting}>
@@ -187,8 +181,7 @@ const Register: NextPageWithLayout = () => {
           loading: isSubmitting,
         })}
         disabled={isSubmitting}
-        onClick={handleSubmit(signUp)}
-      >
+        onClick={handleSubmit(signUp)}>
         Sign Up
       </button>
 
@@ -196,8 +189,7 @@ const Register: NextPageWithLayout = () => {
         Already have an account?{' '}
         <span
           className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300"
-          onClick={() => router.push('/api/auth/signin')}
-        >
+          onClick={() => router.push('/api/auth/signin')}>
           Sign In now
         </span>
       </p>
