@@ -51,7 +51,10 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, credentials }) {
+      if (credentials) {
+        return true;
+      }
       const dbUser = await prisma.user.upsert({
         where: { email: user.email as string },
         update: {
