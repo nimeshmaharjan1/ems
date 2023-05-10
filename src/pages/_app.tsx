@@ -2,11 +2,11 @@ import '@/styles/globals.scss';
 import { NextPage } from 'next';
 import { ThemeProvider } from 'next-themes';
 import type { AppProps } from 'next/app';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import NextNProgress from 'nextjs-progressbar';
 
+import ToastProvider from '@/shared/components/toast-provider';
 import { Session } from 'next-auth';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -32,8 +32,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
             </>
           )}
         </AuthProvider>
-
-        <ToastContainer />
+        <ToastProvider></ToastProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
