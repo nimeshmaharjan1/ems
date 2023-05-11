@@ -1,67 +1,183 @@
-import React from 'react';
-
+import { getCategories } from '@/features/admin/services/categories/categories.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
+import { ICategoryResponse } from '@/shared/interfaces/category.interface';
+import { ICompanyResponse } from '@/shared/interfaces/company.interface';
+import { showToast, Toast } from '@/shared/utils/toast.util';
+import { ShopBySearchParams, useShopByStore } from '@/store/use-shop-by';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 const ShopByAside = () => {
+  const { handleShopBySearchParamsUpdate, shopBySearchParams, setShopBySearchParams } = useShopByStore();
+  console.log({ shopBySearchParams });
+  const {
+    data: companies,
+    isLoading: isCompaniesLoading,
+    isError: isCompaniesError,
+  } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
+    const response = await getCompanies({ limit: 50, page: 1 });
+    return response;
+  });
+  const {
+    data: categories,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useQuery<ICategoryResponse, Error>('getCategories', async () => {
+    const response = await getCategories({ limit: 50, page: 1 });
+    return response;
+  });
+
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>, name: keyof ShopBySearchParams) => {
+    const value = e.target.value as string;
+    switch (name) {
+      case 'category':
+        setSelectedCategory(e.target.value);
+        handleShopBySearchParamsUpdate(name, value);
+        break;
+      case 'company':
+        setSelectedCompany(e.target.value);
+        handleShopBySearchParamsUpdate(name, value);
+        break;
+      case 'priceGt':
+        if (Number(e.target.value) > Number(maxPrice)) {
+          setMinPrice('0');
+          handleShopBySearchParamsUpdate(name, '0');
+          return showToast(Toast.error, 'Min value cannot be greater than the max value.');
+        }
+        setMinPrice(e.target.value);
+        handleShopBySearchParamsUpdate(name, value);
+        break;
+      case 'priceLt':
+        if (Number(e.target.value) < Number(minPrice)) {
+          setMaxPrice('1000000');
+          handleShopBySearchParamsUpdate(name, '1000000');
+          return showToast(Toast.error, 'Max value cannot be lower than the min value.');
+        }
+        setMaxPrice(e.target.value);
+        handleShopBySearchParamsUpdate(name, value);
+        break;
+    }
+  };
+
+  const clearAllFilters = () => {
+    setSelectedCompany('');
+    setSelectedCategory('');
+    setMinPrice('');
+    setMaxPrice('');
+    setShopBySearchParams({ title: '', category: '', company: '', priceLt: '', priceGt: '' });
+  };
+
   return (
     <>
       <header className="mb-6 text-2xl font-bold md:font-medium  md:text-xl uppercase border-b relative mt-1 pb-[0.65rem] box-border">
         Shop By
-        {/* <span
-            className="bg-primary"
-            style={{
-              content: '',
-              width: '70px',
-              height: '2px',
-              display: 'inline-block',
-              position: 'absolute',
-              bottom: '-0.5px',
-              left: '0',
-            }}
-          ></span> */}
       </header>
       <div className="border-2 p-6">
-        <section className="brand-section mb-6 pb-2 border-b border-gray-300">
-          <h3 className="uppercase">brands</h3>
-          <div className="form-control my-1">
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input type="checkbox" className="checkbox checkbox-sm " />
-              <span className="label-text">Acer</span>
-            </label>
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input type="checkbox" className="checkbox checkbox-sm " />
-              <span className="label-text">Apple</span>
-            </label>
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input type="checkbox" className="checkbox checkbox-sm " />
-              <span className="label-text">Asus</span>
-            </label>
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input type="checkbox" className="checkbox checkbox-sm " />
-              <span className="label-text">Dell</span>
-            </label>
-          </div>
+        <section className="brand-section mb-6 border-b border-gray-300 pb-4">
+          <h3 className="uppercase mb-2">Company</h3>
+          {isCompaniesError ? (
+            <h4 className="text-error my-2">Something went wrong while trying to get the companies.</h4>
+          ) : isCompaniesLoading ? (
+            <div className="h-60  flex items-center justify-center">
+              <button className="btn btn-ghost loading btn-xl"></button>
+            </div>
+          ) : (
+            <>
+              {companies &&
+                companies.data.map((company) => (
+                  <div className="form-control my-1" key={company.id}>
+                    <label className="label !justify-start gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={company.name === selectedCompany}
+                        value={company.name}
+                        onChange={(e) => handleSearchChange(e, 'company')}
+                        className="radio radio-sm"
+                        name={'company-sorting-checkbox'}
+                      />
+                      <span className="label-text">{company.name}</span>
+                    </label>
+                  </div>
+                ))}
+            </>
+          )}
         </section>
 
         <section className="type-section mb-6 border-b border-gray-300 pb-4">
-          <h3 className="uppercase">Type</h3>
-          <label className="label !justify-start gap-2 cursor-pointer">
-            <input type="checkbox" className="checkbox checkbox-sm " />
-            <span className="label-text">Gaming</span>
-          </label>
-          <label className="label !justify-start gap-2 cursor-pointer">
-            <input type="checkbox" className="checkbox checkbox-sm " />
-            <span className="label-text">Notebook</span>
-          </label>
-          <label className="label !justify-start gap-2 cursor-pointer">
-            <input type="checkbox" className="checkbox checkbox-sm " />
-            <span className="label-text">Designer</span>
-          </label>
+          <h3 className="uppercase mb-2">Category</h3>
+          {isCategoriesError ? (
+            <h4 className="text-error my-2">Something went wrong while trying to get the categories.</h4>
+          ) : isCategoriesLoading ? (
+            <div className="h-60  flex items-center justify-center">
+              <button className="btn btn-ghost loading btn-xl"></button>
+            </div>
+          ) : (
+            <>
+              {categories &&
+                categories.data.map((category) => (
+                  <div className="form-control my-1" key={category.id}>
+                    <label className="label !justify-start gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={category.name === selectedCategory}
+                        value={category.name}
+                        onChange={(e) => handleSearchChange(e, 'category')}
+                        className="radio radio-sm"
+                        name={'category-sorting-checkbox'}
+                      />
+                      <span className="label-text">{category.name}</span>
+                    </label>
+                  </div>
+                ))}
+            </>
+          )}
         </section>
-        <section className="price-section mb-5">
-          <h3 className="uppercase">Price</h3>
-          <div className="range-wrapper mt-4">
-            <input type="range" min="0" max="100" className="range range-sm range-primary" />
+        <h3 className="uppercase mb-4">Price</h3>
+
+        <div className="price-range-slider mb-4">
+          <div className="price-input flex-col flex gap-4 mb-8">
+            <div className="form-control">
+              <label className="input-group input-group-xs xl:input-group-sm">
+                <span className="w-16">Min</span>
+                <input
+                  onChange={(e) => handleSearchChange(e, 'priceGt')}
+                  value={minPrice}
+                  type="text"
+                  placeholder="Enter minimum price..."
+                  className="input input-bordered input-xs xl:input-sm"
+                />
+                {/* <span>&#8377; </span> */}
+              </label>
+            </div>
+            <div className="form-control">
+              <label className="input-group input-group-xs xl:input-group-sm">
+                <span className="w-16">Max</span>
+                <input
+                  onChange={(e) => handleSearchChange(e, 'priceLt')}
+                  value={maxPrice}
+                  type="text"
+                  placeholder="Enter maximum price..."
+                  className="input input-bordered input-xs xl:input-sm"
+                />
+                {/* <span>&#8377; </span> */}
+              </label>
+            </div>
           </div>
-        </section>
+          {/* <div className="slider">
+            <div className="price-range-slider-progress"></div>
+          </div>
+          <div className="range-input">
+            <input type="range" className="range-min" min="0" max="10000" value="2500" step="100" />
+            <input type="range" className="range-max" min="0" max="10000" value="7500" step="100" />
+          </div> */}
+        </div>
+        <div className="clear-all-filters btn btn-primary btn-sm self-end" onClick={clearAllFilters}>
+          Clear All
+        </div>
       </div>
     </>
   );

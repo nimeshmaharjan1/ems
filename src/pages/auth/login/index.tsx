@@ -1,27 +1,27 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import { AiOutlineMail, AiOutlineGoogle } from 'react-icons/ai';
-import { FaDiscord, FaGithub, FaUser } from 'react-icons/fa';
-import { BsFacebook } from 'react-icons/bs';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
-import styles from './login.module.scss';
-import { NextPageWithLayout } from '@/pages/_app';
-import AuthLayout from '@/features/auth/layout';
-import { useRouter } from 'next/router';
 import { ILoginWithPassword } from '@/features/auth/interfaces';
-import { Toast, showToast } from '@/shared/utils/toast.util';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import AuthLayout from '@/features/auth/layout';
+import { NextPageWithLayout } from '@/pages/_app';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import ErrorMessage from '@/shared/components/error-message';
+import { Toast, showToast } from '@/shared/utils/toast.util';
+import { USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
-import { signIn, useSession } from 'next-auth/react';
-import { USER_ROLES } from '@prisma/client';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { BuiltInProviderType, RedirectableProviderType } from 'next-auth/providers';
+import { BuiltInProviderType } from 'next-auth/providers';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { ReactNode, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { AiOutlineGoogle } from 'react-icons/ai';
+import { FaGithub, FaUser } from 'react-icons/fa';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import styles from './login.module.scss';
 
 const Login: NextPageWithLayout = () => {
   const { data: session } = useSession();
+  console.log({ session });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +64,6 @@ const Login: NextPageWithLayout = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<ILoginWithPassword>({ defaultValues: { username: '', password: '' }, mode: 'onChange' });
-
   return (
     <div className="card-body">
       <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Login</h2>
@@ -127,15 +126,15 @@ const Login: NextPageWithLayout = () => {
       <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer mt-2">Forgot password?</p>
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
-        <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('google')}>
+        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
           Google
         </button>
-        <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('github')}>
+        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('github')}>
           <FaGithub className="text-lg" />
           Github
         </button>
-        {/* <button className="btn btn-outline !normal-case gap-2" disabled={isSubmitting}>
+        {/* <button className="btn btn-outline  gap-2" disabled={isSubmitting}>
           <BsFacebook className="text-lg" />
           Facebook
         </button> */}

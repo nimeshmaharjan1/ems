@@ -46,6 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Failed to create review.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else if (req.method === 'GET') {
     try {
@@ -107,6 +109,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong while trying to get the reviews.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.setHeader('Allow', ['POST']);

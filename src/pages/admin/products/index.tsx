@@ -45,8 +45,7 @@ const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ produc
           className="btn btn-sm btn-secondary"
           onClick={() => {
             router.push('/admin/products/create');
-          }}
-        >
+          }}>
           Create
         </button>
       </div>
@@ -76,10 +75,10 @@ const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ produc
                   <td className="border !border-base-300">&#8377; {formatPrice(product.price)}</td>
                   <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
                   <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                    <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm !normal-case gap-1">
+                    <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm  gap-1">
                       <FaCogs></FaCogs> Edit
                     </Link>
-                    <button className="btn btn-error btn-sm !normal-case gap-1">
+                    <button className="btn btn-error btn-sm  gap-1">
                       <BsTrash></BsTrash> Delete
                     </button>
                   </td>

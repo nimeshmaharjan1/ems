@@ -220,7 +220,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 },
               })}
               rows={6}
-              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
+              className={`textarea textarea-bordered  w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
             />
           </FormControl>
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
@@ -236,12 +236,10 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select company'}
-                        loadOptions={loadCompanies}
-                      ></StyledReactSelect>
+                        loadOptions={loadCompanies}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -255,12 +253,10 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select category'}
-                        loadOptions={loadCategories}
-                      ></StyledReactSelect>
+                        loadOptions={loadCategories}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-x-2">
@@ -303,8 +299,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 loading: isSubmitting,
               })}
               disabled={isSubmitting || isUploading}
-              onClick={handleSubmit(handleCreate)}
-            >
+              onClick={handleSubmit(handleCreate)}>
               Submit
             </button>
           </div>
@@ -341,8 +336,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             loading: isSubmitting,
           })}
           disabled={isSubmitting || isUploading}
-          onClick={handleSubmit(handleCreate)}
-        >
+          onClick={handleSubmit(handleCreate)}>
           Submit
         </button>
       </div>
