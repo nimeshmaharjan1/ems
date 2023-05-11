@@ -1,6 +1,7 @@
 import ProductCard from '@/features/products/components/product-card';
 import MainSharedLayout from '@/shared/layouts/main';
 import ViewAllLayout from '@/shared/layouts/view-all';
+import { useShopByStore } from '@/store/use-shop-by';
 import { Product } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -10,20 +11,18 @@ import { NextPageWithLayout } from '../_app';
 
 const Home: NextPageWithLayout = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
-  const handleProductClick = (id: string) => {
-    router.push(`/products/${id}`);
-  };
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  const { shopBySearchParams } = useShopByStore();
 
   const {
     data: productData,
     isError,
     isLoading,
-  } = useQuery<{ products: Product[] }, Error>('fetchProducts', async () => {
-    const response = await axios.get('/api/products');
+  } = useQuery<{ products: Product[] }, Error>(['fetchProducts', shopBySearchParams], async () => {
+    const params = new URLSearchParams(shopBySearchParams);
+    const response = await axios.get(`/api/products?${params}`);
     return response.data;
   });
 
@@ -104,7 +103,7 @@ const Home: NextPageWithLayout = () => {
           productData.products.map((product, productIndex) => {
             return (
               <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
-                <ProductCard handleProductClick={handleProductClick} {...{ product }} key={product.id}></ProductCard>
+                <ProductCard {...{ product }} key={product.id}></ProductCard>
               </div>
             );
           })}

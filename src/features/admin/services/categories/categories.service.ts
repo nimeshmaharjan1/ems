@@ -8,7 +8,7 @@ export const addCategory = async (data: Company) => {
     const response = await axios.post('/api/admin/categories', data);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while adding the company');
+    showToast(Toast.error, 'Something went wrong while adding the category');
   }
 };
 
@@ -17,7 +17,7 @@ export const updateCategory = async (data: Company) => {
     const response = await axios.put(`/api/admin/categories/${data.id}`, data);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while updating company');
+    showToast(Toast.error, 'Something went wrong while updating category');
   }
 };
 
@@ -27,7 +27,7 @@ export const getCategories = async (params: { page: number; limit: number }) => 
     return response.data;
   } catch (error) {
     console.error(error);
-    showToast(Toast.error, 'Something went wrong while getting companies');
+    showToast(Toast.error, 'Something went wrong while getting the categories.');
   }
 };
 
@@ -36,7 +36,7 @@ export const deleteCategory = async (id: string) => {
     const response = await axios.delete(`/api/admin/categories/${id}`);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while deleting company');
+    showToast(Toast.error, 'Something went wrong while deleting category');
   }
 };
 
@@ -45,6 +45,6 @@ export const getCategory = async (id: string) => {
     const response = await axios.get(`/api/admin/categories/${id}`);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while getting company');
+    showToast(Toast.error, 'Something went wrong while getting category');
   }
 };

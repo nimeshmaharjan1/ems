@@ -1,32 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { ShopBySearchParams } from '@/store/use-shop-by';
 const prisma = new PrismaClient();
-interface SearchParams {
-  price_gt?: number;
-  price_lt?: number;
-  title?: string;
-  company?: string;
-  category?: string;
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const { price_gt, price_lt, title, company, category } = req.query as SearchParams;
+      const { priceGt, priceLt, title, company, category } = req.query as ShopBySearchParams;
 
       const filters: any = {};
 
-      if (price_gt) {
+      if (priceGt) {
         filters.price = {
-          gt: Number(price_gt),
+          // gt: Number(priceGt),
+          gte: parseFloat(priceGt),
         };
       }
 
-      if (price_lt) {
+      if (priceLt) {
         if (!filters.price) {
           filters.price = {};
         }
-        filters.price.lt = Number(price_lt);
+        filters.price.lte = parseFloat(priceLt);
       }
 
       if (title) {
@@ -53,7 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         };
       }
-
       const products = await prisma.product.findMany({
         where: filters,
         include: {
