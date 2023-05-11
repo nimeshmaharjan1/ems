@@ -22,7 +22,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       <div className="card-body !p-4">
         <h2 className="card-title !text-[1.1rem]">{product.title}</h2>
         <Rating></Rating>
-        <p className="py-1 font-bold text-error">&#8377; {new Intl.NumberFormat('en-IN').format(parseInt(product.price))}</p>
+        <p className="py-1 font-bold text-error">&#8377; {new Intl.NumberFormat('en-IN').format(Number(product.price))}</p>
         <div className="card-actions justify-end items-center">
           {/* <div className="badge badge-accent">NEW</div> */}
 
