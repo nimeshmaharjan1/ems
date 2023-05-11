@@ -10,9 +10,11 @@ import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
-import { FaBox, FaLocationArrow, FaUser } from 'react-icons/fa';
+import { FaBox, FaLocationArrow } from 'react-icons/fa';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
+import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
+import { FiUserPlus } from 'react-icons/fi';
 
 const inter = Inter({
   preload: false,
@@ -56,7 +58,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 <button className="btn btn-sm btn-ghost !normal-case" onClick={() => router.push('/products')}>
                   Products
                 </button>
-                <button className="btn btn-sm btn-ghost !normal-case">Contact</button>
+                {/* <button className="btn btn-sm btn-ghost !normal-case">Contact</button> */}
 
                 {status === 'unauthenticated' && (
                   <>
@@ -131,22 +133,43 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
           <ul className="menu p-4 w-64 bg-base-100">
             <li>
-              <Link href="/admin/dashboard" className="text-sm">
+              <Link href="/products" className="text-sm">
                 <FaBox></FaBox>
                 Products
               </Link>
             </li>
-            <li>
-              <Link href="/admin/dashboard" className="text-sm">
-                <FaLocationArrow />
-                Contact
-              </Link>
-            </li>
-            <li>
+            {status === 'unauthenticated' && (
+              <>
+                <li>
+                  <Link href="/api/auth/signin" className="text-sm">
+                    <MdLogin className="text-lg" />
+                    Sign In
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/auth/register" className="text-sm">
+                    <FiUserPlus />
+                    Sign Up
+                  </Link>
+                </li>
+              </>
+            )}
+            {status === 'authenticated' && (
+              <>
+                <li className="text-sm" onClick={() => signOut()}>
+                  <a>
+                    <MdLogout className="text-lg" />
+                    Logout
+                  </a>
+                </li>
+              </>
+            )}
+
+            {/* <li>
               <Link href="/admin/dashboard" className="text-sm">
                 <FaUser /> Dashboard
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
