@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['naajvhwyqrtaxybvcdzm.supabase.co', 'images.unsplash.com', 'avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
   },
+  experimental: {
+    appDir: false,
+  },
 };
 
 module.exports = nextConfig;

@@ -42,7 +42,7 @@ const CategoriesCard = () => {
             <div className="badge badge-neutral">Laptop</div>
           </div>
           <div className="card-actions justify-end mt-2">
-            <label htmlFor="add-category-modal" className="btn btn-secondary btn-sm !font-medium !normal-case items-center">
+            <label htmlFor="add-category-modal" className="btn btn-secondary btn-sm !font-medium  items-center">
               Add
               <BsPlus className="h-5 w-5 mb-[1px]"></BsPlus>
             </label>
@@ -70,8 +70,7 @@ const CategoriesCard = () => {
                 loading: isSubmitting,
               })}
               disabled={isSubmitting}
-              onClick={handleSubmit(onSubmit)}
-            >
+              onClick={handleSubmit(onSubmit)}>
               Submit
             </button>
           </div>
