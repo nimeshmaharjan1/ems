@@ -10,11 +10,11 @@ import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
-import { FaBox, FaLocationArrow } from 'react-icons/fa';
+import { FaBox } from 'react-icons/fa';
+import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
-import { FiUserPlus } from 'react-icons/fi';
 
 const inter = Inter({
   preload: false,
@@ -55,21 +55,24 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                 <ThemeToggler></ThemeToggler>
               </div>
               <div className="flex-none hidden lg:flex items-center gap-3">
-                <button className="btn btn-sm btn-ghost !normal-case" onClick={() => router.push('/products')}>
+                <Link href="/products" className="btn btn-sm btn-ghost ">
                   Products
-                </button>
-                {/* <button className="btn btn-sm btn-ghost !normal-case">Contact</button> */}
+                </Link>
+                {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
+                  <Link href="/admin/products" className="btn btn-sm btn-ghost ">
+                    Dashboard
+                  </Link>
+                )}
+                {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
                   <>
-                    <button
-                      className="btn btn-sm btn-ghost !normal-case"
-                      onClick={() => {
-                        router.push('/api/auth/signin');
-                      }}>
+                    <Link className="btn btn-sm btn-ghost " href="/api/auth/signin">
                       Sign In
-                    </button>
-                    <button className="btn btn-sm btn-primary !normal-case">Sign Up</button>
+                    </Link>
+                    <Link href="/auth/register" className="btn btn-sm btn-primary ">
+                      Sign Up
+                    </Link>
                   </>
                 )}
                 {status === 'authenticated' && (
@@ -110,7 +113,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
                           <GiSettingsKnobs></GiSettingsKnobs>Settings
                         </a>
                       </li>
-                      <li onClick={() => signOut({ redirect: false })}>
+                      <li onClick={() => signOut({ callbackUrl: '/products' })}>
                         <a>
                           <AiOutlineLogout></AiOutlineLogout>Logout
                         </a>

@@ -42,7 +42,7 @@ const CompaniesCard = () => {
             <div className="badge badge-neutral">Asus</div>
           </div>
           <div className="card-actions justify-end mt-2">
-            <label htmlFor="add-company-modal" className="btn btn-accent btn-sm !font-medium !normal-case items-center">
+            <label htmlFor="add-company-modal" className="btn btn-accent btn-sm !font-medium  items-center">
               Add
               <BsPlus className="h-5 w-5 mb-[1px]"></BsPlus>
             </label>
@@ -70,8 +70,7 @@ const CompaniesCard = () => {
                 loading: isSubmitting,
               })}
               disabled={isSubmitting}
-              onClick={handleSubmit(onSubmit)}
-            >
+              onClick={handleSubmit(onSubmit)}>
               Submit
             </button>
           </div>

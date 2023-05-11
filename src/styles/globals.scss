@@ -28,7 +28,7 @@ body::-webkit-scrollbar-thumb {
 
 // @layer base {
 //   button {
-//     @apply !normal-case;
+//     @apply ;
 //   }
 // }
 
@@ -37,9 +37,9 @@ body::-webkit-scrollbar-thumb {
     @apply text-base-100 bg-secondary;
   }
 
-  .btn {
-    @apply font-normal;
-  }
+  // .btn {
+  //   @apply font-normal;
+  // }
 
   .btn-error {
     @apply text-gray-200;
