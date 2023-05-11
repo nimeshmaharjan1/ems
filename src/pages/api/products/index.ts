@@ -1,10 +1,61 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { ShopBySearchParams } from '@/store/use-shop-by';
 const prisma = new PrismaClient();
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const products = await prisma.product.findMany();
+      const { priceGt, priceLt, title, company, category } = req.query as ShopBySearchParams;
+
+      const filters: any = {};
+
+      if (priceGt) {
+        filters.price = {
+          // gt: Number(priceGt),
+          gte: parseFloat(priceGt),
+        };
+      }
+
+      if (priceLt) {
+        if (!filters.price) {
+          filters.price = {};
+        }
+        filters.price.lte = parseFloat(priceLt);
+      }
+
+      if (title) {
+        filters.title = {
+          contains: title,
+          mode: 'insensitive',
+        };
+      }
+
+      if (company) {
+        filters.company = {
+          name: {
+            contains: company,
+            mode: 'insensitive',
+          },
+        };
+      }
+
+      if (category) {
+        filters.category = {
+          name: {
+            contains: category,
+            mode: 'insensitive',
+          },
+        };
+      }
+      const products = await prisma.product.findMany({
+        where: filters,
+        include: {
+          category: true,
+          company: true,
+        },
+      });
+
       res.status(200).json({ products });
     } catch (e) {
       console.error(e);

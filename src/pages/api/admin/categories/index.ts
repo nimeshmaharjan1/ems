@@ -1,16 +1,11 @@
-import { ReactSelectReturn } from './../../../../shared/interfaces/common.interface';
-import { ICategoryResponse } from './../../../../shared/interfaces/category.interface';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
-import { string } from 'zod';
+import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ReactSelectReturn } from './../../../../shared/interfaces/common.interface';
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const authenticated = await isAuthenticated(req, res);
-  if (!authenticated) {
-    return;
-  }
   if (req.method === 'POST') {
+    await isAuthenticated(req, res);
     try {
       const { name, products, companies } = req.body;
       const companyIds = companies?.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];
@@ -47,7 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         totalPages,
         totalRecords,
       };
-
       res.status(200).json(response);
     } catch (error) {
       console.error(error);
