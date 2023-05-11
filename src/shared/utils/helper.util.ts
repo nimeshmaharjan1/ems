@@ -9,8 +9,8 @@ export const getDateWithWeekDay = (date: Date) => {
   return DateTime.fromJSDate(newDate).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
 };
 
-export const formatPrice = (price: string) => {
-  return new Intl.NumberFormat('en-IN').format(parseInt(price));
+export const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('en-IN').format(price);
 };
 
 export const downloadFile = (base64String: string, fileName: string) => {
