@@ -6,7 +6,7 @@ import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
 
@@ -37,6 +37,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ products }) => {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 6;
   return (
     <>
       <div className="flex items-center justify-between mb-6">
