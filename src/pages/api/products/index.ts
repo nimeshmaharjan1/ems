@@ -49,14 +49,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
 
-      const { page = 1, productId } = req.query;
+      const { page = 1 } = req.query;
       const limit = parseInt(req.query.limit as string) || 6;
-
-      const totalRecords = ((await prisma.review.count({ where: { productId: productId as string } })) as number) ?? 0;
+      const totalRecords = ((await prisma.product.count()) as number) ?? 0;
       const totalPages = Math.ceil(totalRecords / (limit as number));
       const products = await prisma.product.findMany({
         where: filters,
-        orderBy: { createdAt: 'desc' }, // newest review first
+        orderBy: { createdAt: 'desc' }, // newest products first
         skip: (Number(page) - 1) * (limit as number) || 0,
         take: limit as number,
         include: {
@@ -64,7 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           company: true,
         },
       });
-
       res.status(200).json({ products, limit: limit as number, page: Number(page), totalPages, totalRecords });
     } catch (e) {
       console.error(e);

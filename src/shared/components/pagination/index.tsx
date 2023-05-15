@@ -29,7 +29,7 @@ const Pagination: React.FC<{
           key={i}
           onClick={() => setCurrentPage(i)}
           aria-current={currentPage === i ? 'page' : undefined}
-          className={`btn ${currentPage === i ? 'btn-primary' : 'btn-ghost'} btn-sm`}>
+          className={`btn ${currentPage === i ? 'btn-primary' : 'btn-ghost btn-outline'} btn-sm`}>
           {i}
         </button>
       );

@@ -113,7 +113,9 @@ const Home: NextPageWithLayout = () => {
             );
           })}
       </div>
-      {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
+      <div className="mt-12 place-self-end">
+        {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
+      </div>
     </>
   );
 };
