@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ products, limit: limit as number, page: Number(page), totalPages, totalRecords });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: 'Something went wrong while trying to fetch the products.' });
+      res.status(500).json({ message: 'Something went wrong while trying to fetch the products.', error: e });
     } finally {
       await prisma.$disconnect();
     }
