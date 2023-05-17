@@ -1,4 +1,6 @@
 import ProductCard from '@/features/products/components/product-card';
+import Pagination from '@/shared/components/pagination/index';
+import { IProductResponse, PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
 import MainSharedLayout from '@/shared/layouts/main';
 import ViewAllLayout from '@/shared/layouts/view-all';
 import { useShopByStore } from '@/store/use-shop-by';
@@ -10,6 +12,8 @@ import { useQuery } from 'react-query';
 import { NextPageWithLayout } from '../_app';
 
 const Home: NextPageWithLayout = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(6);
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -20,11 +24,12 @@ const Home: NextPageWithLayout = () => {
     data: productData,
     isError,
     isLoading,
-  } = useQuery<{ products: Product[] }, Error>(['fetchProducts', shopBySearchParams], async () => {
+  } = useQuery<PaginatedProductsResponse, Error>(['fetchProducts', shopBySearchParams, currentPage, limit], async () => {
     const params = new URLSearchParams(shopBySearchParams);
-    const response = await axios.get(`/api/products?${params}`);
+    const response = await axios.get(`/api/products?${params}&page=${currentPage}&limit=${limit}`);
     return response.data;
   });
+  const totalPages = productData?.totalPages;
 
   if (!isMounted) return null;
 
@@ -100,13 +105,16 @@ const Home: NextPageWithLayout = () => {
       </header>
       <div className="grid grid-cols-12 gap-6">
         {productData?.products &&
-          productData.products.map((product, productIndex) => {
+          productData.products.map((product) => {
             return (
               <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
                 <ProductCard {...{ product }} key={product.id}></ProductCard>
               </div>
             );
           })}
+      </div>
+      <div className="mt-12 px-12 lg:px-0 place-self-end">
+        {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>
   );
@@ -115,7 +123,10 @@ const Home: NextPageWithLayout = () => {
 export default Home;
 Home.getLayout = (page: ReactNode) => {
   return (
-    <MainSharedLayout>
+    <MainSharedLayout
+      metaData={{
+        title: 'Products',
+      }}>
       <ViewAllLayout>{page}</ViewAllLayout>
     </MainSharedLayout>
   );

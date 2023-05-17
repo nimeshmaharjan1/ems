@@ -14,3 +14,11 @@ export interface IProductResponse extends Product {
   category: Category;
   company: Company;
 }
+
+export interface PaginatedProductsResponse {
+  products: IProductResponse[];
+  limit: number;
+  page: number;
+  totalPages: number;
+  totalRecords: number;
+}

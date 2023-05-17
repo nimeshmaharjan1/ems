@@ -5,6 +5,7 @@ import ViewOneLayout from '@/shared/layouts/view-one';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useState } from 'react';
@@ -60,6 +61,9 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
   }
   return (
     <>
+      <Head>
+        <title>EMS - {product.slug}</title>
+      </Head>
       <section className="grid-cols-6 grid gap-10 gap-x-12">
         <section className="carousel-section col-span-6 md:col-span-3">
           <div className="selected-image mb-4 rounded-box">
@@ -107,6 +111,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
 
 export default Product;
 
+//TODO update single product title
 Product.getLayout = (page: ReactNode) => {
-  return <MainSharedLayout>{page}</MainSharedLayout>;
+  return <MainSharedLayout metaData={{}}>{page}</MainSharedLayout>;
 };

@@ -23,8 +23,10 @@ const inter = Inter({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
 
-const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const router = useRouter();
+const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
+  children,
+  metaData: { title, description },
+}) => {
   const { data: session, status } = useSession();
   const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
   const [isMounted, setMounted] = useState(false);
@@ -38,7 +40,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className={`min-h-screen flex flex-col justify-between ${inter.className}`}>
       <Head>
-        <title>EMS</title>
+        <title>{title ? `EMS - ${title}` : 'EMS'}</title>
+        <meta
+          name="description"
+          content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
+        />
       </Head>
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />

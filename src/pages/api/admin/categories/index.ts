@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(response);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+      res.status(500).json({ message: 'Something went wrong while trying to fetch categories.', error });
     } finally {
       await prisma.$disconnect();
     }

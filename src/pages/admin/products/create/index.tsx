@@ -93,24 +93,6 @@ const CreateUser: NextPageWithLayout = () => {
     }
   };
 
-  const {
-    data: categories,
-    isError: isCategoryError,
-    isLoading: isCategoryLoading,
-  } = useQuery<Category[], Error>('fetchCategories', async () => {
-    const response = await axios.get('/api/admin/categories');
-    return response.data.categories;
-  });
-
-  const {
-    data: companies,
-    isError: isCompanyError,
-    isLoading: isCompanyLoading,
-  } = useQuery<Company[], Error>('fetchCompanies', async () => {
-    const response = await axios.get('/api/admin/companies');
-    return response.data.companies;
-  });
-
   const loadCategories = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
       const companyData = await getCategories({ page, limit: 5 });
@@ -214,12 +196,10 @@ const CreateUser: NextPageWithLayout = () => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select company'}
-                        loadOptions={loadCompanies}
-                      ></StyledReactSelect>
+                        loadOptions={loadCompanies}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -233,12 +213,10 @@ const CreateUser: NextPageWithLayout = () => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select category'}
-                        loadOptions={loadCategories}
-                      ></StyledReactSelect>
+                        loadOptions={loadCategories}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-x-2">
@@ -303,8 +281,7 @@ const CreateUser: NextPageWithLayout = () => {
             loading: isSubmitting,
           })}
           disabled={isSubmitting || isUploading}
-          onClick={handleSubmit(handleCreate)}
-        >
+          onClick={handleSubmit(handleCreate)}>
           Submit
         </button>
       </div>

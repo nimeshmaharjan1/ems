@@ -48,18 +48,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         };
       }
+
+      const { page = 1 } = req.query;
+      const limit = parseInt(req.query.limit as string) || 6;
+      const totalRecords = ((await prisma.product.count()) as number) ?? 0;
+      const totalPages = Math.ceil(totalRecords / (limit as number));
       const products = await prisma.product.findMany({
         where: filters,
+        orderBy: { createdAt: 'desc' }, // newest products first
+        skip: (Number(page) - 1) * (limit as number) || 0,
+        take: limit as number,
         include: {
           category: true,
           company: true,
         },
       });
-
-      res.status(200).json({ products });
+      res.status(200).json({ products, limit: limit as number, page: Number(page), totalPages, totalRecords });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: 'Something went wrong while trying to fetch the products.' });
+      res.status(500).json({ message: 'Something went wrong while trying to fetch the products.', error: e });
     } finally {
       await prisma.$disconnect();
     }
