@@ -123,7 +123,10 @@ const Home: NextPageWithLayout = () => {
 export default Home;
 Home.getLayout = (page: ReactNode) => {
   return (
-    <MainSharedLayout>
+    <MainSharedLayout
+      metaData={{
+        title: 'Products',
+      }}>
       <ViewAllLayout>{page}</ViewAllLayout>
     </MainSharedLayout>
   );
