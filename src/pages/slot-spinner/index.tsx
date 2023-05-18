@@ -87,7 +87,7 @@ const CardScroll = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center min-h-screen">
       <canvas ref={canvasRef} width={1200} height={250} />
     </div>
   );
