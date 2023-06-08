@@ -41,7 +41,9 @@ const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
         </div>
       ) : isReviewsLoading ? (
         <div className="col-span-6 flex items-center justify-center">
-          <button className="loading btn btn-ghost disabled btn-xl gap-3">Loading reviews...</button>
+          <button className="btn btn-ghost disabled btn-xl gap-3">
+            <span className="loading loading-spinner"></span>Loading reviews...
+          </button>
         </div>
       ) : (
         <>

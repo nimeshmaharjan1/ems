@@ -15,6 +15,7 @@ import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
+import { User } from 'lucide-react';
 
 const inter = Inter({
   preload: false,
@@ -60,7 +61,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
               <div className="block md:hidden theme mx-4">
                 <ThemeToggler></ThemeToggler>
               </div>
-              <div className="flex-none hidden lg:flex items-center gap-3">
+              <div className="flex-none hidden lg:flex items-center gap-4">
                 <Link href="/products" className="btn btn-sm btn-ghost ">
                   Products
                 </Link>
@@ -83,7 +84,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 )}
                 {status === 'authenticated' && (
                   <div className="dropdown dropdown-end !-ml-0">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                    <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
                       {session?.user?.image ? (
                         <div className="avatar online">
                           <div className="w-8 h-8 rounded-full shadow">
@@ -91,18 +92,19 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                           </div>
                         </div>
                       ) : (
-                        <div className="avatar w-8 h-8 rounded-full shadow">
-                          <Image src="/icons/default-user.png" height={500} width={500} alt="user" />
+                        <>
+                          <User />
+                          {/* <Image src="/icons/default-user.png" height={500} width={500} alt="user" /> */}
                           {/* <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
                             <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
                           </div> */}
-                        </div>
+                        </>
                       )}
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
                       {isAdmin && (
                         <li>
-                          <Link href="/admin/dashboard">
+                          <Link href="/admin/products">
                             <RxDashboard></RxDashboard>
                             Dashboard
                           </Link>
@@ -127,7 +129,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </ul>
                   </div>
                 )}
-                <div className="!ml-1">
+                <div className="!ml-2">
                   <ThemeToggler></ThemeToggler>
                 </div>
               </div>

@@ -55,7 +55,7 @@ const Users: NextPageWithLayout<{ users: IUserResponse[] }> = ({ users }) => {
         </Link>
       </div>
       <section className="overflow-x-auto">
-        <table className="table w-full">
+        <table className="table table-auto w-full">
           <thead>
             <tr>
               <th className="border !border-base-300">Name</th>
@@ -63,7 +63,7 @@ const Users: NextPageWithLayout<{ users: IUserResponse[] }> = ({ users }) => {
               <th className="border !border-base-300">Email</th>
               <th className="border !border-base-300">Username</th>
               <th className="border !border-base-300">Role</th>
-              <th className="border !border-base-300 w-48">Actions</th>
+              <th className="border !border-base-300 ">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -84,11 +84,11 @@ const Users: NextPageWithLayout<{ users: IUserResponse[] }> = ({ users }) => {
                       {user.role}
                     </span>
                   </td>
-                  <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                    <Link href={`/admin/users/edit/${user.id}`} className="btn btn-info btn-sm  gap-1">
+                  <td className="border !border-base-300 text-center">
+                    <Link href={`/admin/users/edit/${user.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
                       <FaCogs></FaCogs> Edit
                     </Link>
-                    <button className="btn btn-error btn-sm  gap-1">
+                    <button className="btn btn-error btn-xs btn-outline ml-2 gap-1">
                       <BsTrash></BsTrash> Delete
                     </button>
                   </td>

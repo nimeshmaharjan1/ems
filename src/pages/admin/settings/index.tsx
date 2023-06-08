@@ -21,19 +21,20 @@ const Settings: NextPageWithLayout = () => {
         {Object.values(SETTING_TAB).map((tab) => {
           return (
             <a
-              className={classNames('tab tab-bordered', {
+              className={classNames('tab-lg tab tab-bordered', {
                 'tab-active': tab === selectedTab,
               })}
               onClick={() => setSelectedTab(tab)}
-              key={tab}
-            >
+              key={tab}>
               {tab}
             </a>
           );
         })}
       </div>
-      <section className="mt-3">{selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}</section>
-      <section className="mt-3">{selectedTab === SETTING_TAB.COMPANY && <SettingCompany></SettingCompany>}</section>
+      <section className="mt-3">
+        {selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}
+        {selectedTab === SETTING_TAB.COMPANY && <SettingCompany></SettingCompany>}
+      </section>
     </>
   );
 };

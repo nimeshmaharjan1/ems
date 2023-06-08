@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { RxDashboard } from 'react-icons/rx';
 import { DASHBOARD_LINKS } from '@/features/admin/enums';
 import { signOut } from 'next-auth/react';
+import classNames from 'classnames';
 
 export default function Sidebar({
   isSidebarCollapsed,
@@ -31,7 +32,7 @@ export default function Sidebar({
   return (
     <aside
       className={classnames(
-        `sticky z-50 left-0 top-0 bottom-0 right-0 h-screen bg-base-200 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
+        `sticky z-50 left-0 top-0 bottom-0 right-0 h-screen bg-base-100 shadow-lg duration-500 flex justify-between flex-col items-start px-2`,
         {
           ['w-[15.5rem]']: !isSidebarCollapsed,
           ['w-[4.2rem]']: isSidebarCollapsed,
@@ -47,12 +48,12 @@ export default function Sidebar({
             className={classnames('text-primary font-bold text-xl', {
               hidden: isSidebarCollapsed,
             })}>
-            Melon
+            EMS
           </h1>
         </div>
-        <div
-          className={classnames('search-section flex items-center gap-2 rounded-md mt-6 bg-base-300 py-2 duration-1000', {
-            'px-3 ml-3': !isSidebarCollapsed,
+        {/* <div
+          className={classnames('search-section flex items-center gap-2 rounded-md mt-6 bg-base-200 py-2 duration-1000', {
+            'pl-3 mr-3': !isSidebarCollapsed,
             'justify-center w-10 px-2 ml-1': isSidebarCollapsed,
           })}
           onClick={() => setIsSidebarCollapsed(false)}>
@@ -67,9 +68,12 @@ export default function Sidebar({
               hidden: isSidebarCollapsed,
             })}
           />
-        </div>
-        <ul className="pt-3 w-full pl-1 pr-6">
-          <li
+        </div> */}
+        <ul
+          className={classNames('pt-3 w-full pl-1 pr-6', {
+            ['w-[15.5rem]']: !isSidebarCollapsed,
+          })}>
+          {/* <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
               {
@@ -85,8 +89,8 @@ export default function Sidebar({
             <span className="text-2xl block float-left">
               <RxDashboard></RxDashboard>
             </span>
-            <span className={`font-medium  flex-1 ${isSidebarCollapsed && 'hidden'}`}>Dashboard</span>
-          </li>
+            <span className={`font-normal text-sm  flex-1 ${isSidebarCollapsed && 'hidden'}`}>Dashboard</span>
+          </li> */}
           <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
@@ -103,7 +107,7 @@ export default function Sidebar({
             <span className="text-2xl block float-left">
               <FiBox></FiBox>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
+            <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
           </li>
           <li
             className={classnames(
@@ -121,9 +125,9 @@ export default function Sidebar({
             <span className="text-2xl block float-left">
               <HiOutlineUsers></HiOutlineUsers>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Users</span>
+            <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Users</span>
           </li>
-          <li
+          {/* <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
               {
@@ -139,8 +143,8 @@ export default function Sidebar({
             <span className="text-2xl block float-left">
               <ImProfile></ImProfile>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
-          </li>
+            <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
+          </li> */}
 
           <li
             className={classnames(
@@ -158,11 +162,14 @@ export default function Sidebar({
             <span className="text-2xl block float-left">
               <FiSettings></FiSettings>
             </span>
-            <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Settings</span>
+            <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Settings</span>
           </li>
         </ul>
       </div>
-      <div className="actions mb-6 flex items-center">
+      <div
+        className={classNames('actions mb-6 flex items-center', {
+          ['w-[15.5rem]']: isSidebarCollapsed,
+        })}>
         <div
           onClick={() => {
             signOut({ callbackUrl: '/products' });
@@ -177,7 +184,7 @@ export default function Sidebar({
           <span className="text-2xl block float-left">
             <AiOutlineLogout></AiOutlineLogout>
           </span>
-          <span className={`font-medium flex-1 ${isSidebarCollapsed && 'hidden'}`}>Logout</span>
+          <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Logout</span>
         </div>
       </div>
     </aside>

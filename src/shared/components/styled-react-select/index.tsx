@@ -32,7 +32,9 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
       }}
       classNames={{
         control: () => {
-          return `block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${isRequired ? 'border-error' : ''} border rounded-sm p-1`;
+          return `block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${
+            isRequired ? 'border-error' : ''
+          } border rounded-sm py-1`;
         },
 
         menuList: () => {
@@ -53,8 +55,7 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
       }}
       unstyled
       instanceId={'styled-react-select'}
-      placeholder={placeholder}
-    ></AsyncPaginate>
+      placeholder={placeholder}></AsyncPaginate>
   );
 };
 
