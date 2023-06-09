@@ -16,6 +16,7 @@ import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
 import { ShoppingCart, User } from 'lucide-react';
+import Cart from '@/shared/components/cart';
 
 const inter = Inter({
   preload: false,
@@ -70,11 +71,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
-
-                <Link href="/cart" className="hover:text-amber-500 relative transition-all mr-3">
-                  <ShoppingCart />
-                  <div className="badge badge-primary badge-xs absolute -top-2 -right-2.5">9+</div>
-                </Link>
+                <Cart></Cart>
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
