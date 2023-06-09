@@ -32,7 +32,6 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       whileHover={{
         scale: 1.02,
       }}
-      whileTap={{ scale: 0.9 }}
       className="z-0 card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 border-2">
       <figure className="h-44 cursor-pointer" onClick={() => router.push(`/products/${product.id}`)}>
         <Image

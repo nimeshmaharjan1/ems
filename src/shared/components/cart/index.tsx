@@ -1,27 +1,32 @@
 import { removeFromCart } from '@/features/cart/cart.service';
 import { formatPrice, rupees } from '@/shared/utils/helper.util';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
 import { Trash2 } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
   const { cartItems, setCartItems, getTotalPrice } = useCartStore();
+  const { status } = useSession();
+  const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
     removeFromCart(productId, cartItems, setCartItems);
   };
   return (
-    <div className="dropdown dropdown-hover  dropdown-end mr-4">
+    <div className="dropdown dropdown-hover dropdown-end mr-4">
       <label tabIndex={0} className="hover:text-amber-500 relative transition-all ">
         <ShoppingCart />
         <div className="badge badge-primary rounded-full p-2 badge-xs absolute -top-2 -right-2.5">
           <span className="text-[8px]">{cartItems.length > 9 ? '9+' : cartItems.length}</span>
         </div>
       </label>
-      <div tabIndex={0} className="dropdown-content w-[30rem] z-20 card mt-2 shadow-lg bg-base-200 ">
-        <div className="card-body">
+      <div tabIndex={0} className="dropdown-content w-52 md:w-[30rem] z-20 card mt-2 shadow-2xl bg-base-200 ">
+        <div className="card-body ">
           <h3 className="card-title">Your Cart</h3>
           {cartItems.length === 0 && (
             <>
@@ -34,21 +39,38 @@ const Cart = () => {
           )}
           {cartItems.length > 0 && (
             <>
-              <ul className="flex flex-col divide-y divide-gray-700">
+              <ul className="block md:hidden space-y-4">
+                {cartItems.map((item) => (
+                  <li key={item.productId} className="flex items-center gap-4">
+                    <div className="h-10 w-16 relative rounded object-cover">
+                      <Image src={item.image} alt={item.slug} fill />
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm text-gray-900">{item.slug}</h3>
+                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600"> {item.quantity}</dl>
+                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600">&#8377; {formatPrice(item.price)}</dl>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <ul className="hidden md:flex flex-col divide-y divide-gray-700">
                 {cartItems.map((cartItem) => (
-                  <li key={cartItem.productId} className="flex flex-col py-6 sm:flex-row sm:justify-between">
-                    <div className="flex w-full space-x-2 sm:space-x-4">
-                      <div className="relative flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500">
+                  <li key={cartItem.productId} className="flex flex-col py-2 md:py-4 lg:py-6 sm:flex-row sm:justify-between">
+                    <div className="flex w-full  sm:space-x-4">
+                      <div className="relative hidden md:block flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500">
                         <Image src={cartItem.image} alt={cartItem.slug} fill></Image>
                       </div>
                       <div className="flex flex-col justify-between w-full pb-4">
-                        <div className="flex justify-between w-full pb-2 space-x-2">
+                        <div className="flex gap-y-3 md:gap-y-0 flex-col md:flex-row md:justify-between w-full pb-2 md:space-x-2">
                           <div className="space-y-1">
-                            <h3 className="text-lg font-medium leading-snug sm:pr-8">{cartItem.slug}</h3>
+                            <h3 className="text-sm md:text-lg font-medium leading-snug sm:pr-8">
+                              {cartItem.slug} <span className="text-primary font-[600]">x {cartItem.quantity}</span>
+                            </h3>
                             {/* <p className="text-sm dark:text-gray-400">Classic</p> */}
                           </div>
-                          <div className="text-right">
-                            <p className="text-lg font-medium">&#8377;{formatPrice(cartItem.price)}</p>
+                          <div className="md:text-right">
+                            <p className="text-sm md:text-lg font-medium">&#8377;{formatPrice(cartItem.price)}</p>
                             {/* <p className="text-sm line-through dark:text-gray-600">75.50€</p> */}
                           </div>
                         </div>
@@ -64,7 +86,6 @@ const Cart = () => {
                       <span>Add to favorites</span>
                     </button> */}
                           </div>
-                          <div className="quantity-section">Quantity: {cartItem.quantity}</div>
                         </section>
                       </div>
                     </div>
@@ -103,18 +124,28 @@ const Cart = () => {
               </div>
             </li> */}
               </ul>
-              <div className="space-y-1 text-right">
+              <div className="hidden md:block space-y-1 text-right">
                 <p>
                   Total amount: <span className="font-semibold">&#8377;{formatPrice(getTotalPrice())}</span>
                 </p>
                 <p className="text-sm dark:text-gray-400">Not including taxes and shipping costs</p>
               </div>
               {/* <div className="flex justify-end space-x-4"> */}
-              <Link href="/checkout">
-                <button type="button" className="btn btn-primary btn-block mt-3">
-                  Checkout
-                </button>
-              </Link>
+              {/* <Link href="/checkout"> */}
+              <button
+                onClick={() => {
+                  if (status === 'unauthenticated') {
+                    showToast(Toast.warning, 'You must be logged in.');
+                    router.push('/api/auth/signin');
+                  } else {
+                    router.push('/checkout');
+                  }
+                }}
+                type="button"
+                className="btn btn-primary btn-block mt-3">
+                Checkout
+              </button>
+              {/* </Link> */}
               {/* </div> */}
             </>
           )}

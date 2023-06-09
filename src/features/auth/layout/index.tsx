@@ -19,7 +19,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
       </Head>
       <div className={`${inter.className} h-screen flex items-center justify-center bg-base-300`}>
         <button
-          className="absolute top-8 right-12"
+          className="absolute top-8 right-12 z-20"
           onClick={() => {
             theme === 'night' ? setTheme('corporate') : setTheme('night');
           }}>
@@ -29,7 +29,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
             <BsFillMoonFill className="text-xl hover:text-primary transition-all"></BsFillMoonFill>
           )}
         </button>
-        <div className="card max-w-xs lg:max-w-none lg:w-[28rem] bg-base-100 shadow-xl">{children}</div>
+        <div className="card max-w-xs z-10 lg:max-w-none lg:w-[28rem] bg-base-100 shadow-xl">{children}</div>
       </div>
     </>
   );

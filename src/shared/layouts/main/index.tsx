@@ -66,15 +66,16 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
-          <div className="nav-wrapper bg-base-100 shadow">
-            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2 bg-base-200">
+          <div className="nav-wrapper bg-base-200 shadow">
+            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
               <div className="flex-1 text-xl font-bold text-primary">EMS</div>
-              <div className="block md:hidden theme mx-4">
+              <div className="flex items-center lg:hidden theme mx-4">
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 <ThemeToggler></ThemeToggler>
               </div>
               <div className="flex-none hidden lg:flex items-center gap-4">
@@ -153,13 +154,13 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-64 bg-base-100">
+          <ul className="menu gap-y-1 p-4 w-64 bg-base-100 h-screen">
             <li>
               <Link href="/products" className="text-sm">
                 <FaBox></FaBox>
@@ -168,7 +169,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             </li>
             {status === 'unauthenticated' && (
               <>
-                <li>
+                <li className="-ml-[0.3rem]">
                   <Link href="/api/auth/signin" className="text-sm">
                     <MdLogin className="text-lg" />
                     Sign In
@@ -181,6 +182,14 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </Link>
                 </li>
               </>
+            )}
+            {isAdmin && (
+              <li>
+                <Link href="/admin/products" className="text-sm">
+                  <RxDashboard></RxDashboard>
+                  Dashboard
+                </Link>
+              </li>
             )}
             {status === 'authenticated' && (
               <>

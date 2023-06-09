@@ -114,7 +114,7 @@ const Home: NextPageWithLayout = () => {
             );
           })}
       </div>
-      <div className="mt-12 px-12 lg:px-0 place-self-end">
+      <div className=" mt-6 md:mt-12 px-2 md:px-12 lg:px-0 place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>
