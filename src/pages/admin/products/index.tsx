@@ -15,7 +15,7 @@ import { useQuery } from 'react-query';
 const Products: NextPageWithLayout = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 6;
+  const limit = 10;
   const {
     data: productData,
     isError,
@@ -89,7 +89,7 @@ const Products: NextPageWithLayout = () => {
           </table>
         )}
       </section>
-      <div className="mt-8 place-self-end">
+      <div className="mt-8 flex justify-end place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>

@@ -8,7 +8,6 @@ import { USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
-import { BuiltInProviderType } from 'next-auth/providers';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -42,7 +41,7 @@ const Login: NextPageWithLayout = () => {
       showToast(Toast.error, 'Something went wrong while trying to login please try again.');
     }
   };
-  const handleLoginWithProviders = async (provider: BuiltInProviderType) => {
+  const handleLoginWithProviders = async (provider: any) => {
     setIsSubmitting(true);
     try {
       await signIn(provider);
@@ -66,8 +65,8 @@ const Login: NextPageWithLayout = () => {
   } = useForm<ILoginWithPassword>({ defaultValues: { username: '', password: '' }, mode: 'onChange' });
   return (
     <div className="card-body">
-      <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Login</h2>
-      <p className="text-lg text-center w-full mb-4">Hey, enter your details here to sign in to your account.</p>
+      <h2 className="text-center text-lg lg:text-xl font-[800] tracking-wide mb-2 lg:mb-3">Login</h2>
+      <p className="text-sm lg:text-lg text-center w-full mb-4">Hey, enter your details here to sign in to your account.</p>
       <div className="form-control w-full mb-2 relative">
         <input
           {...register('username', {
@@ -77,17 +76,17 @@ const Login: NextPageWithLayout = () => {
           placeholder="Username"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
         <FaUser
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.username,
           })}></FaUser>
       </div>
-      <div className="form-control w-full mb-4 relative">
+      <div className="form-control w-full mb-2 lg:mb-4 relative">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -96,41 +95,46 @@ const Login: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
         <ErrorMessage>{errors?.password?.message}</ErrorMessage>
         {showPassword ? (
           <FiEye
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
       <button
-        className={classNames('btn btn-primary btn-block mb-1 btn-square gap-2', {
-          loading: isSubmitting,
-        })}
+        className={classNames('btn btn-primary btn-block lg:mb-1 btn-square gap-2')}
         disabled={isSubmitting}
         onClick={handleSubmit(handleLogin)}>
+        {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign In
       </button>
       <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer mt-2">Forgot password?</p>
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
-        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('google')}>
+        <button
+          className="btn  btn-xs lg:btn-md btn-outline  gap-2"
+          disabled={isSubmitting}
+          onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
           Google
         </button>
-        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('github')}>
+        <button
+          className="btn btn-xs lg:btn-md btn-outline  gap-2"
+          disabled={isSubmitting}
+          onClick={() => handleLoginWithProviders('github')}>
           <FaGithub className="text-lg" />
           Github
         </button>
@@ -140,7 +144,7 @@ const Login: NextPageWithLayout = () => {
         </button> */}
       </div>
       {!isSubmitting && (
-        <p className="mt-3 text-sm text-center">
+        <p className="mt-3 text-xs lg:text-sm text-center">
           Don&apos;t have an account?{' '}
           <Link href="/auth/register" className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300">
             Register now

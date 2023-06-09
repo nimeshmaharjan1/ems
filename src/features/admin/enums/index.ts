@@ -4,4 +4,5 @@ export enum DASHBOARD_LINKS {
   users = '/admin/users',
   myProfile = '/admin/my-profile',
   settings = '/admin/settings',
+  orders = '/admin/orders',
 }

@@ -70,11 +70,20 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
             <Image className="rounded-box" width={800} priority height={300} alt="Product" src={selectedImage} />
           </div>
           <div className="carousel h-[19rem] carousel-center space-x-6 p-4">
-            {product.images.map((image) => {
+            {product.images.map((image, index) => {
               return (
                 <div className="carousel-item cursor-pointer" key={image} onClick={() => setSelectedImage(image)}>
-                  <Image width={300} height={200} alt="Product" className="rounded-box h-auto w-auto" src={image} />
+                  <Image id={`item${index}`} width={300} height={200} alt="Product" className="rounded-box h-auto w-auto" src={image} />
                 </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-center w-full py-2 gap-2">
+            {product.images.map((_, index) => {
+              return (
+                <a key={index} href={`#item${index}`} className="btn btn-xs">
+                  {index + 1}
+                </a>
               );
             })}
           </div>
@@ -85,12 +94,16 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
           <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>
           <section className="quantity-section mb-8 flex items-center gap-3">
             <p>Quantity</p>
-            <div className="flex items-center gap-x-1">
-              <button className="px-2 py-1 bg-base-300 rounded-l-lg" onClick={decreaseQuantity}>
+            <div className="join">
+              <button className="btn btn-sm join-item rounded-l-full" onClick={decreaseQuantity}>
                 -
               </button>
-              <input className="px-4 py-1 bg-base-300 w-[3rem] max-w-[5rem]" defaultValue={quantity} readOnly />
-              <button className="px-2 py-1 bg-base-300 rounded-r-lg" onClick={increaseQuantity}>
+              <input
+                className="input w-24 input-sm text-center !bg-base-200 join-item"
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                value={quantity}
+              />
+              <button className="btn btn-sm join-item rounded-r-full" onClick={increaseQuantity}>
                 +
               </button>
             </div>

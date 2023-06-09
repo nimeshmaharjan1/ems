@@ -15,7 +15,7 @@ import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
-import { User } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react';
 
 const inter = Inter({
   preload: false,
@@ -62,7 +62,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 <ThemeToggler></ThemeToggler>
               </div>
               <div className="flex-none hidden lg:flex items-center gap-4">
-                <Link href="/products" className="btn btn-sm btn-ghost ">
+                <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
                 {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
@@ -70,6 +70,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
+
+                <Link href="/cart" className="hover:text-amber-500 relative transition-all mr-3">
+                  <ShoppingCart />
+                  <div className="badge badge-primary badge-xs absolute -top-2 -right-2.5">9+</div>
+                </Link>
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
@@ -101,7 +106,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                         </>
                       )}
                     </label>
-                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
+                    <ul tabIndex={0} className="z-50 menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
                       {isAdmin && (
                         <li>
                           <Link href="/admin/products">
@@ -129,7 +134,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </ul>
                   </div>
                 )}
-                <div className="!ml-2">
+                <div className="-ml-1">
                   <ThemeToggler></ThemeToggler>
                 </div>
               </div>

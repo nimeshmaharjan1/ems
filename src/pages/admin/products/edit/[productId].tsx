@@ -16,6 +16,7 @@ import { getCompanies } from '@/features/admin/services/companies/companies.serv
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 
 const prisma = new PrismaClient();
 
@@ -35,7 +36,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       value: product?.category.id,
     };
     return {
-      props: { product: JSON.parse(JSON.stringify({ ...product, company: reactSelectCompany, category: reactSelectCategory })) },
+      props: {
+        product: JSON.parse(
+          JSON.stringify({ ...product, price: product?.price.toString(), company: reactSelectCompany, category: reactSelectCategory })
+        ),
+      },
     };
   } catch (error) {
     console.error('error: ', error);
@@ -68,6 +73,7 @@ export type ProductSchema = z.infer<typeof productSchema>;
 
 const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   const defaultValues: ProductSchema = product;
+  console.log(product);
   const {
     register,
     watch,
@@ -99,19 +105,22 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       setIsUploading(false);
     }
   };
-
+  const router = useRouter();
   const [resetImages, setResetImages] = useState(false);
-  const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
+  const handleUpdate: SubmitHandler<ProductSchema> = async (values) => {
+    console.log(product);
     setIsSubmitting(true);
+
     try {
-      await axios.post('/api/admin/products', { ...values });
-      showToast(Toast.success, 'Product has been created.');
+      await axios.put(`/api/admin/products/${product.id}`, { ...values });
+      showToast(Toast.success, 'Product has been updated.');
       reset();
       setResetImages(true);
+      router.push('/admin/products');
     } catch (error) {
-      showToast(Toast.error, 'Something went wrong please try again.');
-    } finally {
       setIsSubmitting(false);
+
+      showToast(Toast.error, 'Something went wrong please try again.');
     }
   };
 
@@ -295,11 +304,10 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
 
           <div className="hidden lg:block col-span-12 mt-4">
             <button
-              className={classNames('btn btn-primary btn-block', {
-                loading: isSubmitting,
-              })}
+              className={classNames('btn btn-primary btn-block')}
               disabled={isSubmitting || isUploading}
-              onClick={handleSubmit(handleCreate)}>
+              onClick={handleSubmit(handleUpdate)}>
+              {isSubmitting && <span className="loading loading-spinner"></span>}
               Submit
             </button>
           </div>
@@ -336,7 +344,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             loading: isSubmitting,
           })}
           disabled={isSubmitting || isUploading}
-          onClick={handleSubmit(handleCreate)}>
+          onClick={handleSubmit(handleUpdate)}>
           Submit
         </button>
       </div>

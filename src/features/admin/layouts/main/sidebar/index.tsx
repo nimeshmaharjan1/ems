@@ -12,6 +12,7 @@ import { RxDashboard } from 'react-icons/rx';
 import { DASHBOARD_LINKS } from '@/features/admin/enums';
 import { signOut } from 'next-auth/react';
 import classNames from 'classnames';
+import { PackageCheck } from 'lucide-react';
 
 export default function Sidebar({
   isSidebarCollapsed,
@@ -145,7 +146,24 @@ export default function Sidebar({
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
           </li> */}
-
+          <li
+            className={classnames(
+              'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',
+              {
+                ['w-10']: isSidebarCollapsed,
+                ['p-3']: !isSidebarCollapsed,
+                'active-nav-link': isActive === DASHBOARD_LINKS.orders,
+              }
+            )}
+            onClick={() => {
+              setIsActive(DASHBOARD_LINKS.orders);
+              router.push(DASHBOARD_LINKS.orders);
+            }}>
+            <span className="text-2xl block float-left">
+              <PackageCheck />
+            </span>
+            <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Orders</span>
+          </li>
           <li
             className={classnames(
               'text-base-content duration-300 flex items-center gap-x-2 cursor-pointer p-2 hover:bg-secondary hover:text-base-100 rounded-md mt-2',

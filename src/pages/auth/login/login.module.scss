@@ -5,9 +5,8 @@
     &:before {
       content: '';
       display: block;
-      width: 100px;
       height: 1px;
-      @apply bg-primary;
+      @apply bg-primary lg:w-28 w-20;
       left: 0;
       top: 50%;
       position: absolute;
@@ -15,9 +14,8 @@
     &:after {
       content: '';
       display: block;
-      width: 100px;
       height: 1px;
-      @apply bg-primary;
+      @apply bg-primary lg:w-28 w-20;
       right: 0;
       top: 50%;
       position: absolute;
