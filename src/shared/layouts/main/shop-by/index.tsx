@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 const ShopByAside = () => {
   const { handleShopBySearchParamsUpdate, shopBySearchParams, setShopBySearchParams } = useShopByStore();
-  console.log({ shopBySearchParams });
   const {
     data: companies,
     isLoading: isCompaniesLoading,

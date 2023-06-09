@@ -22,11 +22,12 @@ export default function Sidebar({
   setIsSidebarCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
   const router = useRouter();
+  const [isActive, setIsActive] = useState<string>(router.pathname);
+
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  const [isActive, setIsActive] = useState<string>(router.pathname);
 
   if (!isMounted) return null;
 

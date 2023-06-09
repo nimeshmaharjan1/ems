@@ -17,6 +17,7 @@ import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
 import { ShoppingCart, User } from 'lucide-react';
 import Cart from '@/shared/components/cart';
+import { useCartStore } from '@/store/user-cart';
 
 const inter = Inter({
   preload: false,
@@ -36,6 +37,17 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   useEffect(() => {
     setIsAdmin(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
   }, [session?.user?.role]);
+
+  const { setCartItems } = useCartStore();
+
+  useEffect(() => {
+    if (window.localStorage) {
+      const cartItems = localStorage.getItem('cartItems');
+      if (cartItems) {
+        setCartItems(JSON.parse(cartItems));
+      }
+    }
+  }, [setCartItems]);
 
   if (!isMounted) return null;
 
@@ -85,7 +97,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </>
                 )}
                 {status === 'authenticated' && (
-                  <div className="dropdown dropdown-end !-ml-0">
+                  <div className="dropdown dropdown-end !mx-2 !ml-4">
                     <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
                       {session?.user?.image ? (
                         <div className="avatar online">
@@ -177,12 +189,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </li>
               </>
             )}
-
-            {/* <li>
-              <Link href="/admin/dashboard" className="text-sm">
-                <FaUser /> Dashboard
-              </Link>
-            </li> */}
           </ul>
         </div>
       </div>
