@@ -160,7 +160,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu gap-y-1 p-4 w-64 bg-base-100 h-screen">
+          <ul className="menu gap-y-1 p-4 w-64 bg-base-100 h-full">
             <li>
               <Link href="/products" className="text-sm">
                 <FaBox></FaBox>
