@@ -47,7 +47,7 @@ const Cart = () => {
                     </div>
 
                     <div>
-                      <h3 className="text-sm text-gray-900">{item.slug}</h3>
+                      <h3 className="text-sm">{item.slug}</h3>
                       <dl className="mt-1.5 space-y-px text-[11px] text-gray-600"> {item.quantity}</dl>
                       <dl className="mt-1.5 space-y-px text-[11px] text-gray-600">&#8377; {formatPrice(item.price)}</dl>
                     </div>
