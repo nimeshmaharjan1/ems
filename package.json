@@ -30,6 +30,7 @@
     "ems": "link:",
     "eslint-config-next": "13.1.4",
     "faunadb": "^4.7.1",
+    "framer-motion": "^10.12.16",
     "lucide-react": "^0.241.0",
     "luxon": "^3.2.1",
     "next": "13.1.4",

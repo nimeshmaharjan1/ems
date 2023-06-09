@@ -1,10 +1,11 @@
+import { addToCart } from '@/features/cart/cart.service';
 import ReviewsSection from '@/features/products/components/reviews-section';
 import { NextPageWithLayout } from '@/pages/_app';
 import MainSharedLayout from '@/shared/layouts/main';
-import ViewOneLayout from '@/shared/layouts/view-one';
 import { formatPrice } from '@/shared/utils/helper.util';
+import { useCartStore } from '@/store/user-cart';
 import { PrismaClient, Product } from '@prisma/client';
-import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -42,6 +43,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
 };
 
 const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
+  const { cartItems, setCartItems } = useCartStore();
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    addToCart(
+      {
+        price: product.price,
+        quantity: quantity,
+        productId: product.id,
+        image: product.images[0],
+        slug: product.slug,
+        maxQuantity: parseInt(product.quantity),
+      },
+      cartItems,
+      setCartItems
+    );
+  };
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string>(product.images[0]);
   const [quantity, setQuantity] = useState(1);
@@ -53,7 +70,12 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
   };
 
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+    setQuantity((prev) => {
+      if (prev >= parseInt(product.quantity)) {
+        return prev;
+      }
+      return quantity + 1;
+    });
   };
 
   if (!product) {
@@ -100,16 +122,27 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
               </button>
               <input
                 className="input w-24 input-sm text-center !bg-base-200 join-item"
-                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                type="number"
+                onChange={(e) => {
+                  setQuantity((prev) => {
+                    if (parseInt(e.target.value) > parseInt(product.quantity)) {
+                      return prev;
+                    }
+                    return parseInt(e.target.value);
+                  });
+                }}
                 value={quantity}
               />
               <button className="btn btn-sm join-item rounded-r-full" onClick={increaseQuantity}>
                 +
               </button>
             </div>
+            <p className="ml-4 text-sm font-semibold opacity-60">Remaining: {product.quantity}</p>
           </section>
           <div className="action-section flex gap-4">
-            <button className="btn btn-primary">Add to Cart</button>
+            <button onClick={handleAddToCart} className="btn btn-primary">
+              Add to Cart
+            </button>
             <button className="btn btn-ghost" onClick={() => router.push('/products')}>
               Go Back
             </button>

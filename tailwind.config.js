@@ -18,7 +18,13 @@ module.exports = {
           accent: '#facc13',
         },
       },
-      'night',
+      {
+        night: {
+          ...require('daisyui/src/theming/themes')['[data-theme=night]'],
+          'base-200': '#0C1220',
+          'base-300': '#090E18',
+        },
+      },
     ],
   },
   // daisyui: {

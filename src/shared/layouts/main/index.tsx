@@ -1,11 +1,13 @@
-import { Inter } from '@next/font/google';
+import { Inter, Poppins } from '@next/font/google';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 import MainSharedFooter from './footer';
 
+import Cart from '@/shared/components/cart';
 import ThemeToggler from '@/shared/components/theme-toggler';
+import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
+import { User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,9 +17,7 @@ import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
-import { ShoppingCart, User } from 'lucide-react';
-import Cart from '@/shared/components/cart';
-import { useCartStore } from '@/store/user-cart';
+import { useRouter } from 'next/router';
 
 const inter = Inter({
   preload: false,
@@ -25,6 +25,9 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
+
+// const work = Poppins({ preload: true, subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '700', '800'] });
+// const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
   children,
@@ -48,7 +51,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       }
     }
   }, [setCartItems]);
-
+  const router = useRouter();
   if (!isMounted) return null;
 
   return (
@@ -64,7 +67,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <div className="nav-wrapper bg-base-100 shadow">
-            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2">
+            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2 bg-base-200">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
@@ -83,7 +86,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
-                <Cart></Cart>
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
@@ -97,7 +100,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </>
                 )}
                 {status === 'authenticated' && (
-                  <div className="dropdown dropdown-end !mx-2 !ml-4">
+                  <div className="dropdown dropdown-end !mr-3">
                     <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
                       {session?.user?.image ? (
                         <div className="avatar online">

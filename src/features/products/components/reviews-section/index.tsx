@@ -70,7 +70,9 @@ const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
             </section>
             <div className="section share-review-section mt-6">
               <h3 className="text-md">Share your thoughts</h3>
-              <p className="text-light text-xs opacity-80 mt-2">If you’ve used this product, share your thoughts with other customers</p>
+              <p className="text-light text-[0.8rem] opacity-80 mt-2">
+                If you’ve used this product, share your thoughts with other customers
+              </p>
               <label htmlFor="write-a-review-modal" className="btn mt-6 btn-sm btn-block btn-outline btn-primary">
                 Write a review
               </label>

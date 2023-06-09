@@ -33,6 +33,9 @@ body::-webkit-scrollbar-thumb {
 // }
 
 @layer components {
+  .btn {
+    @apply font-medium normal-case;
+  }
   .active-nav-link {
     @apply text-base-100 bg-secondary;
   }
