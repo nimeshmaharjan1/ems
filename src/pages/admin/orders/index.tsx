@@ -1,15 +1,14 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { NextPageWithLayout } from '@/pages/_app';
 import AdminDashboardLayout from '@/features/admin/layouts/main';
-import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { formatDateWithTime, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
-import Link from 'next/link';
-import { FaCogs } from 'react-icons/fa';
-import { BsTrash } from 'react-icons/bs';
+import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
+import { PaginatedOrders } from '@/shared/interfaces/order.interface';
+import { formatDateWithTime, formatPrice } from '@/shared/utils/helper.util';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { ReactNode, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
+import { BsTrash } from 'react-icons/bs';
+import { useQuery } from 'react-query';
 
 const Orders: NextPageWithLayout = () => {
   const router = useRouter();
@@ -19,7 +18,7 @@ const Orders: NextPageWithLayout = () => {
     data: ordersData,
     isError,
     isLoading,
-  } = useQuery<any, Error>(['fetchProducts', currentPage, limit], async () => {
+  } = useQuery<PaginatedOrders, Error>(['fetchProducts', currentPage, limit], async () => {
     const response = await axios.get(`/api/orders?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
