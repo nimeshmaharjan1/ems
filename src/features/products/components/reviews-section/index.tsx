@@ -34,14 +34,16 @@ const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
   const isReviewsEmpty = !isReviewsError && reviews && reviews?.totalRecords === 0;
 
   return (
-    <section className="grid grid-cols-6 mt-12 lg:mt-28 px-4 gap-y-12 lg:gap-y-0  lg:gap-x-32">
+    <section className="grid grid-cols-6 mt-12 lg:mt-24 px-4 gap-y-12 lg:gap-y-0  lg:gap-x-32">
       {isReviewsError ? (
         <div className="col-span-6 flex items-center justify-center">
           <p className="text-error font-medium text-xl">Something went wrong while trying to get the reviews please try again later.</p>
         </div>
       ) : isReviewsLoading ? (
         <div className="col-span-6 flex items-center justify-center">
-          <button className="loading btn btn-ghost disabled btn-xl gap-3">Loading reviews...</button>
+          <button className="btn btn-ghost disabled btn-xl gap-3">
+            <span className="loading loading-spinner"></span>Loading reviews...
+          </button>
         </div>
       ) : (
         <>
@@ -68,7 +70,9 @@ const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
             </section>
             <div className="section share-review-section mt-6">
               <h3 className="text-md">Share your thoughts</h3>
-              <p className="text-light text-xs opacity-80 mt-2">If you’ve used this product, share your thoughts with other customers</p>
+              <p className="text-light text-[0.8rem] opacity-80 mt-2">
+                If you’ve used this product, share your thoughts with other customers
+              </p>
               <label htmlFor="write-a-review-modal" className="btn mt-6 btn-sm btn-block btn-outline btn-primary">
                 Write a review
               </label>

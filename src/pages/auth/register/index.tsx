@@ -54,9 +54,9 @@ const Register: NextPageWithLayout = () => {
 
   return (
     <div className="card-body">
-      <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Register</h2>
-      <p className="text-lg text-center w-full mb-4">Hey, enter your details here to create to your account.</p>
-      <div className="form-control w-full mb-2 relative">
+      <h2 className="text-center text-lg lg:text-2xl font-[800] tracking-wide mb-2 lg:mb-3">Register</h2>
+      <p className="text-sm lg:text-base text-center w-full mb-4">Hey, enter your details here to create to your account.</p>
+      <div className="form-control w-full mb-0 lg:mb-0 relative">
         <input
           {...register('name', {
             required: 'Full name is required.',
@@ -65,17 +65,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Full Name"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.name,
           })}
         />
         <ErrorMessage>{errors?.name?.message}</ErrorMessage>
         <RxLetterCaseCapitalize
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.name,
           })}></RxLetterCaseCapitalize>
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="form-control w-full mb-0 lg:mb-0 relative">
         <input
           {...register('username', {
             required: 'Username is required.',
@@ -84,17 +84,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Username"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
         <AiOutlineUser
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.username,
           })}></AiOutlineUser>
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="form-control w-full mb-0 lg:mb-0 relative">
         <input
           {...register('email', {
             required: 'Email is required.',
@@ -106,17 +106,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="E-mail"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.email,
           })}
         />
         <ErrorMessage>{errors?.email?.message}</ErrorMessage>
         <AiOutlineMail
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.email,
           })}></AiOutlineMail>
       </div>
-      <div className="form-control w-full mb-4 relative">
+      <div className="form-control w-full lg:mb-0 relative">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -125,26 +125,26 @@ const Register: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
         <ErrorMessage>{errors?.password?.message}</ErrorMessage>
         {showPassword ? (
           <FiEye
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="form-control w-full mb-0 lg:mb-0 relative">
         <input
           type="phone"
           {...register('phone_number', {
@@ -156,13 +156,13 @@ const Register: NextPageWithLayout = () => {
           placeholder="Phone Number"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.phone_number,
           })}
         />
         <ErrorMessage>{errors?.phone_number?.message}</ErrorMessage>
         <AiOutlinePhone
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.phone_number,
           })}></AiOutlinePhone>
       </div>
@@ -177,11 +177,10 @@ const Register: NextPageWithLayout = () => {
         </select>
       )}
       <button
-        className={classNames('btn btn-primary btn-block mt-3 my-2 btn-square gap-2', {
-          loading: isSubmitting,
-        })}
+        className={classNames('btn btn-primary btn-block lg:mt-2 mt-0 my-2 btn-square gap-2')}
         disabled={isSubmitting}
         onClick={handleSubmit(signUp)}>
+        {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign Up
       </button>
 

@@ -11,12 +11,11 @@ const ThemeToggler = () => {
       onClick={() => {
         resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
       }}
-      className={classNames('!bg-transparent btn-sm !h-0 !p-0')}
-    >
+      className={classNames('!bg-transparent btn-sm !h-0 !p-2 mb-1')}>
       {resolvedTheme === 'corporate' ? (
-        <BsFillMoonFill className=" hover:text-primary duration-300"></BsFillMoonFill>
+        <BsFillMoonFill className=" hover:text-primary duration-300 h-5 w-5"></BsFillMoonFill>
       ) : (
-        <BsSun className="text-lg hover:text-amber-400 duration-300"></BsSun>
+        <BsSun className="text-lg hover:text-amber-400 duration-300 h-5 w-5"></BsSun>
       )}
     </button>
   );

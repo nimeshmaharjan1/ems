@@ -15,7 +15,7 @@ import { useQuery } from 'react-query';
 const Products: NextPageWithLayout = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 6;
+  const limit = 10;
   const {
     data: productData,
     isError,
@@ -45,10 +45,12 @@ const Products: NextPageWithLayout = () => {
       <section className="overflow-x-auto">
         {isLoading ? (
           <table className="flex h-96 items-center justify-center">
-            <button className="btn btn-ghost disabled loading"></button>
+            <button className="btn btn-ghost disabled">
+              <span className="loading loading-spinner"></span>
+            </button>
           </table>
         ) : (
-          <table className="table w-full">
+          <table className="table table-sm w-full">
             <thead>
               <tr>
                 <th className="border !border-base-300">Title</th>
@@ -72,11 +74,11 @@ const Products: NextPageWithLayout = () => {
                     <td className="border !border-base-300">{product.quantity}</td>
                     <td className="border !border-base-300">&#8377; {formatPrice(product.price)}</td>
                     <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
-                    <td className="border !border-base-300 flex gap-2 justify-center">
-                      <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm  gap-1">
+                    <td className="border !border-base-300 text-center">
+                      <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
                         <FaCogs></FaCogs> Edit
                       </Link>
-                      <button className="btn btn-error btn-sm  gap-1">
+                      <button className="btn btn-error btn-xs btn-outline ml-2 gap-1">
                         <BsTrash></BsTrash> Delete
                       </button>
                     </td>
@@ -87,7 +89,7 @@ const Products: NextPageWithLayout = () => {
           </table>
         )}
       </section>
-      <div className="mt-8 place-self-end">
+      <div className="mt-8 flex justify-end place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>

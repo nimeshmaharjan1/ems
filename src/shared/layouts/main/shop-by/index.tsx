@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 const ShopByAside = () => {
   const { handleShopBySearchParamsUpdate, shopBySearchParams, setShopBySearchParams } = useShopByStore();
-  console.log({ shopBySearchParams });
   const {
     data: companies,
     isLoading: isCompaniesLoading,
@@ -83,7 +82,9 @@ const ShopByAside = () => {
             <h4 className="text-error my-2">Something went wrong while trying to get the companies.</h4>
           ) : isCompaniesLoading ? (
             <div className="h-60  flex items-center justify-center">
-              <button className="btn btn-ghost loading btn-xl"></button>
+              <button className="btn btn-ghost  btn-xl">
+                <span className="loading loading-spinner"></span>
+              </button>
             </div>
           ) : (
             <>
@@ -113,7 +114,9 @@ const ShopByAside = () => {
             <h4 className="text-error my-2">Something went wrong while trying to get the categories.</h4>
           ) : isCategoriesLoading ? (
             <div className="h-60  flex items-center justify-center">
-              <button className="btn btn-ghost loading btn-xl"></button>
+              <button className="btn btn-ghost  btn-xl">
+                <span className="loading loading-spinner"></span>
+              </button>
             </div>
           ) : (
             <>

@@ -10,25 +10,23 @@ const Header: React.FC<{
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const { resolvedTheme, setTheme } = useTheme();
   return (
-    <header className="h-[4.2rem] flex justify-between items-center bg-base-200 w-full shadow px-6">
-      <div
+    <header className="z-50 h-[4.2rem] flex justify-between items-center bg-base-100 w-full shadow px-6">
+      <button
         className=" p-1 cursor-pointer  duration-300 hidden lg:block"
         onClick={() => {
+          console.log('hello');
           setIsSidebarCollapsed((prev) => !prev);
-        }}
-      >
+        }}>
         <RiMenuFoldFill
-          className={classNames(`text-secondary text-xl `, {
+          className={classNames(` text-xl `, {
             ['rotate-180']: isSidebarCollapsed,
-          })}
-        ></RiMenuFoldFill>
-      </div>
+          })}></RiMenuFoldFill>
+      </button>
       <button
         onClick={() => {
           resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
         }}
-        className={classNames('!bg-transparent btn-sm')}
-      >
+        className={classNames('!bg-transparent btn-sm')}>
         {resolvedTheme === 'corporate' ? (
           <BsFillMoonFill className="text-lg hover:text-primary duration-300"></BsFillMoonFill>
         ) : (

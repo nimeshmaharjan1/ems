@@ -214,8 +214,8 @@ const SettingCategory = () => {
                       </div>
                     </td>
                     <td>{category.createdAt ? getDateWithWeekDay(category.createdAt) : '-'}</td>
-                    <td className="h-full">
-                      <div className="btn-group">
+                    <td className="h- flex justify-center">
+                      <div className="btn-group gap-2">
                         <button
                           className="btn btn-sm btn-primary gap-1 items-center !font-medium"
                           onClick={() => {
@@ -223,20 +223,18 @@ const SettingCategory = () => {
                             setValue('id', category.id);
                             setValue('name', category.name);
                             setSelectedCategoryId(category.id);
-                          }}
-                        >
+                          }}>
                           <FiSettings></FiSettings>
                         </button>
                         <button
-                          className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
+                          className={classNames('btn btn-sm btn-outline btn-error gap-1 items-center !font-medium', {
                             loading: isSubmitting,
                           })}
                           disabled={isSubmitting}
                           onClick={async () => {
                             setIsSubmitting(true);
                             deleteCategoryMutation.mutate(category.id);
-                          }}
-                        >
+                          }}>
                           <BsTrash></BsTrash>
                         </button>
                       </div>
@@ -250,24 +248,25 @@ const SettingCategory = () => {
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCategoryLoading ? (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+          <div className="card w-96 lg:w-full bg-base-100 shadow rounded-lg">
             <div className="card-body">
-              <button className="btn btn-ghost loading"></button>
+              <button className="btn btn-ghost">
+                <span className="loading loading-spinner"></span>
+              </button>
             </div>
           </div>
         ) : (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+          <div className="card w-96 lg:w-full bg-base-100 shadow rounded-lg">
             <div className="card-body !gap-4">
               <div className="card-title justify-between items-center">
-                {selectedAction === SELECTED_ACTION.ADD ? 'Add Category' : 'Edit Category'}
+                <span className="text-lg">{selectedAction === SELECTED_ACTION.ADD ? 'Add Category' : 'Edit Category'}</span>
                 {selectedAction === SELECTED_ACTION.EDIT && (
                   <button
                     className="btn btn-sm"
                     onClick={() => {
                       setSelectedAction(SELECTED_ACTION.ADD);
                       reset();
-                    }}
-                  >
+                    }}>
                     Add
                   </button>
                 )}
@@ -299,19 +298,16 @@ const SettingCategory = () => {
                       loadOptions={loadCompanies}
                       isMulti
                       placeholder="Select companies"
-                      isClearable
-                    ></StyledReactSelect>
+                      isClearable></StyledReactSelect>
                   </>
-                )}
-              ></Controller>
+                )}></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-block btn-sm', {
+                  className={classNames('btn btn-primary btn-block ', {
                     loading: addCategoryMutation.isLoading || updateCategoryMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}
-                  disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}
-                >
+                  disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
                   Submit
                 </button>
               </div>

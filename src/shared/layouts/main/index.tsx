@@ -1,11 +1,13 @@
-import { Inter } from '@next/font/google';
+import { Inter, Poppins } from '@next/font/google';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 import MainSharedFooter from './footer';
 
+import Cart from '@/shared/components/cart';
 import ThemeToggler from '@/shared/components/theme-toggler';
+import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
+import { User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,6 +17,7 @@ import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
+import { useRouter } from 'next/router';
 
 const inter = Inter({
   preload: false,
@@ -22,6 +25,9 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
+
+// const work = Poppins({ preload: true, subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '700', '800'] });
+// const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
   children,
@@ -35,6 +41,17 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
     setIsAdmin(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
   }, [session?.user?.role]);
 
+  const { setCartItems } = useCartStore();
+
+  useEffect(() => {
+    if (window.localStorage) {
+      const cartItems = localStorage.getItem('cartItems');
+      if (cartItems) {
+        setCartItems(JSON.parse(cartItems));
+      }
+    }
+  }, [setCartItems]);
+  const router = useRouter();
   if (!isMounted) return null;
 
   return (
@@ -49,7 +66,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
-          <div className="nav-wrapper bg-base-100 shadow">
+          <div className="nav-wrapper bg-base-200 shadow">
             <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
@@ -57,11 +74,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </label>
               </div>
               <div className="flex-1 text-xl font-bold text-primary">EMS</div>
-              <div className="block md:hidden theme mx-4">
+              <div className="flex items-center lg:hidden theme mx-4">
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 <ThemeToggler></ThemeToggler>
               </div>
-              <div className="flex-none hidden lg:flex items-center gap-3">
-                <Link href="/products" className="btn btn-sm btn-ghost ">
+              <div className="flex-none hidden lg:flex items-center gap-4">
+                <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
                 {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
@@ -69,6 +87,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
@@ -82,8 +101,8 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </>
                 )}
                 {status === 'authenticated' && (
-                  <div className="dropdown dropdown-end !-ml-0">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                  <div className="dropdown dropdown-end !mr-3">
+                    <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
                       {session?.user?.image ? (
                         <div className="avatar online">
                           <div className="w-8 h-8 rounded-full shadow">
@@ -91,18 +110,19 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                           </div>
                         </div>
                       ) : (
-                        <div className="avatar w-8 h-8 rounded-full shadow">
-                          <Image src="/icons/default-user.png" height={500} width={500} alt="user" />
+                        <>
+                          <User />
+                          {/* <Image src="/icons/default-user.png" height={500} width={500} alt="user" /> */}
                           {/* <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
                             <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
                           </div> */}
-                        </div>
+                        </>
                       )}
                     </label>
-                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
+                    <ul tabIndex={0} className="z-50 menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
                       {isAdmin && (
                         <li>
-                          <Link href="/admin/dashboard">
+                          <Link href="/admin/products">
                             <RxDashboard></RxDashboard>
                             Dashboard
                           </Link>
@@ -127,20 +147,20 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </ul>
                   </div>
                 )}
-                <div className="!ml-1">
+                <div className="-ml-1">
                   <ThemeToggler></ThemeToggler>
                 </div>
               </div>
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-24 min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-64 bg-base-100">
+          <ul className="menu gap-y-1 p-4 w-64 bg-base-100 h-screen">
             <li>
               <Link href="/products" className="text-sm">
                 <FaBox></FaBox>
@@ -149,7 +169,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             </li>
             {status === 'unauthenticated' && (
               <>
-                <li>
+                <li className="-ml-[0.3rem]">
                   <Link href="/api/auth/signin" className="text-sm">
                     <MdLogin className="text-lg" />
                     Sign In
@@ -163,6 +183,14 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </li>
               </>
             )}
+            {isAdmin && (
+              <li>
+                <Link href="/admin/products" className="text-sm">
+                  <RxDashboard></RxDashboard>
+                  Dashboard
+                </Link>
+              </li>
+            )}
             {status === 'authenticated' && (
               <>
                 <li className="text-sm" onClick={() => signOut()}>
@@ -173,12 +201,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </li>
               </>
             )}
-
-            {/* <li>
-              <Link href="/admin/dashboard" className="text-sm">
-                <FaUser /> Dashboard
-              </Link>
-            </li> */}
           </ul>
         </div>
       </div>

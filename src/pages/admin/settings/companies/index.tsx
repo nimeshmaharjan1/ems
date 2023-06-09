@@ -219,8 +219,8 @@ const SettingCategory = () => {
                       </div>
                     </td>
                     <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
-                    <td>
-                      <div className="btn-group">
+                    <td className="h- flex justify-center">
+                      <div className="btn-group gap-2">
                         <button
                           className="btn btn-sm btn-primary gap-1 items-center !font-medium"
                           onClick={() => {
@@ -228,20 +228,18 @@ const SettingCategory = () => {
                             setValue('id', company.id);
                             setValue('name', company.name);
                             setSelectedCompanyId(company.id);
-                          }}
-                        >
+                          }}>
                           <FiSettings></FiSettings>
                         </button>
                         <button
-                          className={classNames('btn btn-sm btn-error gap-1 items-center !font-medium', {
+                          className={classNames('btn btn-sm btn-outline btn-error gap-1 items-center !font-medium', {
                             loading: isSubmitting,
                           })}
                           disabled={isSubmitting}
                           onClick={async () => {
                             setIsSubmitting(true);
                             deleteCompanyMutation.mutate(company.id);
-                          }}
-                        >
+                          }}>
                           <BsTrash></BsTrash>
                         </button>
                       </div>
@@ -255,13 +253,13 @@ const SettingCategory = () => {
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCompanyLoading ? (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
             <div className="card-body">
               <button className="btn btn-ghost loading"></button>
             </div>
           </div>
         ) : (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-none">
+          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
             <div className="card-body !gap-4">
               <div className="card-title justify-between items-center">
                 {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
@@ -271,8 +269,7 @@ const SettingCategory = () => {
                     onClick={() => {
                       setSelectedAction(SELECTED_ACTION.ADD);
                       reset();
-                    }}
-                  >
+                    }}>
                     Add
                   </button>
                 )}
@@ -300,18 +297,15 @@ const SettingCategory = () => {
                     value={value}
                     loadOptions={loadCategories}
                     isMulti
-                    placeholder="Select categories"
-                  ></StyledReactSelect>
-                )}
-              ></Controller>
+                    placeholder="Select categories"></StyledReactSelect>
+                )}></Controller>
               <div className="card-actions ">
                 <button
                   className={classNames('btn btn-primary btn-block', {
                     loading: addCompanyMutation.isLoading || updateCompanyMutation.isLoading,
                   })}
                   onClick={handleSubmit(onSubmit)}
-                  disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}
-                >
+                  disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
                   Submit
                 </button>
               </div>

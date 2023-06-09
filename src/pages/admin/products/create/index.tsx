@@ -227,7 +227,7 @@ const CreateUser: NextPageWithLayout = () => {
                     <FaRupeeSign />
                   </span>
                   <input
-                    type="number"
+                    type="text"
                     pattern="[0-9]*"
                     placeholder="Type here"
                     {...register('price', {

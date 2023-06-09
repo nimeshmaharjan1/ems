@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { NextPageWithLayout } from '../_app';
+import Cart from '@/shared/components/cart';
 
 const Home: NextPageWithLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -103,7 +104,7 @@ const Home: NextPageWithLayout = () => {
             }}></span>
         </h1>
       </header>
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 z-0">
         {productData?.products &&
           productData.products.map((product) => {
             return (
@@ -113,7 +114,7 @@ const Home: NextPageWithLayout = () => {
             );
           })}
       </div>
-      <div className="mt-12 px-12 lg:px-0 place-self-end">
+      <div className=" mt-6 md:mt-12 px-2 md:px-12 lg:px-0 place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>
