@@ -119,28 +119,30 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                         </>
                       )}
                     </label>
-                    <ul tabIndex={0} className="z-50 menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
+                    <ul tabIndex={0} className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
                       {isAdmin && (
                         <li>
-                          <Link href="/admin/products">
+                          <Link
+                            className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
+                            href="/admin/products">
                             <RxDashboard></RxDashboard>
                             Dashboard
                           </Link>
                         </li>
                       )}
                       <li>
-                        <a>
+                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
                           <AiOutlineUser></AiOutlineUser>
                           Profile
                         </a>
                       </li>
                       <li>
-                        <a>
+                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
                           <GiSettingsKnobs></GiSettingsKnobs>Settings
                         </a>
                       </li>
                       <li onClick={() => signOut({ callbackUrl: '/products' })}>
-                        <a>
+                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
                           <AiOutlineLogout></AiOutlineLogout>Logout
                         </a>
                       </li>
@@ -160,9 +162,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-64 bg-base-100 h-full">
+          <ul className=" p-2 w-64 bg-base-100 h-full">
             <li>
-              <Link href="/products" className="text-sm">
+              <Link
+                href="/products"
+                className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
                 <FaBox></FaBox>
                 Products
               </Link>
@@ -170,13 +174,17 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             {status === 'unauthenticated' && (
               <>
                 <li className="-ml-[0.3rem]">
-                  <Link href="/api/auth/signin" className="text-sm">
+                  <Link
+                    href="/api/auth/signin"
+                    className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
                     <MdLogin className="text-lg" />
                     Sign In
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/register" className="text-sm">
+                  <Link
+                    href="/auth/register"
+                    className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
                     <FiUserPlus />
                     Sign Up
                   </Link>
@@ -185,7 +193,9 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             )}
             {isAdmin && (
               <li>
-                <Link href="/admin/products" className="text-sm">
+                <Link
+                  href="/admin/products"
+                  className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
                   <RxDashboard></RxDashboard>
                   Dashboard
                 </Link>
@@ -193,9 +203,9 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             )}
             {status === 'authenticated' && (
               <>
-                <li className="text-sm" onClick={() => signOut()}>
-                  <a>
-                    <MdLogout className="text-lg" />
+                <li className="text-sm cursor-pointer" onClick={() => signOut()}>
+                  <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                    <MdLogout className="text-lg " />
                     Logout
                   </a>
                 </li>
