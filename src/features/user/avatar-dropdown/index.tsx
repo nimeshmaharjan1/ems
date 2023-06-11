@@ -1,10 +1,16 @@
+import { USER_ROLES } from '@prisma/client';
 import { User } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { AiOutlineUser, AiOutlineLogout } from 'react-icons/ai';
+import { GiSettingsKnobs } from 'react-icons/gi';
+import { RxDashboard } from 'react-icons/rx';
 
-const NavAvatar = () => {
+const NavAvatarDropdown: React.FC<{
+  profileModalRef: React.RefObject<HTMLDialogElement>;
+}> = ({ profileModalRef }) => {
   const { data: session } = useSession();
   return (
     <div className="dropdown dropdown-end !mr-3">
@@ -26,16 +32,17 @@ const NavAvatar = () => {
         )}
       </label>
       <ul tabIndex={0} className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
-        {isAdmin && (
-          <li>
-            <Link
-              className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
-              href="/admin/products">
-              <RxDashboard></RxDashboard>
-              Dashboard
-            </Link>
-          </li>
-        )}
+        {session?.user?.role === USER_ROLES.ADMIN ||
+          (session?.user?.role === USER_ROLES.SUPER_ADMIN && (
+            <li>
+              <Link
+                className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
+                href="/admin/products">
+                <RxDashboard></RxDashboard>
+                Dashboard
+              </Link>
+            </li>
+          ))}
         <li>
           <a
             className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
@@ -59,4 +66,4 @@ const NavAvatar = () => {
   );
 };
 
-export default NavAvatar;
+export default NavAvatarDropdown;
