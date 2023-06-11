@@ -163,7 +163,7 @@ const SettingCategory = () => {
             <tr className="bg-base-100">
               <th>SN</th>
               <th>Name</th>
-              <th>Companies</th>
+              <th>Categories</th>
               <th>Created On</th>
               <th>Actions</th>
             </tr>

@@ -13,7 +13,7 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
   hasBeenPaid: boolean;
-  paidAt: null;
+  paidAt: Date;
   user: User;
   items: Item[];
 }

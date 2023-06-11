@@ -1,18 +1,13 @@
-import { AiOutlineLogout } from 'react-icons/ai';
-import { GoLocation } from 'react-icons/go';
-import { BsSearch } from 'react-icons/bs';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { ImProfile } from 'react-icons/im';
-import { FiBox, FiSettings } from 'react-icons/fi';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import classnames from 'classnames';
-import { useTheme } from 'next-themes';
-import { useRouter } from 'next/router';
-import { RxDashboard } from 'react-icons/rx';
 import { DASHBOARD_LINKS } from '@/features/admin/enums';
-import { signOut } from 'next-auth/react';
-import classNames from 'classnames';
+import { default as classNames, default as classnames } from 'classnames';
 import { PackageCheck } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { AiOutlineLogout } from 'react-icons/ai';
+import { FiBox, FiSettings } from 'react-icons/fi';
+import { GoLocation } from 'react-icons/go';
+import { HiOutlineUsers } from 'react-icons/hi2';
 
 export default function Sidebar({
   isSidebarCollapsed,

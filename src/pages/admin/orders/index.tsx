@@ -3,13 +3,18 @@ import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { PaginatedOrders } from '@/shared/interfaces/order.interface';
 import { formatDateWithTime, formatPrice } from '@/shared/utils/helper.util';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { BsTrash } from 'react-icons/bs';
-import { useQuery } from 'react-query';
-
+import { RxCross1 } from 'react-icons/rx';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+interface ChangePaidStatus {
+  orderId: string;
+  hasBeenPaid: boolean;
+}
 const Orders: NextPageWithLayout = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,12 +27,33 @@ const Orders: NextPageWithLayout = () => {
     const response = await axios.get(`/api/orders?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
-  console.log(ordersData);
   const totalPages = ordersData?.totalPages;
+  const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  const markAsPaidModalRef = useRef<HTMLDialogElement>(null);
+  const { mutate, isLoading: isHasBeenPaidLoading } = useMutation(
+    async (args: ChangePaidStatus) => {
+      const response = await axios.patch(`/api/orders/${args.orderId}`, {
+        hasBeenPaid: args.hasBeenPaid,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchProducts'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
+  const changePaidStatus = (args: ChangePaidStatus) => {
+    mutate(args);
+  };
   if (!isMounted) return null;
   return (
     <>
@@ -49,6 +75,8 @@ const Orders: NextPageWithLayout = () => {
                 <th className="border !border-base-300">Phone Number</th>
                 <th className="border !border-base-300">Total</th>
                 <th className="border !border-base-300">Ordered At</th>
+                <th className="border !border-base-300">Paid Status</th>
+                <th className="border !border-base-300">Paid At</th>
                 <th className="border !border-base-300">Action</th>
               </tr>
             </thead>
@@ -61,11 +89,38 @@ const Orders: NextPageWithLayout = () => {
                     <td className="border !border-base-300">&#8377; {formatPrice(order.totalPrice)}</td>
                     <td className="border !border-base-300">{formatDateWithTime(order.createdAt)}</td>
                     <td className="border !border-base-300 text-center">
-                      <button className="btn btn-success btn-xs btn-outline  gap-1">
-                        <AiOutlineCheck></AiOutlineCheck> Has Paid
-                      </button>
+                      {order.hasBeenPaid ? (
+                        <div className="badge badge-sm badge-success">Paid</div>
+                      ) : (
+                        <div className="badge badge-sm badge-warning">Not Paid</div>
+                      )}
+                    </td>
+                    <td className="border !border-base-300 text-center">{order?.paidAt ? formatDateWithTime(order.paidAt) : '-'}</td>
+                    <td className="border !border-base-300 text-center">
+                      {isHasBeenPaidLoading ? (
+                        <button className="btn btn-xs btn-outline">
+                          <span className="loading loading-spinner loading-xs"></span>
+                        </button>
+                      ) : (
+                        <>
+                          {order.hasBeenPaid ? (
+                            <button
+                              className="btn btn-warning btn-xs btn-outline  gap-1"
+                              onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
+                              <RxCross1></RxCross1> Mark as Unpaid
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn-success btn-xs btn-outline  gap-1"
+                              onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
+                              <AiOutlineCheck></AiOutlineCheck> Mark as Paid
+                            </button>
+                          )}
+                        </>
+                      )}
+
                       <button className="btn btn-error btn-xs btn-outline ml-2 gap-1">
-                        <BsTrash></BsTrash> Delete
+                        <BsTrash></BsTrash>
                       </button>
                     </td>
                   </tr>
@@ -74,6 +129,18 @@ const Orders: NextPageWithLayout = () => {
             </tbody>
           </table>
         )}
+        {/* <dialog ref={markAsPaidModalRef} className="modal shadow-lg modal-bottom sm:modal-middle">
+          <section className="modal-box">
+            <h3 className="font-bold text-lg">Order Payment</h3>
+            <p className="py-4 font-medium">Mark this order as paid?</p>
+            <div className="modal-action">
+              <button className="btn btn-ghost" onClick={() => markAsPaidModalRef.current?.close()}>
+                Close
+              </button>
+              <button className="btn btn-primary" onClick={() => change}>Mark as Paid</button>
+            </div>
+          </section>
+        </dialog> */}
       </section>
       <div className="mt-8 flex justify-end place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}

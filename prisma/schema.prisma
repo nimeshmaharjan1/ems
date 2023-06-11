@@ -47,6 +47,7 @@ model VerificationToken {
 enum USER_ROLES {
   ADMIN
   USER
+  BUSINESS_CLIENT
   SUPER_ADMIN
 }
 
@@ -58,19 +59,20 @@ enum PAYMENT_METHOD {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  username      String     @unique
-  password      String
-  name          String?
-  email         String?    @unique
-  phone_number  String?    @unique
-  emailVerified DateTime?
-  role          USER_ROLES
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  orders        Order[]
-  Review        Review[]
+  id                       String     @id @default(cuid())
+  username                 String     @unique
+  password                 String
+  name                     String?
+  email                    String?    @unique
+  phone_number             String?    @unique
+  emailVerified            DateTime?
+  role                     USER_ROLES
+  applyingAsBusinessClient Boolean    @default(false)
+  image                    String?
+  accounts                 Account[]
+  sessions                 Session[]
+  orders                   Order[]
+  Review                   Review[]
 }
 
 model Order {

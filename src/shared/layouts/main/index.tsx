@@ -1,6 +1,6 @@
 import { Inter, Poppins } from '@next/font/google';
 import Head from 'next/head';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
 
 import Cart from '@/shared/components/cart';
@@ -18,6 +18,7 @@ import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
 import { useRouter } from 'next/router';
+import UserProfileModal from '@/features/user/profile-modal';
 
 const inter = Inter({
   preload: false,
@@ -51,7 +52,10 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       }
     }
   }, [setCartItems]);
+
   const router = useRouter();
+  const profileModalRef = useRef<HTMLDialogElement>(null);
+  console.log(session?.user);
   if (!isMounted) return null;
 
   return (
@@ -63,6 +67,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
         />
       </Head>
+      <UserProfileModal ref={profileModalRef}></UserProfileModal>
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
@@ -87,6 +92,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
+
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
@@ -131,7 +137,9 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                         </li>
                       )}
                       <li>
-                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
+                        <a
+                          className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
+                          onClick={() => profileModalRef.current?.show()}>
                           <AiOutlineUser></AiOutlineUser>
                           Profile
                         </a>

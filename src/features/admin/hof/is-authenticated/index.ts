@@ -6,6 +6,6 @@ export default async function isAuthenticated(req: NextApiRequest, res: NextApiR
   if (session) {
     return true;
   }
-  res.status(401).json({ message: 'You must log in first.' });
+  res.status(401).json({ message: 'Unauthorized.' });
   return false;
 }
