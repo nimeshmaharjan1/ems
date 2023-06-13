@@ -56,7 +56,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
 
   const router = useRouter();
   const profileModalRef = useRef<HTMLDialogElement>(null);
-  console.log(session?.user);
   if (!isMounted) return null;
 
   return (
