@@ -17,6 +17,12 @@ import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+// import TextEditor from '@/shared/components/text-editor';
+
+const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
+  ssr: false,
+}) as any;
 
 const prisma = new PrismaClient();
 
@@ -214,7 +220,16 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             />
           </FormControl>
 
-          <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+          <Controller
+            rules={{
+              required: 'Description is required.',
+            }}
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
+              <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+                <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
+                {/* 
             <textarea
               placeholder="Type here"
               {...register('description', {
@@ -229,9 +244,11 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 },
               })}
               rows={6}
-              className={`textarea textarea-bordered  w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            />
-          </FormControl>
+              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
+            /> */}
+              </FormControl>
+            )}
+          />
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller

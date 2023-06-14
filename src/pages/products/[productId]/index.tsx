@@ -6,6 +6,7 @@ import { formatPrice } from '@/shared/utils/helper.util';
 import { useCartStore } from '@/store/user-cart';
 import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import parse from 'html-react-parser';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -111,8 +112,8 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
           </div>
         </section>
         <section className="detail-section col-span-6 md:col-span-3">
-          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-5">{product.title}</h1>
-          <p className="description text-lg text-justify mb-8">{product.description}</p>
+          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-3">{product.title}</h1>
+          <p className="description text-justify mb-4 prose">{parse(product.description)}</p>
           <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>
           <section className="quantity-section mb-8 flex items-center gap-3">
             <p>Quantity</p>

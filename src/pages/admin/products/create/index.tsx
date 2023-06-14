@@ -15,6 +15,12 @@ import { Category, Company } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
+import dynamic from 'next/dynamic';
+// import TextEditor from '@/shared/components/text-editor';
+
+const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
+  ssr: false,
+}) as any;
 
 const productSchema = z.object({
   // categoryId: z.string().min(1, { message: 'Product category is required.' }),
@@ -46,6 +52,7 @@ const CreateUser: NextPageWithLayout = () => {
     quantity: '',
     slug: '',
   };
+
   const {
     register,
     watch,
@@ -55,6 +62,7 @@ const CreateUser: NextPageWithLayout = () => {
     reset,
     handleSubmit,
   } = useForm<ProductSchema>({ mode: 'onChange', resolver: zodResolver(productSchema), defaultValues });
+  console.log('watch: ', watch('description'));
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const images = useWatch({
@@ -155,7 +163,7 @@ const CreateUser: NextPageWithLayout = () => {
     <div className="min-h-screen">
       <h2 className="font-semibold text-3xl ">Add Product</h2>
       <div className="grid gap-x-12 grid-cols-6 my-6">
-        <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
+        <section className="col-span-6 lg:col-span-3 flex flex-col gap-3">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
             <input
               type="text"
@@ -164,8 +172,16 @@ const CreateUser: NextPageWithLayout = () => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-
-          <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+          <Controller
+            rules={{
+              required: 'Description is required.',
+            }}
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
+              <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+                <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
+                {/* 
             <textarea
               placeholder="Type here"
               {...register('description', {
@@ -181,8 +197,11 @@ const CreateUser: NextPageWithLayout = () => {
               })}
               rows={6}
               className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            />
-          </FormControl>
+            /> */}
+              </FormControl>
+            )}
+          />
+
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -277,11 +296,10 @@ const CreateUser: NextPageWithLayout = () => {
       </div>
       <div>
         <button
-          className={classNames('btn btn-primary btn-block', {
-            loading: isSubmitting,
-          })}
+          className={classNames('btn btn-primary btn-block')}
           disabled={isSubmitting || isUploading}
           onClick={handleSubmit(handleCreate)}>
+          {isSubmitting && <span className="loading loading-spinner"></span>}
           Submit
         </button>
       </div>

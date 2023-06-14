@@ -115,142 +115,143 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
     }
   };
 
+  if (isLoadingUserProfile || !session?.user?.id || !userData) {
+    return (
+      <>
+        <dialog className="modal" ref={ref}>
+          <div className="modal-box">Hello</div>
+        </dialog>
+      </>
+    );
+  }
   return (
-    <dialog ref={ref} className="modal">
-      <form onSubmit={handleSubmit(updateUser)} className="modal-box md:!w-[95%] lg:!w-[56%] !max-w-none">
-        {isLoadingUserProfile ? (
-          <div className="text-center">
-            <button className="btn btn-ghost">
-              <span className="loading loading-spinner"></span>
-            </button>
-          </div>
-        ) : (
-          <>
-            <h2 className="font-[600] text-2xl mb-6">My Profile</h2>
-            <section className="grid grid-cols-6 gap-x-4">
-              <div className="col-span-1 flex justify-center">
-                <div>
-                  <div
-                    onClick={() => {
-                      profileImageUploadRef.current?.click();
-                    }}
-                    className="avatar cursor-pointer profile-modal-avatar relative mt-3">
-                    <div className="w-24 rounded-full relative  shadow-lg ring-offset-base-100 ring-offset-0">
-                      <Image
-                        className="profile-image"
-                        fill
-                        alt="user"
-                        src={watch('image') || session?.user?.image || '/icons/default-user.png'}
-                      />
-                      <Upload strokeWidth={1} className="profile-icon absolute top-9 left-9" />
-                      <input
-                        disabled={isSubmitting || isFileUploading}
-                        ref={profileImageUploadRef}
-                        accept={'.png, .jpg, .jpeg, .gif, .webp'}
-                        type="file"
-                        className="hidden"
-                        onChange={handleOnChangeImage}
-                      />
-                    </div>
+    <>
+      <dialog ref={ref} className="modal">
+        <form onSubmit={handleSubmit(updateUser)} className="modal-box md:!w-[95%] lg:!w-[56%] !max-w-none">
+          <h2 className="font-[600] text-2xl mb-6">My Profile</h2>
+          <section className="grid grid-cols-6 gap-x-4">
+            {/* <div className="col-span-1 flex justify-center">
+              <div>
+                <div
+                  onClick={() => {
+                    profileImageUploadRef.current?.click();
+                  }}
+                  className="avatar cursor-pointer profile-modal-avatar relative mt-3">
+                  <div className="w-24 rounded-full relative  shadow-lg ring-offset-base-100 ring-offset-0">
+                    <Image
+                      className="profile-image"
+                      fill
+                      alt="user"
+                      src={watch('image') || session?.user?.image || '/icons/default-user.png'}
+                    />
+                    <Upload strokeWidth={1} className="profile-icon absolute top-9 left-9" />
+                    <input
+                      disabled={isSubmitting || isFileUploading}
+                      ref={profileImageUploadRef}
+                      accept={'.png, .jpg, .jpeg, .gif, .webp'}
+                      type="file"
+                      className="hidden"
+                      onChange={handleOnChangeImage}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="col-span-5">
-                <section className="grid grid-cols-6 gap-3 items-center">
-                  <div className="form-control w-full col-span-3">
-                    <label className="label">
-                      <span className="label-text">Name</span>
-                    </label>
-                    <input
-                      disabled={isSubmitting}
-                      defaultValue={session?.user?.name as string}
-                      type="text"
-                      {...register('name', {
-                        required: 'Name is required.',
-                      })}
-                      placeholder="Type here"
-                      className={classNames('input input-bordered w-full max-w-xs', {
-                        'input-error': errors?.name?.message,
-                      })}
-                    />
-                  </div>
+            </div> */}
+            <div className="col-span-6">
+              <section className="grid grid-cols-6 gap-3 items-center">
+                <div className="form-control w-full col-span-6 md:col-span-3">
+                  <label className="label">
+                    <span className="label-text">Name</span>
+                  </label>
+                  <input
+                    disabled={isSubmitting}
+                    defaultValue={session?.user?.name as string}
+                    type="text"
+                    {...register('name', {
+                      required: 'Name is required.',
+                    })}
+                    placeholder="Type here"
+                    className={classNames('input input-bordered w-full max-w-xs', {
+                      'input-error': errors?.name?.message,
+                    })}
+                  />
+                </div>
 
-                  <div className="form-control w-full col-span-3">
-                    <label className="label">
-                      <span className="label-text">Username</span>
-                    </label>
-                    <input
-                      disabled={isSubmitting}
-                      defaultValue={session?.user?.username as string}
-                      type="text"
-                      {...register('username', {
-                        required: 'Username is required.',
-                      })}
-                      placeholder="Type here"
-                      className={classNames('input input-bordered w-full max-w-xs', {
-                        'input-error': errors?.username?.message,
-                      })}
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <label className="label text-error text-sm -mt-3">{errors?.name?.message}</label>
-                  </div>
-                  <div className="col-span-3">
-                    <label className="label text-error text-sm -mt-3">{errors?.username?.message}</label>
-                  </div>
-                  <div className="form-control w-full  col-span-3">
-                    <label className="label">
-                      <span className="label-text">E-mail</span>
-                    </label>
-                    <input
-                      disabled
-                      defaultValue={session?.user?.email as string}
-                      type="email"
-                      placeholder="Type here"
-                      className="input input-bordered w-full max-w-xs"
-                    />
-                  </div>
-                  <div className="form-control w-full  col-span-3">
-                    <label className="label">
-                      <span className="label-text">Phone Number</span>
-                    </label>
-                    <input
-                      disabled={isSubmitting}
-                      defaultValue={session?.user?.phone_number}
-                      type="text"
-                      {...register('phone_number', {
-                        required: 'Phone number is required.',
-                      })}
-                      placeholder="Type here"
-                      className={classNames('input  input-bordered w-full max-w-xs', {
-                        'input-error': errors?.phone_number?.message,
-                      })}
-                    />
-                  </div>
+                <div className="form-control w-full col-span-6 md:col-span-3">
+                  <label className="label">
+                    <span className="label-text">Username</span>
+                  </label>
+                  <input
+                    disabled={isSubmitting}
+                    defaultValue={session?.user?.username as string}
+                    type="text"
+                    {...register('username', {
+                      required: 'Username is required.',
+                    })}
+                    placeholder="Type here"
+                    className={classNames('input input-bordered w-full max-w-xs', {
+                      'input-error': errors?.username?.message,
+                    })}
+                  />
+                </div>
+                <div className="col-span-6 md:col-span-3">
+                  <label className="label text-error text-sm -mt-3">{errors?.name?.message}</label>
+                </div>
+                <div className="col-span-6 md:col-span-3">
+                  <label className="label text-error text-sm -mt-3">{errors?.username?.message}</label>
+                </div>
+                <div className="form-control w-full  col-span-6 md:col-span-3">
+                  <label className="label">
+                    <span className="label-text">E-mail</span>
+                  </label>
+                  <input
+                    disabled
+                    defaultValue={session?.user?.email as string}
+                    type="email"
+                    placeholder="Type here"
+                    className="input input-bordered w-full max-w-xs"
+                  />
+                </div>
+                <div className="form-control w-full  col-span-6 md:col-span-3">
+                  <label className="label">
+                    <span className="label-text">Phone Number</span>
+                  </label>
+                  <input
+                    disabled={isSubmitting}
+                    defaultValue={session?.user?.phone_number}
+                    type="text"
+                    {...register('phone_number', {
+                      required: 'Phone number is required.',
+                    })}
+                    placeholder="Type here"
+                    className={classNames('input  input-bordered w-full max-w-xs', {
+                      'input-error': errors?.phone_number?.message,
+                    })}
+                  />
+                </div>
 
-                  <div className="col-span-3">
-                    <label className="label text-error text-sm -mt-3"></label>
-                  </div>
-                  <div className="col-span-3">
-                    <label className="label text-error text-sm -mt-3">{errors?.phone_number?.message}</label>
-                  </div>
-                </section>
-              </div>
-            </section>
-
-            <div className="modal-action px-4 gap-2">
-              {/* if there is a button in form, it will close the modal */}
-              <button type="button" className="btn" onClick={() => (ref as any).current.close()}>
-                Close
-              </button>
-              <button className="btn btn-primary" type="submit">
-                Submit
-              </button>
+                <div className="col-span-6 md:col-span-3">
+                  <label className="label text-error text-sm -mt-3"></label>
+                </div>
+                <div className="col-span-6 md:col-span-3">
+                  <label className="label text-error text-sm -mt-3">{errors?.phone_number?.message}</label>
+                </div>
+              </section>
             </div>
-          </>
-        )}
-      </form>
-    </dialog>
+          </section>
+
+          <div className="modal-action px-4 gap-2">
+            {/* if there is a button in form, it will close the modal */}
+            <button type="button" className="btn" onClick={() => (ref as any).current.close()}>
+              Close
+            </button>
+            <button className="btn btn-primary" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </>
   );
 });
 

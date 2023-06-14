@@ -67,7 +67,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
         />
       </Head>
-      <UserProfileModal ref={profileModalRef}></UserProfileModal>
+      {session?.user?.id && <UserProfileModal ref={profileModalRef}></UserProfileModal>}
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
