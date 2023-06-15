@@ -15,7 +15,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
   return (
     <>
       <Head>
-        <title>EMS</title>
+        <title>EME</title>
       </Head>
       <div className={`${inter.className} h-screen flex items-center justify-center bg-base-300`}>
         <button

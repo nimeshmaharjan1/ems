@@ -33,7 +33,7 @@ const productSchema = z.object({
     label: z.string().min(1, { message: 'Category is required.' }),
     value: z.string().min(1, { message: 'Category is required.' }),
   }),
-  images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
+  images: z.array(z.string()).min(1, { message: 'Image is required.' }).max(5, { message: 'Images cannot be more than five.' }).optional(),
   price: z.string().min(1, { message: 'Price is required.' }),
   quantity: z.string().min(1, { message: 'Quantity is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
@@ -271,10 +271,19 @@ const CreateUser: NextPageWithLayout = () => {
               </FormControl>
             </div>
           </div>
+          <div className="hidden lg:block col-span-12 mt-4">
+            <button
+              className={classNames('btn btn-primary btn-block')}
+              disabled={isSubmitting || isUploading}
+              onClick={handleSubmit(handleCreate)}>
+              {isSubmitting && <span className="loading loading-spinner"></span>}
+              Submit
+            </button>
+          </div>
         </section>
         <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
           <div className="image-section col-span-6 lg:col-span-6">
-            <FormControl label="Upload Product Image">
+            <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
               <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
             </FormControl>
 
@@ -294,7 +303,7 @@ const CreateUser: NextPageWithLayout = () => {
           </section> */}
         </section>
       </div>
-      <div>
+      <div className="block lg:hidden">
         <button
           className={classNames('btn btn-primary btn-block')}
           disabled={isSubmitting || isUploading}

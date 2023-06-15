@@ -61,7 +61,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   return (
     <div className={`min-h-screen flex flex-col justify-between ${inter.className}`}>
       <Head>
-        <title>{title ? `EMS - ${title}` : 'EMS'}</title>
+        <title>{title ? `EME - ${title}` : 'EME'}</title>
         <meta
           name="description"
           content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
@@ -72,13 +72,17 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <div className="nav-wrapper bg-base-200 shadow">
-            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2">
+            <div className="w-full navbar lg:container h-20 lg:mx-auto md:px-8 lg:px-28 gap-2">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
-              <div className="flex-1 text-xl font-bold text-primary">EMS</div>
+              <div className="flex-1">
+                <section className="relative w-24 h-12 md:w-32 md:h-16">
+                  <Image src="/logo.jpeg" fill alt="logo"></Image>
+                </section>
+              </div>
               <div className="flex items-center lg:hidden theme mx-4 gap-2">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}

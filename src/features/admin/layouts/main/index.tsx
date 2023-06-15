@@ -23,7 +23,7 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
   return (
     <>
       <Head>
-        <title>{title ? `${title} - EMS` : 'EMS'}</title>
+        <title>{title ? `${title} - EME` : 'EME'}</title>
       </Head>
 
       <div className={`flex ${inter.className}`}>
