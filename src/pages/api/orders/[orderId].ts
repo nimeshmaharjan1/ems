@@ -32,6 +32,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } finally {
       await prisma.$disconnect();
     }
+  } else if (req.method === 'DELETE') {
+    try {
+      const order = await prisma.order.findUnique({ where: { id: orderId } });
+      if (!order) {
+        res.status(404).json({ message: 'Order has already been deleted please try refreshing the page.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Something went wrong while trying to delete order.' });
+    }
+    try {
+      await prisma.order.delete({ where: { id: orderId } });
+      res.status(201).json({ message: 'Order deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Something went wrong while trying to delete order.' });
+    } finally {
+      await prisma.$disconnect();
+    }
   } else {
     res.setHeader('Allow', ['PATCH']);
     res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });

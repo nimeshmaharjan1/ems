@@ -86,6 +86,8 @@ const ShopByAside = () => {
                 <span className="loading loading-spinner"></span>
               </button>
             </div>
+          ) : companies?.data.length === 0 ? (
+            <span className="text-warning">No companies available at this moment.</span>
           ) : (
             <>
               {companies &&
@@ -118,6 +120,8 @@ const ShopByAside = () => {
                 <span className="loading loading-spinner"></span>
               </button>
             </div>
+          ) : categories?.data.length === 0 ? (
+            <span className="text-warning">No categories available at this moment.</span>
           ) : (
             <>
               {categories &&
@@ -166,17 +170,9 @@ const ShopByAside = () => {
                   placeholder="Enter maximum price..."
                   className="input input-bordered input-xs xl:input-sm"
                 />
-                {/* <span>&#8377; </span> */}
               </label>
             </div>
           </div>
-          {/* <div className="slider">
-            <div className="price-range-slider-progress"></div>
-          </div>
-          <div className="range-input">
-            <input type="range" className="range-min" min="0" max="10000" value="2500" step="100" />
-            <input type="range" className="range-max" min="0" max="10000" value="7500" step="100" />
-          </div> */}
         </div>
         <div className="clear-all-filters btn btn-primary btn-sm self-end" onClick={clearAllFilters}>
           Clear All
