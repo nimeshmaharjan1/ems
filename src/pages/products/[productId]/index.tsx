@@ -85,7 +85,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
   return (
     <>
       <Head>
-        <title>EMS - {product.slug}</title>
+        <title>EME - {product.slug}</title>
       </Head>
       <section className="grid-cols-6 grid gap-10 gap-x-12">
         <section className="carousel-section col-span-6 md:col-span-3">
