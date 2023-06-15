@@ -1,6 +1,6 @@
 import { Inter, Poppins } from '@next/font/google';
 import Head from 'next/head';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
 
 import Cart from '@/shared/components/cart';
@@ -18,6 +18,8 @@ import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
 import { useRouter } from 'next/router';
+import UserProfileModal from '@/features/user/profile-modal';
+import NavAvatarDropdown from '@/features/user/avatar-dropdown';
 
 const inter = Inter({
   preload: false,
@@ -51,31 +53,39 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       }
     }
   }, [setCartItems]);
+
   const router = useRouter();
+  const profileModalRef = useRef<HTMLDialogElement>(null);
   if (!isMounted) return null;
 
   return (
     <div className={`min-h-screen flex flex-col justify-between ${inter.className}`}>
       <Head>
-        <title>{title ? `EMS - ${title}` : 'EMS'}</title>
+        <title>{title ? `EME - ${title}` : 'EME'}</title>
         <meta
           name="description"
           content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
         />
       </Head>
+      {session?.user?.id && <UserProfileModal ref={profileModalRef}></UserProfileModal>}
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <div className="nav-wrapper bg-base-200 shadow">
-            <div className="w-full navbar lg:container lg:mx-auto md:px-8 lg:px-28 gap-2">
+            <div className="w-full navbar lg:container h-20 lg:mx-auto md:px-8 lg:px-28 gap-2">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
-              <div className="flex-1 text-xl font-bold text-primary">EMS</div>
-              <div className="flex items-center lg:hidden theme mx-4">
+              <div className="flex-1">
+                <section className="relative w-24 h-12 md:w-32 md:h-16">
+                  <Image src="/logo.jpeg" fill alt="logo"></Image>
+                </section>
+              </div>
+              <div className="flex items-center lg:hidden theme mx-4 gap-2">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
+                {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <ThemeToggler></ThemeToggler>
               </div>
               <div className="flex-none hidden lg:flex items-center gap-4">
@@ -87,6 +97,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )}
+
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
@@ -100,55 +111,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </Link>
                   </>
                 )}
-                {status === 'authenticated' && (
-                  <div className="dropdown dropdown-end !mr-3">
-                    <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
-                      {session?.user?.image ? (
-                        <div className="avatar online">
-                          <div className="w-8 h-8 rounded-full shadow">
-                            <Image src={session?.user?.image} height={500} width={500} alt="user" />
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <User />
-                          {/* <Image src="/icons/default-user.png" height={500} width={500} alt="user" /> */}
-                          {/* <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
-                            <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
-                          </div> */}
-                        </>
-                      )}
-                    </label>
-                    <ul tabIndex={0} className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
-                      {isAdmin && (
-                        <li>
-                          <Link
-                            className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
-                            href="/admin/products">
-                            <RxDashboard></RxDashboard>
-                            Dashboard
-                          </Link>
-                        </li>
-                      )}
-                      <li>
-                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
-                          <AiOutlineUser></AiOutlineUser>
-                          Profile
-                        </a>
-                      </li>
-                      <li>
-                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
-                          <GiSettingsKnobs></GiSettingsKnobs>Settings
-                        </a>
-                      </li>
-                      <li onClick={() => signOut({ callbackUrl: '/products' })}>
-                        <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
-                          <AiOutlineLogout></AiOutlineLogout>Logout
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <div className="-ml-1">
                   <ThemeToggler></ThemeToggler>
                 </div>

@@ -45,20 +45,17 @@ const SettingCategory = () => {
   });
 
   const addCompanyMutation = useMutation(addCompany, {
-    onMutate: (values) => {
-      const prevCompanies = queryClient.getQueryData('getCompanies') as ICompany[];
-      queryClient.setQueryData('getCompanies', (values: any) => [...prevCompanies, { ...values }]);
-    },
     onSuccess: () => {
       showToast(Toast.success, 'Company added successfully');
+      reset();
       queryClient.invalidateQueries(['getCompanies']);
     },
-    onError: () => {
-      showToast(Toast.error, 'Something went wrong while trying to add company');
-    },
-    onSettled: () => {
-      reset();
-      setIsSubmitting(false);
+
+    onError: (error: any) => {
+      if (error?.response?.data?.error?.meta?.target?.[0] === 'name') {
+        return showToast(Toast.error, 'Company with the name already exists.');
+      }
+      showToast(Toast.error, 'Something went wrong while trying to add the company');
     },
   });
 
@@ -80,7 +77,7 @@ const SettingCategory = () => {
       queryClient.invalidateQueries(['getCompanies']);
       reset();
     },
-    onError: () => {
+    onError: (error: any) => {
       showToast(Toast.error, 'Something went wrong while trying to update company');
     },
     onSettled: () => {
@@ -163,7 +160,7 @@ const SettingCategory = () => {
             <tr className="bg-base-100">
               <th>SN</th>
               <th>Name</th>
-              <th>Companies</th>
+              <th>Categories</th>
               <th>Created On</th>
               <th>Actions</th>
             </tr>
@@ -301,11 +298,10 @@ const SettingCategory = () => {
                 )}></Controller>
               <div className="card-actions ">
                 <button
-                  className={classNames('btn btn-primary btn-block', {
-                    loading: addCompanyMutation.isLoading || updateCompanyMutation.isLoading,
-                  })}
+                  className={classNames('btn btn-primary btn-block')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
+                  {addCompanyMutation.isLoading || (updateCompanyMutation.isLoading && <span className="loading loading-spinner"></span>)}
                   Submit
                 </button>
               </div>

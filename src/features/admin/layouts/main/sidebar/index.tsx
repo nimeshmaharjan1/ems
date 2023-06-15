@@ -1,18 +1,14 @@
-import { AiOutlineLogout } from 'react-icons/ai';
-import { GoLocation } from 'react-icons/go';
-import { BsSearch } from 'react-icons/bs';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { ImProfile } from 'react-icons/im';
-import { FiBox, FiSettings } from 'react-icons/fi';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import classnames from 'classnames';
-import { useTheme } from 'next-themes';
-import { useRouter } from 'next/router';
-import { RxDashboard } from 'react-icons/rx';
 import { DASHBOARD_LINKS } from '@/features/admin/enums';
-import { signOut } from 'next-auth/react';
-import classNames from 'classnames';
+import { default as classNames, default as classnames } from 'classnames';
 import { PackageCheck } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { AiOutlineLogout } from 'react-icons/ai';
+import { FiBox, FiSettings } from 'react-icons/fi';
+import { GoLocation } from 'react-icons/go';
+import { HiOutlineUsers } from 'react-icons/hi2';
 
 export default function Sidebar({
   isSidebarCollapsed,
@@ -42,16 +38,18 @@ export default function Sidebar({
       )}>
       <div className="upper">
         <div
-          className={classnames('logo flex items-center mt-6 gap-2 px-2 ml-1', {
-            'ml-2': !isSidebarCollapsed,
+          className={classnames('logo mt-4 relative gap-2 px-2 ml-2', {
+            'w-36 h-16': !isSidebarCollapsed,
+            'w-12 h-8': isSidebarCollapsed,
           })}>
-          <GoLocation className={classnames('text-primary text-2xl duration-1000')}></GoLocation>
+          <Image src="/logo.jpeg" alt="logo" fill></Image>
+          {/* <GoLocation className={classnames('text-primary text-2xl duration-1000')}></GoLocation>
           <h1
             className={classnames('text-primary font-bold text-xl', {
               hidden: isSidebarCollapsed,
             })}>
             EMS
-          </h1>
+          </h1> */}
         </div>
         {/* <div
           className={classnames('search-section flex items-center gap-2 rounded-md mt-6 bg-base-200 py-2 duration-1000', {

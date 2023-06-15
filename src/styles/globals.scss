@@ -40,12 +40,26 @@ body::-webkit-scrollbar-thumb {
     @apply text-base-100 bg-secondary;
   }
 
-  // .btn {
-  //   @apply font-normal;
-  // }
-
   .btn-error {
     @apply text-gray-200;
+  }
+  .profile-modal-avatar {
+    @apply transition-all duration-300;
+    .profile-image,
+    .profile-icon {
+      @apply transition-all duration-300;
+    }
+    .profile-icon {
+      @apply opacity-0;
+    }
+    &:hover {
+      .profile-image {
+        @apply opacity-25;
+      }
+      .profile-icon {
+        @apply opacity-100;
+      }
+    }
   }
 }
 
@@ -112,4 +126,12 @@ input[type='number']::-webkit-inner-spin-button {
     -moz-appearance: none;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
   }
+}
+
+.ck-content {
+  height: 200px;
+}
+
+.ck-content-error {
+  border: 1px solid red;
 }

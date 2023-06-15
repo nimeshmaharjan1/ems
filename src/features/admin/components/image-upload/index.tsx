@@ -39,6 +39,7 @@ const ImageUpload: React.FC<Props> = ({
     const invalidFiles = Array.from(files).filter((file) => file.size > sizeLimit);
     if (invalidFiles.length > 0) {
       setPictureError('Some file sizes are exceeding 10MB.');
+      return;
     }
 
     const readerPromises = filteredFiles.map((file) => {
@@ -99,8 +100,7 @@ const ImageUpload: React.FC<Props> = ({
             image?.src
               ? 'hover:opacity-50 disabled:hover:opacity-100 my-3 col-span-3 h-72'
               : 'border-2 border-dashed border-secondary hover:border-primary col-span-6 h-40 disabled:hover:border-gray-200'
-          )}
-        >
+          )}>
           {image?.src ? <Image src={image.src as string} alt={image?.alt ?? ''} layout="fill" objectFit={'cover'} /> : null}
 
           <div className="flex items-center justify-center">
@@ -127,8 +127,7 @@ const ImageUpload: React.FC<Props> = ({
               name="images"
               rules={{
                 required: 'Image is required',
-              }}
-            ></Controller>
+              }}></Controller>
           </div>
         </button>
       ))}

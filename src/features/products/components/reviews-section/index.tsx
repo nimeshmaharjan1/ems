@@ -34,7 +34,7 @@ const ReviewsSection: React.FC<{ productId: string }> = ({ productId }) => {
   const isReviewsEmpty = !isReviewsError && reviews && reviews?.totalRecords === 0;
 
   return (
-    <section className="grid grid-cols-6 mt-12 lg:mt-24 px-4 gap-y-12 lg:gap-y-0  lg:gap-x-32">
+    <section className="grid grid-cols-6 mt-12 lg:mt-28 px-4 gap-y-12 lg:gap-y-0  lg:gap-x-32">
       {isReviewsError ? (
         <div className="col-span-6 flex items-center justify-center">
           <p className="text-error font-medium text-xl">Something went wrong while trying to get the reviews please try again later.</p>

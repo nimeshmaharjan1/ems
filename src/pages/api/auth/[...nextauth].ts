@@ -68,6 +68,7 @@ export const authOptions: NextAuthOptions = {
           password: user.name as string,
           username: user.name as string,
           role: USER_ROLES.USER,
+          phone_number: user?.phone_number,
         },
       });
       // add the userId to the session object
@@ -82,6 +83,7 @@ export const authOptions: NextAuthOptions = {
         params.token.username = params.user.username;
         params.token.role = params.user?.role;
         params.token.id = params.user?.id;
+        params.token.phone_number = params.user?.phone_number;
       }
       return params.token;
     },
@@ -90,6 +92,7 @@ export const authOptions: NextAuthOptions = {
         params.session.user.username = params.token.username;
         params.session.user.role = params.token?.role;
         params.session.user.id = params.token?.id;
+        params.session.user.phone_number = params.token?.phone_number;
       }
       return params.session;
     },

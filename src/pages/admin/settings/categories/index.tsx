@@ -61,6 +61,7 @@ const SettingCategory = () => {
 
   const updateCategoryMutation = useMutation(updateCategory, {
     onSuccess: () => {
+      setSelectedAction(SELECTED_ACTION.ADD);
       showToast(Toast.success, 'Company updated successfully');
       queryClient.invalidateQueries(['getCategories']);
     },
@@ -303,11 +304,10 @@ const SettingCategory = () => {
                 )}></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-block ', {
-                    loading: addCategoryMutation.isLoading || updateCategoryMutation.isLoading,
-                  })}
+                  className={classNames('btn btn-primary btn-block ')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
+                  {addCategoryMutation.isLoading || (updateCategoryMutation.isLoading && <span className="loading loading-spinner"></span>)}
                   Submit
                 </button>
               </div>

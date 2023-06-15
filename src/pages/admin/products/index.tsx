@@ -35,7 +35,7 @@ const Products: NextPageWithLayout = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-semibold text-2xl">Products</h2>
         <button
-          className="btn btn-sm btn-secondary"
+          className="btn btn-sm btn-primary"
           onClick={() => {
             router.push('/admin/products/create');
           }}>
