@@ -5,6 +5,7 @@ import { PaginatedOrders } from '@/shared/interfaces/order.interface';
 import { formatDateWithTime, formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
@@ -24,7 +25,7 @@ const Orders: NextPageWithLayout = () => {
     isError,
     isLoading,
   } = useQuery<PaginatedOrders, Error>(['fetchProducts', currentPage, limit], async () => {
-    const response = await axios.get(`/api/orders?page=${currentPage}&limit=${limit}`);
+    const response = await axios.get(`/api/admin/orders?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
   const totalPages = ordersData?.totalPages;
@@ -36,7 +37,7 @@ const Orders: NextPageWithLayout = () => {
   const markAsPaidModalRef = useRef<HTMLDialogElement>(null);
   const { mutate: mutateHasBeenPaid, isLoading: isHasBeenPaidLoading } = useMutation(
     async (args: ChangePaidStatus) => {
-      const response = await axios.patch(`/api/orders/${args.orderId}`, {
+      const response = await axios.patch(`/api/admin/orders/${args.orderId}`, {
         hasBeenPaid: args.hasBeenPaid,
       });
       return response.data;
@@ -53,7 +54,7 @@ const Orders: NextPageWithLayout = () => {
   );
   const { mutate: mutateDeleteOrder, isLoading: isOrderDeleting } = useMutation(
     async (args: { orderId: string }) => {
-      const response = await axios.delete(`/api/orders/${args.orderId}`);
+      const response = await axios.delete(`/api/admin/orders/${args.orderId}`);
       return response.data;
     },
     {
@@ -69,6 +70,8 @@ const Orders: NextPageWithLayout = () => {
   const changePaidStatus = (args: ChangePaidStatus) => {
     mutateHasBeenPaid(args);
   };
+  const { data: session } = useSession();
+  console.log(session?.user?.role);
   if (!isMounted) return null;
   return (
     <>
@@ -102,7 +105,7 @@ const Orders: NextPageWithLayout = () => {
                 <tbody>
                   {ordersData?.orders?.length === 0 && <h2 className="text-warning p-2">No orders have been listed at this moment.</h2>}
                   {ordersData &&
-                    ordersData.orders.length > 1 &&
+                    ordersData.orders.length > 0 &&
                     ordersData?.orders.map((order) => {
                       return (
                         <tr key={order.id}>
