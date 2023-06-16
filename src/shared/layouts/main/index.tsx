@@ -92,11 +92,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
-                {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
+                {/* {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
                   <Link href="/admin/products" className="btn btn-sm btn-ghost ">
                     Dashboard
                   </Link>
-                )}
+                )} */}
 
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}

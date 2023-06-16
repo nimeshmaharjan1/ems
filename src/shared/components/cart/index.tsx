@@ -19,7 +19,7 @@ const Cart = () => {
   };
   return (
     <div className="dropdown dropdown-hover dropdown-end mr-4">
-      <label tabIndex={0} className="hover:text-amber-500 relative transition-all ">
+      <label tabIndex={0} className="hover:text-amber-500 relative transition-all cursor-pointer">
         <ShoppingCart />
         <div className="badge badge-primary rounded-full p-2 badge-xs absolute -top-2 -right-2.5">
           <span className="text-[8px]">{cartItems.length > 9 ? '9+' : cartItems.length}</span>

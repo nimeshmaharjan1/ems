@@ -1,16 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
+import isSuperAdmin from '@/features/admin/hof/is-super-admin';
 
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  isAuthenticated(req, res);
+  const auth = await isSuperAdmin(req, res);
+
   const orderId = req.query.orderId as string;
   if (req.method === 'PATCH') {
+    if (!auth) return;
     try {
       const { hasBeenPaid } = req.body;
-
       const dataToUpdate: any = { hasBeenPaid };
 
       if (hasBeenPaid) {
@@ -33,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.$disconnect();
     }
   } else if (req.method === 'DELETE') {
+    if (!auth) return;
     try {
       const order = await prisma.order.findUnique({ where: { id: orderId } });
       if (!order) {

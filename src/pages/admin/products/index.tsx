@@ -1,16 +1,16 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
-import { IProductResponse, PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
+import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
 import { formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
-import { PrismaClient, Product } from '@prisma/client';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const Products: NextPageWithLayout = () => {
   const router = useRouter();
@@ -26,6 +26,22 @@ const Products: NextPageWithLayout = () => {
   });
   const totalPages = productData?.totalPages;
   const [isMounted, setIsMounted] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate: mutateDeleteProduct, isLoading: isProductDeleting } = useMutation(
+    async (args: { productId: string }) => {
+      const response = await axios.delete(`/api/admin/products/${args.productId}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchProducts'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -78,8 +94,14 @@ const Products: NextPageWithLayout = () => {
                       <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
                         <FaCogs></FaCogs> Edit
                       </Link>
-                      <button className="btn btn-error btn-xs btn-outline ml-2 gap-1">
-                        <BsTrash></BsTrash> Delete
+                      <button
+                        className="btn btn-error btn-xs btn-outline ml-2 gap-1"
+                        disabled={isProductDeleting}
+                        onClick={() => {
+                          mutateDeleteProduct({ productId: product.id });
+                        }}>
+                        {isProductDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
+                        Delete
                       </button>
                     </td>
                   </tr>

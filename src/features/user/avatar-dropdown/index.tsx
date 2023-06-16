@@ -51,11 +51,11 @@ const NavAvatarDropdown: React.FC<{
             Profile
           </a>
         </li>
-        <li>
+        {/* <li>
           <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
             <GiSettingsKnobs></GiSettingsKnobs>Settings
           </a>
-        </li>
+        </li> */}
         <li onClick={() => signOut({ callbackUrl: '/products' })}>
           <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
             <AiOutlineLogout></AiOutlineLogout>Logout
