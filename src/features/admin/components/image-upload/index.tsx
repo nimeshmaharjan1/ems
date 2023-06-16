@@ -2,7 +2,7 @@ import { ProductSchema } from '@/pages/admin/products/create';
 import { Product } from '@prisma/client';
 import classNames from 'classnames';
 import Image from 'next/legacy/image';
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { AiOutlineArrowUp } from 'react-icons/ai';
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
   onChangePicture: (images: any) => void;
   control: Control<ProductSchema>;
   resetImages: boolean;
+  setResetImages: Dispatch<SetStateAction<boolean>>;
 }
 
 const ImageUpload: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const ImageUpload: React.FC<Props> = ({
   onChangePicture,
   control,
   resetImages,
+  setResetImages,
 }) => {
   const imageRef = React.useRef<HTMLInputElement>(null);
   const [images, setImages] = React.useState<any>(!initialImage?.length ? [initialImage] : [...initialImage]);
@@ -86,8 +88,9 @@ const ImageUpload: React.FC<Props> = ({
   useEffect(() => {
     if (resetImages) {
       setImages([{ src: '', alt: '' }]);
+      setResetImages(false);
     }
-  }, [resetImages]);
+  }, [resetImages, setResetImages]);
   return (
     <div className="grid grid-cols-6 gap-x-4">
       {images?.map((image: any) => (

@@ -58,7 +58,7 @@ const Cart = () => {
                 {cartItems.map((cartItem) => (
                   <li key={cartItem.productId} className="flex flex-col py-2 md:py-4 lg:py-6 sm:flex-row sm:justify-between">
                     <div className="flex w-full  sm:space-x-4">
-                      <div className="relative hidden md:block flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500">
+                      <div className="relative hidden md:block flex-shrink-0 w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500 aspect-video">
                         <Image src={cartItem.image} alt={cartItem.slug} fill></Image>
                       </div>
                       <div className="flex flex-col justify-between w-full pb-4">

@@ -62,7 +62,6 @@ const CreateUser: NextPageWithLayout = () => {
     reset,
     handleSubmit,
   } = useForm<ProductSchema>({ mode: 'onChange', resolver: zodResolver(productSchema), defaultValues });
-  console.log('watch: ', watch('description'));
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const images = useWatch({
@@ -284,7 +283,11 @@ const CreateUser: NextPageWithLayout = () => {
         <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
           <div className="image-section col-span-6 lg:col-span-6">
             <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
-              <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
+              <ImageUpload
+                {...{ control, resetImages, setResetImages }}
+                initialImage={{ src: images?.[0] as string, alt: '' }}
+                onChangePicture={upload}
+              />
             </FormControl>
 
             <FormControl label="Product Slug" className="lg:mt-3" errorMessage={errors?.slug?.message as string}>

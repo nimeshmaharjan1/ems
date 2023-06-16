@@ -38,7 +38,10 @@ export default function Sidebar({
       )}>
       <div className="upper">
         <div
-          className={classnames('logo mt-4 relative gap-2 px-2 ml-2', {
+          onClick={() => {
+            router.push('/products');
+          }}
+          className={classnames('logo mt-4 relative gap-2 px-2 ml-3', {
             'w-36 h-16': !isSidebarCollapsed,
             'w-12 h-8': isSidebarCollapsed,
           })}>

@@ -2,18 +2,20 @@ import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { PaginatedUsers } from '@/shared/interfaces/users.interface';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 import { USER_ROLES } from '@prisma/client';
 import axios from 'axios';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const Users: NextPageWithLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     data: userData,
     isError,
@@ -22,7 +24,26 @@ const Users: NextPageWithLayout = () => {
     const response = await axios.get(`/api/admin/users?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
-  console.log(userData);
+  const { mutate: mutateChangeRole, isLoading: isChangingRole } = useMutation(
+    async (args: { userId: string; role: USER_ROLES }) => {
+      const response = await axios.patch(`/api/admin/users/${args.userId}/change-role`, {
+        role: args.role,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
+  const handleRoleChange = (args: { userId: string; role: USER_ROLES }) => {
+    mutateChangeRole(args);
+  };
   return (
     <>
       <div className="flex items-center justify-between mb-6">
@@ -62,14 +83,27 @@ const Users: NextPageWithLayout = () => {
                         }`}</td>
                         <td className="border !border-base-300">{user.username}</td>
                         <td className={classNames('border !border-base-300')}>
-                          <span
+                          <select
+                            value={user.role}
+                            disabled={isChangingRole}
+                            className="select select-xs w-full"
+                            onChange={(e) => {
+                              handleRoleChange({ role: e.target.value as USER_ROLES, userId: user.id });
+                            }}>
+                            {Object.values(USER_ROLES).map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
+                          </select>
+                          {/* <span
                             className={classNames('badge-sm', {
                               'badge badge-accent': user.role === USER_ROLES.SUPER_ADMIN,
                               'badge badge-secondary': user.role === USER_ROLES.ADMIN,
                               'badge badge-primary': user.role === USER_ROLES.USER,
                             })}>
                             {user.role}
-                          </span>
+                          </span> */}
                         </td>
                         {/* <td className="border !border-base-300 text-center">
                     <Link href={`/admin/users/edit/${user.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
