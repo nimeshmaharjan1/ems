@@ -8,6 +8,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import classNames from 'classnames';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { cartItems, setCartItems } = useCartStore();
@@ -45,7 +46,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <Rating></Rating>
         <p className="pt-1 font-medium text-error">&#8377; {new Intl.NumberFormat('en-IN').format(Number(product.price))}</p>
         <div className="mt-1 flex items-center gap-x-2">
-          <div className="w-2 h-2 rounded-full bg-success"></div>
+          <div
+            className={classNames('w-2 h-2 rounded-full', {
+              'bg-error': Number(product.quantity) <= 0,
+              'bg-success': Number(product.quantity) > 0,
+            })}></div>
           {Number(product.quantity) > 0 ? <p className="text-xs">In Stock</p> : <p className="text-xs">Out of Stock</p>}
         </div>
         <div className="card-actions justify-end items-center mt-3">

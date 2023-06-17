@@ -5,6 +5,7 @@ import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { useCartStore } from '@/store/user-cart';
 import { PrismaClient } from '@prisma/client';
+import classNames from 'classnames';
 import parse from 'html-react-parser';
 import { ShieldCheck } from 'lucide-react';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -73,7 +74,6 @@ export interface Category {
 }
 
 const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
-  console.log(product);
   const { cartItems, setCartItems } = useCartStore();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -160,14 +160,14 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
             <p>
               Company: <span className="font-bold">{product.company.name}</span>
             </p>
-            <p className="text-base">
-              Availability:{' '}
-              {Number(product.quantity) > 0 ? (
-                <span className="text-success">In Stock</span>
-              ) : (
-                <span className="text-error">Out of Stock</span>
-              )}
-            </p>
+            <div className="mt-1 flex items-center gap-x-2">
+              <div
+                className={classNames('w-3 h-3 rounded-full', {
+                  'bg-error': Number(product.quantity) <= 0,
+                  'bg-success': Number(product.quantity) > 0,
+                })}></div>
+              {Number(product.quantity) > 0 ? <p>In Stock</p> : <p>Out of Stock</p>}
+            </div>
           </div>
           <p className="description text-justify mb-6 prose mt-3">{parse(product.description)}</p>
           <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>

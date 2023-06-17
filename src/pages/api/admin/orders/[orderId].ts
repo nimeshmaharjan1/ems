@@ -29,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({ message: 'Order successfully marked as paid.', order: updatedOrder });
     } catch (e) {
-      console.log(e);
       res.status(500).json({ message: 'Something went wrong while trying to change the paid status.' });
     } finally {
       await prisma.$disconnect();
@@ -43,13 +42,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Something went wrong while trying to delete order.' });
+      res.status(500).json({ error, message: 'Something went wrong while trying to delete order.' });
     }
     try {
       await prisma.order.delete({ where: { id: orderId } });
       res.status(201).json({ message: 'Order deleted successfully' });
     } catch (error) {
-      res.status(500).json({ message: 'Something went wrong while trying to delete order.' });
+      res.status(500).json({ error, message: 'Something went wrong while trying to delete order.' });
     } finally {
       await prisma.$disconnect();
     }

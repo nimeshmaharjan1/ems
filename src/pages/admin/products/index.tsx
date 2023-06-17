@@ -24,7 +24,7 @@ const Products: NextPageWithLayout = () => {
     const response = await axios.get(`/api/products?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
-  console.log(productData);
+  productData;
   const totalPages = productData?.totalPages;
   const [isMounted, setIsMounted] = useState(false);
   const queryClient = useQueryClient();
