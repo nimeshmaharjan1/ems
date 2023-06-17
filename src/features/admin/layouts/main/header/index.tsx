@@ -12,9 +12,8 @@ const Header: React.FC<{
   return (
     <header className="z-50 h-[4.2rem] flex justify-between items-center bg-base-100 w-full shadow px-6">
       <button
-        className=" p-1 cursor-pointer  duration-300 hidden lg:block"
+        className=" p-1 cursor-pointer  duration-300"
         onClick={() => {
-          console.log('hello');
           setIsSidebarCollapsed((prev) => !prev);
         }}>
         <RiMenuFoldFill
@@ -22,7 +21,7 @@ const Header: React.FC<{
             ['rotate-180']: isSidebarCollapsed,
           })}></RiMenuFoldFill>
       </button>
-      <button
+      {/* <button
         onClick={() => {
           resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
         }}
@@ -32,7 +31,7 @@ const Header: React.FC<{
         ) : (
           <BsSun className="text-2xl hover:text-amber-400 duration-300"></BsSun>
         )}
-      </button>
+      </button> */}
     </header>
   );
 };

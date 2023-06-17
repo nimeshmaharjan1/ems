@@ -86,7 +86,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
               <div className="flex items-center lg:hidden theme mx-4 gap-2">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                <ThemeToggler></ThemeToggler>
+                {/* <ThemeToggler></ThemeToggler> */}
               </div>
               <div className="flex-none hidden lg:flex items-center gap-4">
                 <Link href="/products" className="btn btn-sm btn-ghost">
@@ -112,9 +112,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </>
                 )}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                <div className="-ml-1">
-                  <ThemeToggler></ThemeToggler>
-                </div>
+                <div className="-ml-1">{/* <ThemeToggler></ThemeToggler> */}</div>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { formatPrice } from '@/shared/utils/helper.util';
 import { useCartStore } from '@/store/user-cart';
 import { PrismaClient } from '@prisma/client';
 import parse from 'html-react-parser';
+import { ShieldCheck } from 'lucide-react';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -148,9 +149,14 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
         <section className="detail-section col-span-6 md:col-span-3">
           <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-2">{product.title}</h1>
           <div className="col-span-6 space-y-2">
-            <p>
-              Modal: <span className="font-bold">{product.modal}</span>
-            </p>
+            <div className="flex lg:flex-row justify-between gap-2 flex-col-reverse">
+              <p>
+                Modal: <span className="font-bold">{product.modal}</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <ShieldCheck strokeWidth={1.5} /> 100% Genuine Product{' '}
+              </p>
+            </div>
             <p>
               Company: <span className="font-bold">{product.company.name}</span>
             </p>

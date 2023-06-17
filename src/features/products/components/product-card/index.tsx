@@ -34,7 +34,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       }}
       className="z-0 card !rounded-none w-full md:w-52 sm:w-[20rem] bg-base-100 border-2">
       <figure className="h-44 w-full relative cursor-pointer" onClick={() => router.push(`/products/${product.id}`)}>
-        <Image quality={100} src={product.images?.[0] as string} className="object-contain border-b-2" fill alt="Shoes" />
+        <Image quality={100} src={product.images?.[0] as string} className="object-cover border-b-2" fill alt="Shoes" />
       </figure>
       <div className="card-body !gap-1 !p-4">
         <Link
