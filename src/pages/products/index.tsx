@@ -14,7 +14,7 @@ import Cart from '@/shared/components/cart';
 
 const Home: NextPageWithLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(8);
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -108,7 +108,7 @@ const Home: NextPageWithLayout = () => {
         {productData?.products &&
           productData.products.map((product) => {
             return (
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+              <div className="col-span-12 md:col-span-6 lg:col-span-3 flex justify-center" key={product.id}>
                 <ProductCard {...{ product }} key={product.id}></ProductCard>
               </div>
             );

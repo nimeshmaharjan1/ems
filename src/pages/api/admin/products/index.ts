@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      const { images, title, description, price, category, company, quantity, slug } = req.body;
+      const { images, title, description, price, category, company, quantity, slug, modal } = req.body;
       const categoryId = category?.value;
       const companyId = company?.value;
       const product = await prisma.product.create({
@@ -17,6 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           companyId,
           quantity,
           slug,
+          modal,
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });

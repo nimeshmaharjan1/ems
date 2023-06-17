@@ -41,7 +41,7 @@ export default function Sidebar({
           onClick={() => {
             router.push('/products');
           }}
-          className={classnames('logo mt-4 relative gap-2 px-2', {
+          className={classnames('logo cursor-pointer mt-4 relative gap-2 px-2', {
             'w-36 h-16  ml-3': !isSidebarCollapsed,
             'w-12 h-6': isSidebarCollapsed,
           })}>

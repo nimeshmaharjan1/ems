@@ -25,6 +25,8 @@ const TextEditor = dynamic(() => import('../../../../shared/components/text-edit
 const productSchema = z.object({
   // categoryId: z.string().min(1, { message: 'Product category is required.' }),
   title: z.string().min(1, { message: 'Product title is required.' }),
+
+  modal: z.string().min(1, { message: 'Modal is required.' }),
   company: z.object({
     label: z.string().min(1, { message: 'Company is required.' }),
     value: z.string().min(1, { message: 'Company is required.' }),
@@ -45,6 +47,7 @@ const CreateUser: NextPageWithLayout = () => {
   const defaultValues: ProductSchema = {
     category: { label: 'Select category', value: '' },
     company: { label: 'Select company', value: '' },
+    modal: '',
     description: '',
     images: [],
     price: '',
@@ -78,8 +81,13 @@ const CreateUser: NextPageWithLayout = () => {
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);
       showToast(Toast.success, 'All images uploaded successfully.');
-    } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+    } catch (e: any) {
+      console.error(e.response);
+      if (typeof e.response?.data === 'string') {
+        showToast(Toast.error, e.response?.data);
+      } else {
+        showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+      }
     } finally {
       setIsUploading(false);
     }
@@ -169,6 +177,14 @@ const CreateUser: NextPageWithLayout = () => {
               placeholder="Type here"
               {...register('title')}
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
+            />
+          </FormControl>
+          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+            <input
+              type="text"
+              placeholder="Type here"
+              {...register('modal')}
+              className={`input input-bordered w-full max-w-3xl ${errors?.modal ? 'input-error' : ''}`}
             />
           </FormControl>
           <Controller

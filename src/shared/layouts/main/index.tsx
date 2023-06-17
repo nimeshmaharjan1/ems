@@ -79,14 +79,14 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </label>
               </div>
               <div className="flex-1">
-                <Link href="/products" className="relative w-24 h-12 md:w-32 md:h-16">
+                <Link href="/products" className="relative w-24 h-12 md:w-28 md:h-14">
                   <Image src="/logo.jpeg" fill alt="logo"></Image>
                 </Link>
               </div>
               <div className="flex items-center lg:hidden theme mx-4 gap-2">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                <ThemeToggler></ThemeToggler>
+                {/* <ThemeToggler></ThemeToggler> */}
               </div>
               <div className="flex-none hidden lg:flex items-center gap-4">
                 <Link href="/products" className="btn btn-sm btn-ghost">
@@ -112,14 +112,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   </>
                 )}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                <div className="-ml-1">
-                  <ThemeToggler></ThemeToggler>
-                </div>
+                <div className="-ml-1">{/* <ThemeToggler></ThemeToggler> */}</div>
               </div>
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

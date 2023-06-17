@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'PUT') {
     try {
-      const { images, title, description, price, category, company, quantity, slug } = req.body;
+      const { images, title, description, price, category, company, quantity, slug, modal } = req.body;
       const categoryId = category?.value;
       const companyId = company?.value;
       const product = await prisma.product.update({
@@ -60,6 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           companyId,
           quantity,
           slug,
+          modal,
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });

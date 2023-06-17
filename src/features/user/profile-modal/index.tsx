@@ -58,8 +58,13 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
       const url = response.data.url;
       setValue('image', url);
       showToast(Toast.success, 'Profile image updated.');
-    } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+    } catch (e: any) {
+      console.error(e.response);
+      if (typeof e.response?.data === 'string') {
+        showToast(Toast.error, e.response?.data);
+      } else {
+        showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+      }
     } finally {
       setIsFileUploading(false);
     }
