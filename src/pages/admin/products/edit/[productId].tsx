@@ -333,7 +333,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
           <div className="image-section col-span-6 lg:col-span-6 mt-4 lg:mt-0">
             <FormControl label="Upload Product Image">
               <ImageUpload
-                {...{ control, resetImages }}
+                {...{ control, resetImages, setResetImages }}
                 initialImage={images?.map((image) => ({ src: image as string, alt: '' }))}
                 onChangePicture={upload}
               />
