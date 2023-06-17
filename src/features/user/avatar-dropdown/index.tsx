@@ -32,7 +32,7 @@ const NavAvatarDropdown: React.FC<{
         )}
       </label>
       <ul tabIndex={0} className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
-        {session?.user?.role === USER_ROLES.ADMIN ||
+        {session?.user?.role === USER_ROLES.STAFF ||
           (session?.user?.role === USER_ROLES.SUPER_ADMIN && (
             <li>
               <Link

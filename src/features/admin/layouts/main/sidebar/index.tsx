@@ -41,9 +41,9 @@ export default function Sidebar({
           onClick={() => {
             router.push('/products');
           }}
-          className={classnames('logo mt-4 relative gap-2 px-2 ml-3', {
-            'w-36 h-16': !isSidebarCollapsed,
-            'w-12 h-8': isSidebarCollapsed,
+          className={classnames('logo mt-4 relative gap-2 px-2', {
+            'w-36 h-16  ml-3': !isSidebarCollapsed,
+            'w-12 h-6': isSidebarCollapsed,
           })}>
           <Image src="/logo.jpeg" alt="logo" fill></Image>
           {/* <GoLocation className={classnames('text-primary text-2xl duration-1000')}></GoLocation>

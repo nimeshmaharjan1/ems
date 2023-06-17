@@ -59,12 +59,16 @@ const Products: NextPageWithLayout = () => {
         </button>
       </div>
       <section className="overflow-x-auto">
-        {isLoading ? (
+        {isError ? (
+          <h2 className="p-2 text-error font-medium">Something went wrong while trying to fetch the products.</h2>
+        ) : isLoading ? (
           <table className="flex h-96 items-center justify-center">
             <button className="btn btn-ghost disabled">
               <span className="loading loading-spinner"></span>
             </button>
           </table>
+        ) : productData?.products.length === 0 ? (
+          <h2 className="p-2 text-warning font-medium">No products have been added.</h2>
         ) : (
           <table className="table table-sm w-full">
             <thead>

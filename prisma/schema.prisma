@@ -45,10 +45,10 @@ model VerificationToken {
 }
 
 enum USER_ROLES {
-  ADMIN
+  SUPER_ADMIN
+  STAFF
   USER
   BUSINESS_CLIENT
-  SUPER_ADMIN
 }
 
 enum PAYMENT_METHOD {
@@ -66,7 +66,7 @@ model User {
   email                    String?    @unique
   phone_number             String?    @unique
   emailVerified            DateTime?
-  role                     USER_ROLES
+  role                     USER_ROLES @default(USER)
   applyingAsBusinessClient Boolean    @default(false)
   image                    String?
   accounts                 Account[]

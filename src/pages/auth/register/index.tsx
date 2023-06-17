@@ -26,7 +26,7 @@ const Register: NextPageWithLayout = () => {
     username: '',
     name: '',
     phone_number: '',
-    role: USER_ROLES.SUPER_ADMIN,
+    role: USER_ROLES.STAFF,
   } as IRegister;
   const {
     register,
@@ -39,7 +39,7 @@ const Register: NextPageWithLayout = () => {
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.SUPER_ADMIN });
+      await axios.post('/api/auth/register', values);
       showToast(Toast.success, 'User has been successfully created.');
       router.push('/api/auth/signin');
     } catch (error: any) {
@@ -172,8 +172,8 @@ const Register: NextPageWithLayout = () => {
             Select Role
           </option>
           <option value={USER_ROLES.USER}>User</option>
-          <option value={USER_ROLES.ADMIN}>Admin</option>
-          <option value={USER_ROLES.ADMIN}>Super Admin</option>
+          <option value={USER_ROLES.STAFF}>Admin</option>
+          <option value={USER_ROLES.STAFF}>Super Admin</option>
         </select>
       )}
       <button

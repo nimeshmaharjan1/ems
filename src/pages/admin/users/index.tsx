@@ -99,7 +99,7 @@ const Users: NextPageWithLayout = () => {
                           {/* <span
                             className={classNames('badge-sm', {
                               'badge badge-accent': user.role === USER_ROLES.SUPER_ADMIN,
-                              'badge badge-secondary': user.role === USER_ROLES.ADMIN,
+                              'badge badge-secondary': user.role === USER_ROLES.STAFF,
                               'badge badge-primary': user.role === USER_ROLES.USER,
                             })}>
                             {user.role}
