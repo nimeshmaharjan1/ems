@@ -116,7 +116,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
           )}
         </section>
         <section className="detail-section col-span-6 md:col-span-3">
-          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-3">{product.title}</h1>
+          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-4">{product.title}</h1>
           <p className="description text-justify mb-6 prose">{parse(product.description)}</p>
           <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>
           <section className="quantity-section mb-8 grid grid-cols-6 items-center gap-3 gap-y-7">

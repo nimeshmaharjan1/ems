@@ -57,9 +57,7 @@ const Checkout = () => {
   return (
     <>
       {/* Open the modal using ID.showModal() method */}
-      <button className="btn" onClick={() => modalRef.current?.show()}>
-        open modal
-      </button>
+
       <dialog ref={modalRef} id="payment_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg">ESEWA Payment</h3>
@@ -119,7 +117,9 @@ const Checkout = () => {
                           <p className="font-medium text-sm md:text-base block md:hidden">
                             {item.slug.length > 20 ? `${item.slug.slice(0, 20)}...` : item.slug}
                           </p>
-                          <p className="font-medium text-sm md:text-base hidden md:block">{item.slug}</p>
+                          <p className="font-medium text-sm md:text-base hidden md:block">
+                            {item.slug.length > 20 ? `${item.slug.slice(0, 20)}...` : item.slug}
+                          </p>
                         </div>
                         <div className="price flex gap-2 flex-row lg:flex-col">
                           <p className="font-medium text-sm md:text-base opacity-60">Price</p>

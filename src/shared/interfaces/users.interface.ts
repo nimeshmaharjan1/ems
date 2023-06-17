@@ -10,3 +10,24 @@ export interface IUserResponse {
   role: USER_ROLES;
   username: string;
 }
+
+export interface PaginatedUsers {
+  data: User[];
+  limit: number;
+  page: number;
+  totalPages: number;
+  totalRecords: number;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  password: string;
+  name: string;
+  email: string;
+  phone_number: null | string;
+  emailVerified: null;
+  role: string;
+  applyingAsBusinessClient: boolean;
+  image: null | string;
+}

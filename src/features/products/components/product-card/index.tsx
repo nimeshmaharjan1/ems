@@ -33,15 +33,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         scale: 1.02,
       }}
       className="z-0 card !rounded-none md:w-72 sm:w-[20rem] bg-base-100 border-2">
-      <figure className="h-44 cursor-pointer" onClick={() => router.push(`/products/${product.id}`)}>
-        <Image
-          quality={100}
-          src={product.images?.[0] as string}
-          className="w-96 lg:w-full border-b-2"
-          width={500}
-          height={500}
-          alt="Shoes"
-        />
+      <figure className="h-44 w-full relative cursor-pointer" onClick={() => router.push(`/products/${product.id}`)}>
+        <Image quality={100} src={product.images?.[0] as string} className="object-contain border-b-2" fill alt="Shoes" />
       </figure>
       <div className="card-body !p-4">
         <Link href={`/products/${product.id}`} className="card-title !font-medium cursor-pointer !text-[1.1rem]">

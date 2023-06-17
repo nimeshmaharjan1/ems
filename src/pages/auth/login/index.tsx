@@ -21,7 +21,6 @@ import { getCookie, setCookie } from 'cookies-next';
 
 const Login: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  console.log({ session });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,13 +34,7 @@ const Login: NextPageWithLayout = () => {
         setIsSubmitting(false);
         return;
       }
-      // console.log(getCookie('isFromCheckout'));
-      // if (getCookie('isFromCheckout') === true) {
-      //   setCookie('isFromCheckout', 'false');
-      //   router.push('/checkout');
-      // } else {
       router.push('/products');
-      // }
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);

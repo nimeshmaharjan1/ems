@@ -115,19 +115,10 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
     }
   };
 
-  if (isLoadingUserProfile || !session?.user?.id || !userData) {
-    return (
-      <>
-        <dialog className="modal" ref={ref}>
-          <div className="modal-box">Hello</div>
-        </dialog>
-      </>
-    );
-  }
   return (
     <>
       <dialog ref={ref} className="modal">
-        <form onSubmit={handleSubmit(updateUser)} className="modal-box md:!w-[95%] lg:!w-[56%] !max-w-none">
+        <form onSubmit={handleSubmit(updateUser)} className="modal-box md:!w-[95%] lg:!w-[45%] !max-w-none">
           <h2 className="font-[600] text-2xl mb-6">My Profile</h2>
           <section className="grid grid-cols-6 gap-x-4">
             {/* <div className="col-span-1 flex justify-center">

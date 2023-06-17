@@ -7,9 +7,25 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.productId as string;
-  const authenticated = await isAuthenticated(req, res);
-  if (!authenticated) {
-    return;
+  await isAuthenticated(req, res);
+  if (req.method === 'DELETE') {
+    try {
+      const product = await prisma.product.findUnique({ where: { id } });
+      if (!product) {
+        res.status(404).json({ message: 'Product has already been deleted please try refreshing the page.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Something went wrong while trying to delete product.' });
+    }
+    try {
+      const product = await prisma.product.delete({ where: { id } });
+      res.status(201).json({ product, message: 'Product deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Something went wrong while trying to delete product.' });
+    } finally {
+      await prisma.$disconnect();
+    }
   } else if (req.method === 'GET') {
     try {
       const product = await prisma.product.findUnique({ where: { id }, include: { category: true, company: true } });
