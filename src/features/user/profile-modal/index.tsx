@@ -25,7 +25,6 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
     const response = await axios.get(`/api/users/${session?.user?.id}`);
     return response.data;
   });
-  console.log(userData);
   const {
     register,
     setValue,
@@ -99,7 +98,6 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
     };
     try {
       const image = await readerPromise();
-      console.log({ image });
       upload((image as any).src);
     } catch (error) {
       showToast(Toast.error, 'Something went wrong while trying to upload the image.');

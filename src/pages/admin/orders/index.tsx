@@ -71,7 +71,6 @@ const Orders: NextPageWithLayout = () => {
     mutateHasBeenPaid(args);
   };
   const { data: session } = useSession();
-  console.log(session?.user?.role);
   if (!isMounted) return null;
   return (
     <>
