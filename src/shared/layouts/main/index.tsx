@@ -79,7 +79,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 </label>
               </div>
               <div className="flex-1">
-                <Link href="/products" className="relative w-24 h-12 md:w-32 md:h-16">
+                <Link href="/products" className="relative w-24 h-12 md:w-28 md:h-14">
                   <Image src="/logo.jpeg" fill alt="logo"></Image>
                 </Link>
               </div>
@@ -119,7 +119,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             </div>
           </div>
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-12 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

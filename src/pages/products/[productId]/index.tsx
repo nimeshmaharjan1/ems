@@ -4,9 +4,9 @@ import { NextPageWithLayout } from '@/pages/_app';
 import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { useCartStore } from '@/store/user-cart';
-import { PrismaClient, Product } from '@prisma/client';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { PrismaClient } from '@prisma/client';
 import parse from 'html-react-parser';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -19,6 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   try {
     const product = await prisma.product.findUnique({
       where: { id: id },
+      include: {
+        category: true,
+        company: true,
+      },
     });
 
     if (product) {
@@ -43,7 +47,32 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   };
 };
 
-const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
+export interface IProduct {
+  id: string;
+  images: string[];
+  title: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  companyId: string;
+  quantity: string;
+  createdAt: Date;
+  updatedAt: Date;
+  slug: string;
+  modal: string;
+  category: Category;
+  company: Category;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
+  console.log(product);
   const { cartItems, setCartItems } = useCartStore();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -82,6 +111,7 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
   if (!product) {
     return <>Something went wrong while trying to get the product.</>;
   }
+  //TODO decrease quantity after order created.
   return (
     <>
       <Head>
@@ -116,8 +146,24 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
           )}
         </section>
         <section className="detail-section col-span-6 md:col-span-3">
-          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-4">{product.title}</h1>
-          <p className="description text-justify mb-6 prose">{parse(product.description)}</p>
+          <h1 className="title font-[600] text-2xl tracking-wide leading-normal mb-2">{product.title}</h1>
+          <div className="col-span-6 space-y-2">
+            <p>
+              Modal: <span className="font-bold">{product.modal}</span>
+            </p>
+            <p>
+              Company: <span className="font-bold">{product.company.name}</span>
+            </p>
+            <p className="text-base">
+              Availability:{' '}
+              {Number(product.quantity) > 0 ? (
+                <span className="text-success">In Stock</span>
+              ) : (
+                <span className="text-error">Out of Stock</span>
+              )}
+            </p>
+          </div>
+          <p className="description text-justify mb-6 prose mt-3">{parse(product.description)}</p>
           <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>
           <section className="quantity-section mb-8 grid grid-cols-6 items-center gap-3 gap-y-7">
             <div className="flex items-center gap-3 col-span-6">
@@ -143,9 +189,6 @@ const Product: NextPageWithLayout<{ product: Product }> = ({ product }) => {
                   +
                 </button>
               </div>
-            </div>
-            <div className="col-span-6">
-              <p className="text-sm opacity-60">Remaining: {product.quantity}</p>
             </div>
           </section>
           <div className="action-section flex gap-4">

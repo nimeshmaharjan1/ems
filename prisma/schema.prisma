@@ -88,15 +88,15 @@ model Order {
 }
 
 model OrderItem {
-  id          String          @id @default(cuid())
-  quantity    Int
-  product     Product         @relation(fields: [productId], references: [id])
-  productId   String
-  order       Order           @relation(fields: [orderId], references: [id])
-  orderId     String
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  paidThrough PAYMENT_METHOD?
+  id           String          @id @default(cuid())
+  quantity     Int
+  product      Product         @relation(fields: [productId], references: [id])
+  productId    String
+  order        Order           @relation(fields: [orderId], references: [id])
+  orderId      String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  paid_through PAYMENT_METHOD?
 }
 
 model Company {
@@ -133,6 +133,7 @@ model Product {
   slug        String
   OrderItem   OrderItem[]
   Review      Review[]
+  modal       String
 }
 
 model Review {

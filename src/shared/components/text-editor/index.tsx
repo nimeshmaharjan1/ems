@@ -38,7 +38,6 @@ const TextEditor: React.FC<{ value: string; onChange: any; ref: any; isInvalid: 
       onChange={(event, editor) => {
         const data = editor.getData();
         onChange(data);
-        console.log(data);
       }}
     />
   );

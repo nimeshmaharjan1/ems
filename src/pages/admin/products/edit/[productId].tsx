@@ -61,6 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const productSchema = z.object({
   // categoryId: z.string().min(1, { message: 'Product category is required.' }),
   title: z.string().min(1, { message: 'Product title is required.' }),
+  modal: z.string().min(1, { message: 'Modal is required.' }),
   company: z.object({
     label: z.string().min(1, { message: 'Company is required.' }),
     value: z.string().min(1, { message: 'Company is required.' }),
@@ -79,7 +80,6 @@ export type ProductSchema = z.infer<typeof productSchema>;
 
 const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   const defaultValues: ProductSchema = product;
-  console.log(product);
   const {
     register,
     watch,
@@ -105,8 +105,13 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);
       showToast(Toast.success, 'All images uploaded successfully.');
-    } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+    } catch (e: any) {
+      console.error(e.response);
+      if (typeof e.response?.data === 'string') {
+        showToast(Toast.error, e.response?.data);
+      } else {
+        showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+      }
     } finally {
       setIsUploading(false);
     }
@@ -114,7 +119,6 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   const router = useRouter();
   const [resetImages, setResetImages] = useState(false);
   const handleUpdate: SubmitHandler<ProductSchema> = async (values) => {
-    console.log(product);
     setIsSubmitting(true);
 
     try {
@@ -129,24 +133,6 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       showToast(Toast.error, 'Something went wrong please try again.');
     }
   };
-
-  const {
-    data: categories,
-    isError: isCategoryError,
-    isLoading: isCategoryLoading,
-  } = useQuery<Category[], Error>('fetchCategories', async () => {
-    const response = await axios.get('/api/admin/categories');
-    return response.data.categories;
-  });
-
-  const {
-    data: companies,
-    isError: isCompanyError,
-    isLoading: isCompanyLoading,
-  } = useQuery<Company[], Error>('fetchCompanies', async () => {
-    const response = await axios.get('/api/admin/companies');
-    return response.data.companies;
-  });
 
   const loadCategories = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
@@ -217,6 +203,14 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               placeholder="Type here"
               {...register('title')}
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
+            />
+          </FormControl>
+          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+            <input
+              type="text"
+              placeholder="Type here"
+              {...register('modal')}
+              className={`input input-bordered w-full max-w-3xl ${errors?.modal ? 'input-error' : ''}`}
             />
           </FormControl>
 
@@ -357,11 +351,10 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       </div>
       <div className="block lg:hidden">
         <button
-          className={classNames('btn btn-primary btn-block', {
-            loading: isSubmitting,
-          })}
+          className={classNames('btn btn-primary btn-block')}
           disabled={isSubmitting || isUploading}
           onClick={handleSubmit(handleUpdate)}>
+          {isSubmitting && <span className="loading loading-spinner"></span>}
           Submit
         </button>
       </div>

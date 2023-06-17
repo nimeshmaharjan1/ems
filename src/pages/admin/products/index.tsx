@@ -24,6 +24,7 @@ const Products: NextPageWithLayout = () => {
     const response = await axios.get(`/api/products?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
+  console.log(productData);
   const totalPages = productData?.totalPages;
   const [isMounted, setIsMounted] = useState(false);
   const queryClient = useQueryClient();
@@ -74,6 +75,7 @@ const Products: NextPageWithLayout = () => {
             <thead>
               <tr>
                 <th className="border !border-base-300">Title</th>
+                <th className="border !border-base-300">Modal</th>
                 <th className="border !border-base-300">Category</th>
                 <th className="border !border-base-300">Company</th>
                 <th className="border !border-base-300">Quantity</th>
@@ -88,6 +90,9 @@ const Products: NextPageWithLayout = () => {
                   <tr key={product.id}>
                     <td className="border !border-base-300">
                       {`${product.title.substring(0, 60)}${product.title.length > 60 ? '...' : ''}`}
+                    </td>
+                    <td className="border !border-base-300">
+                      {`${product.modal.substring(0, 60)}${product.modal.length > 60 ? '...' : ''}`}
                     </td>
                     <td className="border !border-base-300">{product.category?.name}</td>
                     <td className="border !border-base-300">{product.company?.name}</td>
