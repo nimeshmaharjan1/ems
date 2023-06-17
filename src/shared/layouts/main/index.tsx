@@ -36,11 +36,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   metaData: { title, description },
 }) => {
   const { data: session, status } = useSession();
-  const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
+  const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.STAFF);
   const [isMounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   useEffect(() => {
-    setIsAdmin(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.ADMIN);
+    setIsAdmin(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.STAFF);
   }, [session?.user?.role]);
 
   const { setCartItems } = useCartStore();

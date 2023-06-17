@@ -26,7 +26,7 @@ const Register: NextPageWithLayout = () => {
     username: '',
     name: '',
     phone_number: '',
-    role: USER_ROLES.ADMIN,
+    role: USER_ROLES.STAFF,
   } as IRegister;
   const {
     register,
@@ -172,8 +172,8 @@ const Register: NextPageWithLayout = () => {
             Select Role
           </option>
           <option value={USER_ROLES.USER}>User</option>
-          <option value={USER_ROLES.ADMIN}>Admin</option>
-          <option value={USER_ROLES.ADMIN}>Super Admin</option>
+          <option value={USER_ROLES.STAFF}>Admin</option>
+          <option value={USER_ROLES.STAFF}>Super Admin</option>
         </select>
       )}
       <button
