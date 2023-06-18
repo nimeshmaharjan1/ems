@@ -44,4 +44,4 @@ export const downloadFile = (base64String: string, fileName: string) => {
   URL.revokeObjectURL(url);
 };
 
-export const rupees = '&#8377;';
+export const rupees = 'रू';

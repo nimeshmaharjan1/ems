@@ -157,7 +157,7 @@ const ShopByAside = () => {
                   placeholder="Enter minimum price..."
                   className="input input-bordered input-xs xl:input-sm"
                 />
-                {/* <span>&#8377; </span> */}
+                {/* <span>रू </span> */}
               </label>
             </div>
             <div className="form-control">

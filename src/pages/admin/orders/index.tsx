@@ -75,7 +75,7 @@ const Orders: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-semibold text-2xl">Orders</h2>
+        <h2 className="text-2xl font-semibold">Orders</h2>
       </div>
       {isError ? (
         <h2 className="text-error">Something went wrong while trying to get the orders.</h2>
@@ -83,13 +83,13 @@ const Orders: NextPageWithLayout = () => {
         <>
           <section className="overflow-x-auto">
             {isLoading ? (
-              <table className="flex h-96 items-center justify-center">
+              <table className="flex items-center justify-center h-96">
                 <button className="btn btn-ghost disabled">
                   <span className="loading loading-spinner"></span>
                 </button>
               </table>
             ) : (
-              <table className="table table-sm w-full">
+              <table className="table w-full table-xs">
                 <thead>
                   <tr>
                     <th className="border !border-base-300">Ordered By</th>
@@ -102,7 +102,7 @@ const Orders: NextPageWithLayout = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {ordersData?.orders?.length === 0 && <h2 className="text-warning p-2">No orders have been listed at this moment.</h2>}
+                  {ordersData?.orders?.length === 0 && <h2 className="p-2 text-warning">No orders have been listed at this moment.</h2>}
                   {ordersData &&
                     ordersData.orders.length > 0 &&
                     ordersData?.orders.map((order) => {
@@ -110,7 +110,7 @@ const Orders: NextPageWithLayout = () => {
                         <tr key={order.id}>
                           <td className="border !border-base-300">{order.user.name}</td>
                           <td className="border !border-base-300">{order.user?.phone_number}</td>
-                          <td className="border !border-base-300">&#8377; {formatPrice(order.totalPrice)}</td>
+                          <td className="border !border-base-300">रू {formatPrice(order.totalPrice)}</td>
                           <td className="border !border-base-300">{formatDateWithTime(order.createdAt)}</td>
                           <td className="border !border-base-300 text-center">
                             {order.hasBeenPaid ? (
@@ -121,33 +121,35 @@ const Orders: NextPageWithLayout = () => {
                           </td>
                           <td className="border !border-base-300 text-center">{order?.paidAt ? formatDateWithTime(order.paidAt) : '-'}</td>
                           <td className="border !border-base-300 text-center">
-                            {isHasBeenPaidLoading ? (
-                              <button className="btn btn-xs btn-outline">
-                                <span className="loading loading-spinner loading-xs"></span>
+                            <div className="flex">
+                              {' '}
+                              {isHasBeenPaidLoading ? (
+                                <button className="btn btn-xs btn-outline">
+                                  <span className="loading loading-spinner loading-xs"></span>
+                                </button>
+                              ) : (
+                                <>
+                                  {order.hasBeenPaid ? (
+                                    <button
+                                      className="gap-1 btn btn-warning btn-xs btn-outline"
+                                      onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
+                                      <RxCross1></RxCross1> Mark as Unpaid
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="gap-1 btn btn-success btn-xs btn-outline"
+                                      onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
+                                      <AiOutlineCheck></AiOutlineCheck> Mark as Paid
+                                    </button>
+                                  )}
+                                </>
+                              )}
+                              <button
+                                className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
+                                onClick={() => mutateDeleteOrder({ orderId: order.id })}>
+                                {isOrderDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
                               </button>
-                            ) : (
-                              <>
-                                {order.hasBeenPaid ? (
-                                  <button
-                                    className="btn btn-warning btn-xs btn-outline  gap-1"
-                                    onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
-                                    <RxCross1></RxCross1> Mark as Unpaid
-                                  </button>
-                                ) : (
-                                  <button
-                                    className="btn btn-success btn-xs btn-outline  gap-1"
-                                    onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
-                                    <AiOutlineCheck></AiOutlineCheck> Mark as Paid
-                                  </button>
-                                )}
-                              </>
-                            )}
-
-                            <button
-                              className="btn btn-error btn-xs btn-outline ml-2 gap-1"
-                              onClick={() => mutateDeleteOrder({ orderId: order.id })}>
-                              {isOrderDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
-                            </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -155,9 +157,9 @@ const Orders: NextPageWithLayout = () => {
                 </tbody>
               </table>
             )}
-            {/* <dialog ref={markAsPaidModalRef} className="modal shadow-lg modal-bottom sm:modal-middle">
+            {/* <dialog ref={markAsPaidModalRef} className="shadow-lg modal modal-bottom sm:modal-middle">
           <section className="modal-box">
-            <h3 className="font-bold text-lg">Order Payment</h3>
+            <h3 className="text-lg font-bold">Order Payment</h3>
             <p className="py-4 font-medium">Mark this order as paid?</p>
             <div className="modal-action">
               <button className="btn btn-ghost" onClick={() => markAsPaidModalRef.current?.close()}>
@@ -168,7 +170,7 @@ const Orders: NextPageWithLayout = () => {
           </section>
         </dialog> */}
           </section>
-          <div className="mt-8 flex justify-end place-self-end">
+          <div className="flex justify-end mt-8 place-self-end">
             {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
           </div>
         </>

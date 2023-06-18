@@ -170,7 +170,7 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
             </div>
           </div>
           <p className="description text-justify mb-6 prose mt-3">{parse(product.description)}</p>
-          <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">&#8377; {formatPrice(product.price)}</p>
+          <p className="price text-lg font-bold text-error border-t border-b p-4 mb-9">रू {formatPrice(product.price)}</p>
           <section className="quantity-section mb-8 grid grid-cols-6 items-center gap-3 gap-y-7">
             <div className="flex items-center gap-3 col-span-6">
               <p>Quantity</p>

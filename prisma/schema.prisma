@@ -118,22 +118,25 @@ model Category {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  images      String[]
-  title       String
-  description String
-  price       Float
-  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId  String
-  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId   String
-  quantity    String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  slug        String
-  OrderItem   OrderItem[]
-  Review      Review[]
-  modal       String
+  id                 String      @id @default(cuid())
+  images             String[]
+  title              String
+  description        String
+  price              Float
+  category           Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId         String
+  company            Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId          String
+  quantity           String
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  slug               String
+  OrderItem          OrderItem[]
+  Review             Review[]
+  modal              String
+  discountPercentage Float?
+  hasOffer           Boolean?    @default(false)
+  discountedPrice    Float?
 }
 
 model Review {

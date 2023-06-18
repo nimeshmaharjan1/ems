@@ -22,25 +22,49 @@ const TextEditor = dynamic(() => import('../../../../shared/components/text-edit
   ssr: false,
 }) as any;
 
-const productSchema = z.object({
-  // categoryId: z.string().min(1, { message: 'Product category is required.' }),
-  title: z.string().min(1, { message: 'Product title is required.' }),
+const productSchema = z
+  .object({
+    // categoryId: z.string().min(1, { message: 'Product category is required.' }),
+    title: z.string().min(1, { message: 'Product title is required.' }),
 
-  modal: z.string().min(1, { message: 'Modal is required.' }),
-  company: z.object({
-    label: z.string().min(1, { message: 'Company is required.' }),
-    value: z.string().min(1, { message: 'Company is required.' }),
-  }),
-  category: z.object({
-    label: z.string().min(1, { message: 'Category is required.' }),
-    value: z.string().min(1, { message: 'Category is required.' }),
-  }),
-  images: z.array(z.string()).min(1, { message: 'Image is required.' }).max(5, { message: 'Images cannot be more than five.' }).optional(),
-  price: z.string().min(1, { message: 'Price is required.' }),
-  quantity: z.string().min(1, { message: 'Quantity is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
-  slug: z.string().min(1, { message: 'Product slug is required.' }),
-});
+    modal: z.string().min(1, { message: 'Modal is required.' }),
+    company: z.object({
+      label: z.string().min(1, { message: 'Company is required.' }),
+      value: z.string().min(1, { message: 'Company is required.' }),
+    }),
+    category: z.object({
+      label: z.string().min(1, { message: 'Category is required.' }),
+      value: z.string().min(1, { message: 'Category is required.' }),
+    }),
+    images: z
+      .array(z.string())
+      .min(1, { message: 'Image is required.' })
+      .max(5, { message: 'Images cannot be more than five.' })
+      .optional(),
+    price: z.string().min(1, { message: 'Price is required.' }),
+    quantity: z.string().min(1, { message: 'Quantity is required.' }),
+    description: z.string().min(1, { message: 'Description is required.' }),
+    slug: z.string().min(1, { message: 'Product slug is required.' }),
+    hasOffer: z.boolean(),
+    discountPercentage: z.string().optional(),
+  })
+  .superRefine((values, ctx) => {
+    if (values.hasOffer) {
+      if (!values.discountPercentage) {
+        ctx.addIssue({
+          message: 'Discount percentage is required.',
+          code: z.ZodIssueCode.custom,
+          path: ['discountPercentage'],
+        });
+      } else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
+        ctx.addIssue({
+          message: 'Discount percentage must be between 1 and 99.',
+          code: z.ZodIssueCode.custom,
+          path: ['discountPercentage'],
+        });
+      }
+    }
+  });
 export type ProductSchema = z.infer<typeof productSchema>;
 
 const CreateUser: NextPageWithLayout = () => {
@@ -54,6 +78,8 @@ const CreateUser: NextPageWithLayout = () => {
     title: '',
     quantity: '',
     slug: '',
+    hasOffer: false,
+    discountPercentage: '',
   };
 
   const {
@@ -70,7 +96,7 @@ const CreateUser: NextPageWithLayout = () => {
   const images = useWatch({
     control,
     name: 'images',
-  });
+  }) as any;
   const upload = async (images: (string | ArrayBuffer | null)[]) => {
     const filteredImages = images.filter((image) => image !== null);
     if (filteredImages.length === 0) return;
@@ -168,9 +194,9 @@ const CreateUser: NextPageWithLayout = () => {
 
   return (
     <div className="min-h-screen">
-      <h2 className="font-semibold text-3xl ">Add Product</h2>
-      <div className="grid gap-x-12 grid-cols-6 my-6">
-        <section className="col-span-6 lg:col-span-3 flex flex-col gap-3">
+      <h2 className="text-3xl font-semibold ">Add Product</h2>
+      <div className="grid grid-cols-6 my-6 gap-x-12">
+        <section className="flex flex-col col-span-6 gap-3 lg:col-span-3">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
             <input
               type="text"
@@ -253,13 +279,11 @@ const CreateUser: NextPageWithLayout = () => {
                 }}></Controller>
             </div>
           </div>
-          <div className="grid grid-cols-12 gap-x-2">
+          <div className="grid grid-cols-12 gap-2">
             <div className="col-span-12 lg:col-span-6">
               <FormControl label="Price" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
-                  <span>
-                    <FaRupeeSign />
-                  </span>
+                  <span>रू</span>
                   <input
                     type="text"
                     pattern="[0-9]*"
@@ -286,7 +310,32 @@ const CreateUser: NextPageWithLayout = () => {
               </FormControl>
             </div>
           </div>
-          <div className="hidden lg:block col-span-12 mt-4">
+          <div className="grid grid-cols-6 mb-2">
+            <div className="col-span-6 form-control">
+              <label className="cursor-pointer label !justify-start gap-x-3">
+                <span className="!text-base">Apply Offer</span>
+                <input
+                  type="checkbox"
+                  {...register('hasOffer', {
+                    onChange: () => setValue('discountPercentage', ''),
+                  })}
+                  className="toggle"
+                />
+              </label>
+            </div>
+            <div className="col-span-6 mt-1">
+              <FormControl errorMessage={errors?.discountPercentage?.message as string}>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type discount percentage here"
+                  {...register('discountPercentage')}
+                  className={`input input-bordered w-full  ${errors?.discountPercentage ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+          </div>
+          <div className="hidden col-span-12 mt-4 lg:block">
             <button
               className={classNames('btn btn-primary btn-block')}
               disabled={isSubmitting || isUploading}
@@ -296,8 +345,8 @@ const CreateUser: NextPageWithLayout = () => {
             </button>
           </div>
         </section>
-        <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
-          <div className="image-section col-span-6 lg:col-span-6">
+        <section className="grid grid-cols-6 col-span-6 lg:col-span-3 gap-x-12">
+          <div className="col-span-6 image-section lg:col-span-6">
             <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
               <ImageUpload
                 {...{ control, resetImages, setResetImages }}
