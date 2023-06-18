@@ -70,25 +70,25 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       {session?.user?.id && <UserProfileModal ref={profileModalRef}></UserProfileModal>}
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
-          <div className="nav-wrapper bg-base-100 shadow-lg">
-            <div className="w-full navbar lg:container h-20 lg:mx-auto md:px-8 lg:px-28 gap-2">
+        <div className="flex flex-col drawer-content">
+          <div className="shadow-lg nav-wrapper bg-base-100">
+            <div className="w-full h-20 gap-2 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
               <div className="flex-1">
-                <Link href="/products" className="relative w-24 h-12 md:w-28 md:h-14">
+                <Link href="/products" className="relative w-24 h-12 md:w-32 md:h-16">
                   <Image src="/logo.jpeg" fill alt="logo"></Image>
                 </Link>
               </div>
-              <div className="flex items-center lg:hidden theme mx-4 gap-2">
+              <div className="flex items-center gap-2 mx-4 lg:hidden theme">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 {/* <ThemeToggler></ThemeToggler> */}
               </div>
-              <div className="flex-none hidden lg:flex items-center gap-4">
+              <div className="items-center flex-none hidden gap-4 lg:flex">
                 <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
@@ -123,11 +123,11 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className=" p-2 w-64 bg-base-100 h-full">
+          <ul className="w-64 h-full p-2 bg-base-100">
             <li>
               <Link
                 href="/products"
-                className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                 <FaBox></FaBox>
                 Products
               </Link>
@@ -137,7 +137,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 <li className="-ml-[0.3rem]">
                   <Link
                     href="/api/auth/signin"
-                    className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                    className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                     <MdLogin className="text-lg" />
                     Sign In
                   </Link>
@@ -145,7 +145,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 <li>
                   <Link
                     href="/auth/register"
-                    className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                    className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                     <FiUserPlus />
                     Sign Up
                   </Link>
@@ -156,7 +156,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
               <li>
                 <Link
                   href="/admin/products"
-                  className="text-sm flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                  className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                   <RxDashboard></RxDashboard>
                   Dashboard
                 </Link>
@@ -165,7 +165,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             {status === 'authenticated' && (
               <>
                 <li className="text-sm cursor-pointer" onClick={() => signOut()}>
-                  <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary">
+                  <a className="flex items-center gap-2 p-2 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                     <MdLogout className="text-lg " />
                     Logout
                   </a>

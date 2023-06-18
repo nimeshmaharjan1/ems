@@ -30,12 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           modal,
           hasOffer,
           discountedPrice,
-          discountPercentage,
+          discountPercentage: parseFloat(discountPercentage),
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });
     } catch (e) {
-      res.status(500).json({ message: 'Something went wrong' });
+      console.log(e);
+      res.status(500).json({ e, message: 'Something went wrong' });
     } finally {
       await prisma.$disconnect();
     }

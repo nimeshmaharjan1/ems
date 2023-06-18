@@ -109,7 +109,7 @@ const ImageUpload: React.FC<Props> = ({
           <div className="flex items-center justify-center">
             {!image?.src ? (
               <div className="flex flex-col items-center space-y-2">
-                <div className="shrink-0 rounded-full p-2 bg-gray-200 group-hover:scale-110 group-focus:scale-110 transition">
+                <div className="p-2 transition bg-gray-200 rounded-full shrink-0 group-hover:scale-110 group-focus:scale-110">
                   <AiOutlineArrowUp className="w-4 h-4 text-gray-500 transition" />
                 </div>
                 <span className="text-xs font-semibold text-gray-500 transition">{updatingImage ? 'Uploading...' : 'Upload Image'}</span>
@@ -134,7 +134,7 @@ const ImageUpload: React.FC<Props> = ({
           </div>
         </button>
       ))}
-      {imageError ? <span className="text-red-600 text-sm">{imageError}</span> : null}
+      {imageError ? <span className="text-sm text-red-600">{imageError}</span> : null}
     </div>
   );
 };
