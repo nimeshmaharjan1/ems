@@ -124,7 +124,7 @@ const Checkout = () => {
                         <div className="price flex gap-2 flex-row lg:flex-col">
                           <p className="font-medium text-sm md:text-base opacity-60">Price</p>
 
-                          <p className="font-medium text-sm md:text-base">&#8377;{formatPrice(item.price)}</p>
+                          <p className="font-medium text-sm md:text-base">रू{formatPrice(item.price)}</p>
                         </div>
                         <div className="flex gap-2 quantity items-center lg:items-start flex-row lg:flex-col">
                           <p className="font-medium text-sm md:text-base opacity-60">Quantity</p>
@@ -159,7 +159,7 @@ const Checkout = () => {
                         <section className="flex flex-row lg:flex-col gap-2 total-price items-center">
                           <p className="font-medium text-sm md:text-base opacity-60 w-36 md:w-auto">Total Price</p>
                           <p className="font-medium text-sm md:text-base basis-full flex-1 md:basis-0">
-                            &#8377;{formatPrice(getItemTotalPrice(item.productId))}
+                            रू{formatPrice(getItemTotalPrice(item.productId))}
                           </p>
                         </section>
                         <button
@@ -194,7 +194,7 @@ const Checkout = () => {
               <div className="flex justify-between mt-3">
                 <p className="font-medium">To Pay</p>
 
-                <p className="font-medium">&#8377;{formatPrice(getTotalPrice())}</p>
+                <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
               </div>
               <button className="btn btn-primary btn-block mt-4" onClick={handleCreateOrder} disabled={isLoading}>
                 {isLoading && <span className="loading loading-infinity"></span>}

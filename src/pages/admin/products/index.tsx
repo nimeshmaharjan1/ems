@@ -50,7 +50,7 @@ const Products: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-semibold text-2xl">Products</h2>
+        <h2 className="text-2xl font-semibold">Products</h2>
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {
@@ -61,17 +61,17 @@ const Products: NextPageWithLayout = () => {
       </div>
       <section className="overflow-x-auto">
         {isError ? (
-          <h2 className="p-2 text-error font-medium">Something went wrong while trying to fetch the products.</h2>
+          <h2 className="p-2 font-medium text-error">Something went wrong while trying to fetch the products.</h2>
         ) : isLoading ? (
-          <table className="flex h-96 items-center justify-center">
+          <table className="flex items-center justify-center h-96">
             <button className="btn btn-ghost disabled">
               <span className="loading loading-spinner"></span>
             </button>
           </table>
         ) : productData?.products.length === 0 ? (
-          <h2 className="p-2 text-warning font-medium">No products have been added.</h2>
+          <h2 className="p-2 font-medium text-warning">No products have been added.</h2>
         ) : (
-          <table className="table table-sm w-full">
+          <table className="table w-full table-xs">
             <thead>
               <tr>
                 <th className="border !border-base-300">Title</th>
@@ -80,6 +80,8 @@ const Products: NextPageWithLayout = () => {
                 <th className="border !border-base-300">Company</th>
                 <th className="border !border-base-300">Quantity</th>
                 <th className="border !border-base-300">Price</th>
+                <th className="border !border-base-300">Discount</th>
+                <th className="border !border-base-300">Discounted Price</th>
                 <th className="border !border-base-300">Created On</th>
                 <th className="border !border-base-300">Actions</th>
               </tr>
@@ -97,21 +99,24 @@ const Products: NextPageWithLayout = () => {
                     <td className="border !border-base-300">{product.category?.name}</td>
                     <td className="border !border-base-300">{product.company?.name}</td>
                     <td className="border !border-base-300">{product.quantity}</td>
-                    <td className="border !border-base-300">&#8377; {formatPrice(product.price)}</td>
+                    <td className="border !border-base-300">रू {formatPrice(product.price)}</td>
+                    <td className="border !border-base-300">{product.hasOffer ? product.discountPercentage : '-'}</td>
+                    <td className="border !border-base-300">{product.hasOffer ? <>रू {formatPrice(product.discountedPrice)}</> : '-'}</td>
                     <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
                     <td className="border !border-base-300 text-center">
-                      <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
-                        <FaCogs></FaCogs> Edit
-                      </Link>
-                      <button
-                        className="btn btn-error btn-xs btn-outline ml-2 gap-1"
-                        disabled={isProductDeleting}
-                        onClick={() => {
-                          mutateDeleteProduct({ productId: product.id });
-                        }}>
-                        {isProductDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
-                        Delete
-                      </button>
+                      <div className="flex">
+                        <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
+                          <FaCogs></FaCogs>
+                        </Link>
+                        <button
+                          className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
+                          disabled={isProductDeleting}
+                          onClick={() => {
+                            mutateDeleteProduct({ productId: product.id });
+                          }}>
+                          {isProductDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -120,7 +125,7 @@ const Products: NextPageWithLayout = () => {
           </table>
         )}
       </section>
-      <div className="mt-8 flex justify-end place-self-end">
+      <div className="flex justify-end mt-8 place-self-end">
         {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>

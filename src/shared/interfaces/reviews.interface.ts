@@ -1,3 +1,5 @@
+import { IRatingSummary } from './product.interface';
+
 export interface SubmitReview {
   rating: string;
   comment: string;
@@ -21,19 +23,10 @@ export interface Review {
   };
 }
 
-interface PercentageRatings {
-  [key: string]: string;
-}
-
-interface RatingSummary {
-  averageRating: string;
-  percentageRatings: PercentageRatings;
-}
-
 export interface PaginatedReviews {
   data: {
     reviews: Review[];
-    ratingSummary: RatingSummary;
+    ratingSummary: IRatingSummary;
   };
   limit: number;
   page: number;

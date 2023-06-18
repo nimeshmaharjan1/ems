@@ -283,9 +283,7 @@ const CreateUser: NextPageWithLayout = () => {
             <div className="col-span-12 lg:col-span-6">
               <FormControl label="Price" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
-                  <span>
-                    <FaRupeeSign />
-                  </span>
+                  <span>रू</span>
                   <input
                     type="text"
                     pattern="[0-9]*"

@@ -49,7 +49,7 @@ const Cart = () => {
                     <div>
                       <h3 className="text-sm">{item.slug}</h3>
                       <dl className="mt-1.5 space-y-px text-[11px] text-gray-600"> {item.quantity}</dl>
-                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600">&#8377; {formatPrice(item.price)}</dl>
+                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600">रू {formatPrice(item.price)}</dl>
                     </div>
                   </li>
                 ))}
@@ -70,7 +70,7 @@ const Cart = () => {
                             {/* <p className="text-sm dark:text-gray-400">Classic</p> */}
                           </div>
                           <div className="md:text-right">
-                            <p className="text-sm font-medium md:text-[1rem]">&#8377;{formatPrice(cartItem.price)}</p>
+                            <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.price)}</p>
                             {/* <p className="text-sm line-through dark:text-gray-600">75.50€</p> */}
                           </div>
                         </div>
@@ -126,7 +126,7 @@ const Cart = () => {
               </ul>
               <div className="hidden space-y-1 text-right md:block">
                 <p>
-                  Total amount: <span className="font-semibold">&#8377;{formatPrice(getTotalPrice())}</span>
+                  Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                 </p>
                 <p className="text-sm dark:text-gray-400">Not including taxes and shipping costs</p>
               </div>

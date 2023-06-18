@@ -3,7 +3,7 @@ import { PrismaClient, Review } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
 import { getSession } from 'next-auth/react';
 
-type RatingSummary = {
+export type RatingSummary = {
   [key: string]: number;
 };
 

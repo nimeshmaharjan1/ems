@@ -50,6 +50,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   } catch (error) {
     console.error('error: ', error);
+  } finally {
+    prisma.$disconnect();
   }
   return {
     props: {
@@ -303,9 +305,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             <div className="col-span-12 lg:col-span-6">
               <FormControl label="Price" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
-                  <span>
-                    <FaRupeeSign />
-                  </span>
+                  <span>रू</span>
                   <input
                     type="text"
                     pattern="[0-9]*"

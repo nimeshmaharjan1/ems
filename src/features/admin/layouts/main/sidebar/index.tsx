@@ -89,7 +89,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.dashboard);
               router.push(DASHBOARD_LINKS.dashboard);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <RxDashboard></RxDashboard>
             </span>
             <span className={`font-normal text-sm  flex-1 ${isSidebarCollapsed && 'hidden'}`}>Dashboard</span>
@@ -107,7 +107,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.products);
               router.push(DASHBOARD_LINKS.products);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <FiBox></FiBox>
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Products</span>
@@ -125,7 +125,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.users);
               router.push(DASHBOARD_LINKS.users);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <HiOutlineUsers></HiOutlineUsers>
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Users</span>
@@ -143,7 +143,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.myProfile);
               router.push(DASHBOARD_LINKS.myProfile);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <ImProfile></ImProfile>
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>My Profile</span>
@@ -161,7 +161,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.orders);
               router.push(DASHBOARD_LINKS.orders);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <PackageCheck />
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Orders</span>
@@ -179,7 +179,7 @@ export default function Sidebar({
               setIsActive(DASHBOARD_LINKS.settings);
               router.push(DASHBOARD_LINKS.settings);
             }}>
-            <span className="text-2xl block float-left">
+            <span className="block float-left text-2xl">
               <FiSettings></FiSettings>
             </span>
             <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Settings</span>
@@ -201,7 +201,7 @@ export default function Sidebar({
               ['p-3']: !isSidebarCollapsed,
             }
           )}>
-          <span className="text-2xl block float-left">
+          <span className="block float-left text-2xl">
             <AiOutlineLogout></AiOutlineLogout>
           </span>
           <span className={`font-normal text-sm flex-1 ${isSidebarCollapsed && 'hidden'}`}>Logout</span>

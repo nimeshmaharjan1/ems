@@ -1,8 +1,24 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Review } from '@prisma/client';
 import { ShopBySearchParams } from '@/store/use-shop-by';
+import { RatingSummary } from './reviews';
 const prisma = new PrismaClient();
+function getRatingSummary(reviews: Review[]): RatingSummary {
+  const ratings: RatingSummary = {
+    '1': 0,
+    '2': 0,
+    '3': 0,
+    '4': 0,
+    '5': 0,
+  };
 
+  for (const review of reviews) {
+    const rating = review.rating.toString();
+    ratings[rating] += 1;
+  }
+
+  return ratings;
+}
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
@@ -61,9 +77,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         include: {
           category: true,
           company: true,
+          Review: true,
         },
       });
-      res.status(200).json({ products, limit: limit as number, page: Number(page), totalPages, totalRecords });
+      const productsWithRatingSummary = products.map((product) => {
+        const ratingSummary = getRatingSummary(product.Review);
+        const totalRatings = ratingSummary['1'] + ratingSummary['2'] + ratingSummary['3'] + ratingSummary['4'] + ratingSummary['5'];
+
+        const averageRating = (
+          (1 * ratingSummary['1'] + 2 * ratingSummary['2'] + 3 * ratingSummary['3'] + 4 * ratingSummary['4'] + 5 * ratingSummary['5']) /
+          totalRatings
+        ).toFixed(0);
+
+        const percentageRatings = {
+          '5': ((ratingSummary['5'] / totalRatings) * 100).toFixed(0),
+          '4': ((ratingSummary['4'] / totalRatings) * 100).toFixed(0),
+          '3': ((ratingSummary['3'] / totalRatings) * 100).toFixed(0),
+          '2': ((ratingSummary['2'] / totalRatings) * 100).toFixed(0),
+          '1': ((ratingSummary['1'] / totalRatings) * 100).toFixed(0),
+        };
+
+        return {
+          ...product,
+          ratingSummary: {
+            averageRating,
+            percentageRatings,
+          },
+        };
+      });
+
+      res.status(200).json({ products: productsWithRatingSummary, limit: limit as number, page: Number(page), totalPages, totalRecords });
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: 'Something went wrong while trying to fetch the products.', error: e });
