@@ -47,6 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'PUT') {
     try {
       const { images, title, description, price, category, company, quantity, slug, modal, hasOffer, discountPercentage } = req.body;
+      parseFloat(price);
+      parseFloat(discountPercentage);
       const categoryId = category?.value;
       const companyId = company?.value;
       let discountedPrice: number | null = null;
