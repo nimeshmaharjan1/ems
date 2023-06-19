@@ -11,7 +11,6 @@ import classNames from 'classnames';
 import { IProduct } from '@/shared/interfaces/product.interface';
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
-  console.log(product);
   const { cartItems, setCartItems } = useCartStore();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -56,12 +55,12 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
               <p className="text-xs font-medium line-through opacity-60">
                 <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.price))}
               </p>
-              <p className="font-medium text-error">
+              <p className="font-medium text-red-500">
                 <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.discountedPrice))}
               </p>
             </div>
           ) : (
-            <p className="font-medium text-error">
+            <p className="font-medium text-red-500">
               <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.price))}
             </p>
           )}

@@ -4,7 +4,7 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
 import { Trash2 } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -136,7 +136,7 @@ const Cart = () => {
                 onClick={() => {
                   if (status === 'unauthenticated') {
                     showToast(Toast.warning, 'You must be logged in.');
-                    router.push('/api/auth/signin');
+                    signIn();
                   } else {
                     router.push('/checkout');
                   }

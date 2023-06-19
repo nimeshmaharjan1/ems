@@ -14,7 +14,7 @@ import axios, { AxiosError } from 'axios';
 import { USER_ROLES } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 const Register: NextPageWithLayout = () => {
   const { data: session } = useSession();
@@ -26,7 +26,7 @@ const Register: NextPageWithLayout = () => {
     username: '',
     name: '',
     phone_number: '',
-    role: USER_ROLES.STAFF,
+    role: USER_ROLES.USER,
   } as IRegister;
   const {
     register,
@@ -41,7 +41,7 @@ const Register: NextPageWithLayout = () => {
     try {
       await axios.post('/api/auth/register', values);
       showToast(Toast.success, 'User has been successfully created.');
-      router.push('/api/auth/signin');
+      signIn();
     } catch (error: any) {
       console.error(error);
       setIsSubmitting(false);
@@ -186,9 +186,7 @@ const Register: NextPageWithLayout = () => {
 
       <p className="text-sm text-center">
         Already have an account?{' '}
-        <span
-          className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300"
-          onClick={() => router.push('/api/auth/signin')}>
+        <span className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300" onClick={() => signIn()}>
           Sign In now
         </span>
       </p>

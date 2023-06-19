@@ -4,11 +4,14 @@ import classNames from 'classnames';
 import { MonitorUp, Upload } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, forwardRef, useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
-type UserProfileModalProps = {};
+type UserProfileModalProps = {
+  isFromNoPhoneNumber: boolean;
+  setIsFromNoPhoneNumber: Dispatch<SetStateAction<boolean>>;
+};
 
 interface IForm {
   image?: string | null;
@@ -18,7 +21,7 @@ interface IForm {
 }
 
 const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((props, ref) => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const profileImageUploadRef = useRef<HTMLInputElement>(null);
   const [isFileUploading, setIsFileUploading] = useState(false);
   const { isLoading: isLoadingUserProfile, data: userData } = useQuery(['getUserProfile'], async () => {
@@ -108,9 +111,12 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
     setIsSubmitting(true);
     try {
       const response = await axios.patch(`/api/users/${session?.user?.id}`, values);
+      update();
       showToast(Toast.success, response.data.message);
+      props.setIsFromNoPhoneNumber(false);
+      (ref as any).current.close();
     } catch (error: any) {
-      if (error.response.data.error.meta.target[0] === 'phone_number') {
+      if (error?.response?.data?.error?.meta?.target[0] === 'phone_number') {
         setError('phone_number', { type: 'custom', message: 'Phone number is already associated with another user.' });
       }
     } finally {
@@ -236,9 +242,11 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
 
           <div className="modal-action px-4 gap-2">
             {/* if there is a button in form, it will close the modal */}
-            <button type="button" className="btn" onClick={() => (ref as any).current.close()}>
-              Close
-            </button>
+            {!props.isFromNoPhoneNumber && (
+              <button type="button" className="btn" onClick={() => (ref as any).current.close()}>
+                Close
+              </button>
+            )}
             <button className="btn btn-primary" type="submit">
               Submit
             </button>

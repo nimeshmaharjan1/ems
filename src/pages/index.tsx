@@ -1,11 +1,13 @@
-import { useRouter } from 'next/router';
-import React from 'react';
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: true,
+      destination: '/products',
+    },
+  };
+};
 
 const Index = () => {
-  const router = useRouter();
-  React.useEffect(() => {
-    router.push('/products');
-  }, [router]);
   return null;
 };
 
