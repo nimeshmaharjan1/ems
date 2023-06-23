@@ -22,6 +22,9 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
         image: product.images[0],
         slug: product.slug,
         maxQuantity: parseInt(product.quantity),
+        discountedPrice: product.discountedPrice,
+        discountPercentage: product.discountPercentage,
+        hasOffer: product.hasOffer,
       },
       cartItems,
       setCartItems

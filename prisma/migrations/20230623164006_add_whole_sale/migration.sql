@@ -1,0 +1,7 @@
+-- CreateEnum
+CREATE TYPE "SELECTED_WHOLESALE_OPTION" AS ENUM ('CREDIT', 'CASH');
+
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "selectedWholesaleOption" "SELECTED_WHOLESALE_OPTION" DEFAULT 'CASH',
+ADD COLUMN     "wholesaleCashPrice" DOUBLE PRECISION,
+ADD COLUMN     "wholesaleCreditPrice" DOUBLE PRECISION;
