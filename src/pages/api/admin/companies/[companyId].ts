@@ -7,10 +7,8 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.companyId as string;
-  const authenticated = await isAuthenticated(req, res);
-  if (!authenticated) {
-    return;
-  } else if (req.method === 'PUT') {
+  if (req.method === 'PUT') {
+    await isAuthenticated(req, res);
     try {
       const { name, products, categories } = req.body;
       const categoryIds = categories?.map((category: ReactSelectReturn) => ({ id: category.value })) ?? [];

@@ -73,19 +73,21 @@ model User {
   sessions                 Session[]
   orders                   Order[]
   Review                   Review[]
+  address                  String?
 }
 
 model Order {
-  id                   String      @id @default(cuid())
-  items                OrderItem[]
-  totalPrice           Float
-  user                 User        @relation(fields: [userId], references: [id])
-  userId               String
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
-  hasBeenPaid          Boolean     @default(false)
-  paidAt               DateTime?
-  totalDiscountedPrice Float?
+  id                      String                     @id @default(cuid())
+  items                   OrderItem[]
+  totalPrice              Float
+  user                    User                       @relation(fields: [userId], references: [id])
+  userId                  String
+  createdAt               DateTime                   @default(now())
+  updatedAt               DateTime                   @updatedAt
+  hasBeenPaid             Boolean                    @default(false)
+  paidAt                  DateTime?
+  totalDiscountedPrice    Float?
+  selectedWholesaleOption SELECTED_WHOLESALE_OPTION? @default(CASH)
 }
 
 model OrderItem {
@@ -124,28 +126,27 @@ enum SELECTED_WHOLESALE_OPTION {
 }
 
 model Product {
-  id                      String                     @id @default(cuid())
-  images                  String[]
-  title                   String
-  description             String
-  price                   Float
-  category                Category                   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId              String
-  company                 Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId               String
-  quantity                String
-  createdAt               DateTime                   @default(now())
-  updatedAt               DateTime                   @updatedAt
-  slug                    String
-  OrderItem               OrderItem[]
-  Review                  Review[]
-  modal                   String
-  discountPercentage      Float?
-  hasOffer                Boolean?                   @default(false)
-  discountedPrice         Float?
-  selectedWholesaleOption SELECTED_WHOLESALE_OPTION? @default(CASH)
-  wholesaleCreditPrice    Float?
-  wholesaleCashPrice      Float?
+  id                   String      @id @default(cuid())
+  images               String[]
+  title                String
+  description          String
+  price                Float
+  category             Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId           String
+  company              Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId            String
+  quantity             String
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  slug                 String
+  OrderItem            OrderItem[]
+  Review               Review[]
+  modal                String
+  discountPercentage   Float?
+  hasOffer             Boolean?    @default(false)
+  discountedPrice      Float?
+  wholesaleCreditPrice Float?
+  wholesaleCashPrice   Float?
 }
 
 model Review {

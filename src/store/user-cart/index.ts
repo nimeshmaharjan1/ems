@@ -26,15 +26,15 @@ export const useCartStore = create<Store>((set, get) => ({
   setCartItems: (items: CartItem[]) => set({ cartItems: items }),
   getTotalPrice: () => {
     return get().cartItems.reduce((total: number, item: CartItem) => {
-      if (item.hasOffer) {
-        return total + item.discountedPrice! * item.quantity;
-      }
       return total + item.price * item.quantity;
     }, 0);
   },
   getTotalDiscountedPrice: () => {
     return get().cartItems.reduce((total: number, item: CartItem) => {
-      return total + item.discountedPrice! * item.quantity;
+      if (item.hasOffer) {
+        return total + item.discountedPrice! * item.quantity;
+      }
+      return total + item.price * item.quantity;
     }, 0);
   },
   getItemTotalPrice: (id: string) => {

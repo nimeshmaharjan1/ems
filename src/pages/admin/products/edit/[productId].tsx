@@ -44,7 +44,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         product: JSON.parse(
-          JSON.stringify({ ...product, price: product?.price.toString(), company: reactSelectCompany, category: reactSelectCategory })
+          JSON.stringify({
+            ...product,
+            price: product?.price.toString(),
+            wholesaleCreditPrice: product?.wholesaleCreditPrice?.toString(),
+            wholesaleCashPrice: product?.wholesaleCashPrice?.toString(),
+            discountPercentage: product?.discountPercentage?.toString(),
+            company: reactSelectCompany,
+            category: reactSelectCategory,
+          })
         ),
       },
     };
@@ -75,6 +83,8 @@ const productSchema = z
     }),
     images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
+    wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
+    wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
     quantity: z.string().min(1, { message: 'Quantity is required.' }),
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
@@ -329,6 +339,40 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                   })}
                   className={`input input-bordered w-full ${errors?.quantity ? 'input-error' : ''}`}
                 />
+              </FormControl>
+            </div>
+          </div>
+          <div className="grid grid-cols-12 gap-2">
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Cash Price" errorMessage={errors?.wholesaleCashPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCashPrice', {
+                      required: 'Wholesale cash price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCashPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Credit Price" errorMessage={errors?.wholesaleCreditPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCreditPrice', {
+                      required: 'Wholesale credit price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
+                  />
+                </label>
               </FormControl>
             </div>
           </div>

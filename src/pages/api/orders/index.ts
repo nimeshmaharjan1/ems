@@ -35,10 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }, 0);
       const totalDiscountedPrice = items.reduce((sum, item) => {
         if (item.hasOffer) {
-          const discountedItemPrice = parseFloat(item.discountedPrice || '0');
-          return sum + item.quantity * discountedItemPrice;
+          return sum + parseFloat(item.discountedPrice!) * item.quantity;
         }
-        return 0;
+        return sum + parseFloat(item.price) * item.quantity;
       }, 0);
 
       await prisma.$connect();
@@ -53,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               })),
             },
             totalPrice,
+            totalDiscountedPrice,
             userId,
           },
           include: {

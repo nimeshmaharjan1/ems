@@ -24,6 +24,7 @@ const Users: NextPageWithLayout = () => {
     const response = await axios.get(`/api/admin/users?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
+  console.log(userData);
   const { mutate: mutateChangeRole, isLoading: isChangingRole } = useMutation(
     async (args: { userId: string; role: USER_ROLES }) => {
       const response = await axios.patch(`/api/admin/users/${args.userId}/change-role`, {
@@ -47,23 +48,24 @@ const Users: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-semibold text-2xl">Users</h2>
+        <h2 className="text-2xl font-semibold">Users</h2>
       </div>
       <section className="overflow-x-auto">
-        <table className="table table-auto w-full">
+        <table className="table w-full table-auto">
           <thead>
             <tr>
               <th className="border !border-base-300">Name</th>
               <th className="border !border-base-300">Phone Number</th>
               <th className="border !border-base-300">Email</th>
               <th className="border !border-base-300">Username</th>
+              <th className="border !border-base-300">Applying as a Business</th>
               <th className="border !border-base-300">Role</th>
               {/* <th className="border !border-base-300 ">Actions</th> */}
             </tr>
           </thead>
           <tbody>
             {isError ? (
-              <h2 className="text-error p-2 py-4">Something went wrong while trying to fetch the users.</h2>
+              <h2 className="p-2 py-4 text-error">Something went wrong while trying to fetch the users.</h2>
             ) : isLoading ? (
               <tr>
                 <td colSpan={5} className="text-center">
@@ -82,11 +84,12 @@ const Users: NextPageWithLayout = () => {
                           user.email.length > 40 ? '...' : ''
                         }`}</td>
                         <td className="border !border-base-300">{user.username}</td>
+                        <td className="border !border-base-300">{user.applyingAsBusinessClient ? 'Yes' : 'No'}</td>
                         <td className={classNames('border !border-base-300')}>
                           <select
                             value={user.role}
                             disabled={isChangingRole}
-                            className="select select-xs w-full"
+                            className="w-full select select-xs"
                             onChange={(e) => {
                               handleRoleChange({ role: e.target.value as USER_ROLES, userId: user.id });
                             }}>
@@ -106,10 +109,10 @@ const Users: NextPageWithLayout = () => {
                           </span> */}
                         </td>
                         {/* <td className="border !border-base-300 text-center">
-                    <Link href={`/admin/users/edit/${user.id}`} className="btn btn-info btn-xs btn-outline  gap-1">
+                    <Link href={`/admin/users/edit/${user.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
                       <FaCogs></FaCogs> Edit
                     </Link> 
-                    <button className="btn btn-error btn-xs btn-outline ml-2 gap-1">
+                    <button className="gap-1 ml-2 btn btn-error btn-xs btn-outline">
                       <BsTrash></BsTrash> Delete
                     </button>
                   </td> */}
@@ -121,7 +124,7 @@ const Users: NextPageWithLayout = () => {
           </tbody>
         </table>
       </section>
-      <div className="mt-8 flex justify-end place-self-end">
+      <div className="flex justify-end mt-8 place-self-end">
         {userData?.totalPages !== undefined && (
           <Pagination {...{ currentPage, setCurrentPage }} totalPages={userData?.totalPages}></Pagination>
         )}

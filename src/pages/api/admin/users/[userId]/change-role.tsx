@@ -1,4 +1,5 @@
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
+import isSuperAdmin from '@/features/admin/hof/is-super-admin';
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -6,7 +7,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.userId as string;
-  await isAuthenticated(req, res);
+  await isSuperAdmin(req, res);
   const { role } = req.body;
   if (req.method === 'PATCH') {
     try {

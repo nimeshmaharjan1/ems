@@ -5,10 +5,11 @@ import isAuthenticated from '@/features/admin/hof/is-authenticated';
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.categoryId as string;
-  const authenticated = await isAuthenticated(req, res);
-  if (!authenticated) {
-    return;
-  } else if (req.method === 'PUT') {
+  // const authenticated = await isAuthenticated(req, res);
+  // if (!authenticated) {
+  //   return;
+  // } else
+  if (req.method === 'PUT') {
     try {
       const { name, products, companies } = req.body;
       const companyIds = companies?.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];

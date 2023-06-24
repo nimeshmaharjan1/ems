@@ -6,10 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.productId as string;
-  const authenticated = await isAuthenticated(req, res);
-  if (!authenticated) {
-    return res.status(401).json({ message: 'Unauthenticated' });
-  } else if (req.method === 'GET') {
+  if (req.method === 'GET') {
     try {
       const product = await prisma.product.findUnique({ where: { id }, include: { category: true, company: true } });
       const reactSelectCompany = {

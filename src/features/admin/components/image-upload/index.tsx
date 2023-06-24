@@ -11,9 +11,9 @@ interface Props {
   accept?: string;
   sizeLimit?: number;
   onChangePicture: (images: any) => void;
-  control: Control<ProductSchema>;
-  resetImages: boolean;
-  setResetImages: Dispatch<SetStateAction<boolean>>;
+  control: any;
+  resetImages: any;
+  setResetImages: any;
 }
 
 const ImageUpload: React.FC<Props> = ({

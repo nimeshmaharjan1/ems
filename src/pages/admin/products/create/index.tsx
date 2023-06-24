@@ -42,6 +42,8 @@ const productSchema = z
       .max(5, { message: 'Images cannot be more than five.' })
       .optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
+    wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
+    wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
     quantity: z.string().min(1, { message: 'Quantity is required.' }),
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
@@ -75,6 +77,8 @@ const CreateUser: NextPageWithLayout = () => {
     description: '',
     images: [],
     price: '',
+    wholesaleCashPrice: '',
+    wholesaleCreditPrice: '',
     title: '',
     quantity: '',
     slug: '',
@@ -310,16 +314,50 @@ const CreateUser: NextPageWithLayout = () => {
               </FormControl>
             </div>
           </div>
+          <div className="grid grid-cols-12 gap-2">
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Cash Price" errorMessage={errors?.wholesaleCashPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCashPrice', {
+                      required: 'Wholesale cash price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCashPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Credit Price" errorMessage={errors?.wholesaleCreditPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCreditPrice', {
+                      required: 'Wholesale credit price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+          </div>
           <div className="grid grid-cols-6 mb-2">
             <div className="col-span-6 form-control">
               <label className="cursor-pointer label !justify-start gap-x-3">
-                <span className="!text-base">Apply Offer</span>
+                <span className="!text-sm">Apply Offer</span>
                 <input
                   type="checkbox"
                   {...register('hasOffer', {
                     onChange: () => setValue('discountPercentage', ''),
                   })}
-                  className="toggle"
+                  className="toggle toggle-sm"
                 />
               </label>
             </div>
