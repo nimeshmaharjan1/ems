@@ -5,7 +5,6 @@ type SetCartItems = (cartItems: CartItem[]) => void;
 export const addToCart = (item: CartItem, cartItems: CartItem[], setCartItems: SetCartItems) => {
   // Check if the item already exists in the cart
   const existingItem = cartItems.find((cartItem) => cartItem.productId === item.productId);
-  console.log(existingItem);
   if (existingItem && existingItem.quantity >= item.maxQuantity) {
     showToast(Toast.warning, 'Exceeded available quantity.');
     return;

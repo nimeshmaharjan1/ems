@@ -20,6 +20,8 @@ import { RxDashboard } from 'react-icons/rx';
 import { useRouter } from 'next/router';
 import UserProfileModal from '@/features/user/profile-modal';
 import NavAvatarDropdown from '@/features/user/avatar-dropdown';
+import { Toast, showToast } from '@/shared/utils/toast.util';
+import axios from 'axios';
 
 const inter = Inter({
   preload: false,
@@ -56,10 +58,28 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
 
   const router = useRouter();
   const profileModalRef = useRef<HTMLDialogElement>(null);
+  const [isFromNoPhoneNumber, setIsFromNoPhoneNumber] = useState(false);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const response = await axios.get(`/api/users/${session?.user?.id}`);
+      if (response.data.user?.phone_number) {
+        return;
+      } else {
+        showToast(Toast.warning, 'Please add your phone number.');
+        setIsFromNoPhoneNumber(true);
+        profileModalRef.current?.show();
+      }
+    };
+    if (session) {
+      getUserData();
+    }
+  }, [session]);
+
   if (!isMounted) return null;
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between ${inter.className}`}>
+    <div className={`min-h-screen flex flex-col justify-between scroll-smooth antialiased ${inter.className}`}>
       <Head>
         <title>{title ? `EME - ${title}` : 'EME'}</title>
         <meta
@@ -67,7 +87,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           content={description ? description : 'Check out new products listed from various vendors all around Nepal.'}
         />
       </Head>
-      {session?.user?.id && <UserProfileModal ref={profileModalRef}></UserProfileModal>}
+      {session?.user?.id && (
+        <UserProfileModal
+          setIsFromNoPhoneNumber={setIsFromNoPhoneNumber}
+          isFromNoPhoneNumber={isFromNoPhoneNumber}
+          ref={profileModalRef}></UserProfileModal>
+      )}
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">

@@ -32,6 +32,15 @@ export const authOptions: NextAuthOptions = {
         if (!isValidPassword) {
           throw new Error('Invalid password.');
         }
+        if (user?.phone_number) {
+          return {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            phone_number: user.phone_number,
+          };
+        }
         return {
           id: user.id,
           email: user.email,
@@ -73,6 +82,9 @@ export const authOptions: NextAuthOptions = {
       });
       // add the userId to the session object
       user.role = dbUser.role;
+      if (dbUser?.phone_number) {
+        user.phone_number = dbUser?.phone_number;
+      }
       user.id = dbUser.id;
 
       return true;
@@ -83,6 +95,8 @@ export const authOptions: NextAuthOptions = {
         params.token.username = params.user.username;
         params.token.role = params.user?.role;
         params.token.id = params.user?.id;
+      }
+      if (params?.user?.phone_number) {
         params.token.phone_number = params.user?.phone_number;
       }
       return params.token;

@@ -7,7 +7,10 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.productId as string;
-  await isAuthenticated(req, res);
+  // const auth = await isAuthenticated(req, res);
+  // if (!auth) {
+  //   return res.status(401).json({ message: 'Unauthorized.' });
+  // }
   if (req.method === 'DELETE') {
     try {
       const product = await prisma.product.findUnique({ where: { id } });
@@ -46,9 +49,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'PUT') {
     try {
-      const { images, title, description, price, category, company, quantity, slug, modal, hasOffer, discountPercentage } = req.body;
+      const {
+        images,
+        title,
+        description,
+        price,
+        category,
+        company,
+        quantity,
+        slug,
+        modal,
+        hasOffer,
+        discountPercentage,
+        wholesaleCreditPrice,
+        wholesaleCashPrice,
+      } = req.body;
       parseFloat(price);
-      parseFloat(discountPercentage);
       const categoryId = category?.value;
       const companyId = company?.value;
       let discountedPrice: number | null = null;
@@ -72,11 +88,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           hasOffer,
           discountedPrice,
           discountPercentage: parseFloat(discountPercentage),
+          wholesaleCashPrice: parseFloat(wholesaleCashPrice),
+          wholesaleCreditPrice: parseFloat(wholesaleCreditPrice),
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       res.status(500).json({ e, message: 'Something went wrong' });
     } finally {
       await prisma.$disconnect();

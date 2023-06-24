@@ -71,6 +71,7 @@ const Orders: NextPageWithLayout = () => {
     mutateHasBeenPaid(args);
   };
   const { data: session } = useSession();
+  console.log(ordersData);
   if (!isMounted) return null;
   return (
     <>
@@ -95,6 +96,7 @@ const Orders: NextPageWithLayout = () => {
                     <th className="border !border-base-300">Ordered By</th>
                     <th className="border !border-base-300">Phone Number</th>
                     <th className="border !border-base-300">Total</th>
+                    <th className="border !border-base-300">Discounted Total</th>
                     <th className="border !border-base-300">Ordered At</th>
                     <th className="border !border-base-300">Paid Status</th>
                     <th className="border !border-base-300">Paid At</th>
@@ -111,6 +113,9 @@ const Orders: NextPageWithLayout = () => {
                           <td className="border !border-base-300">{order.user.name}</td>
                           <td className="border !border-base-300">{order.user?.phone_number}</td>
                           <td className="border !border-base-300">रू {formatPrice(order.totalPrice)}</td>
+                          <td className="border !border-base-300">
+                            {order?.totalDiscountedPrice ? <>रू {formatPrice(order.totalDiscountedPrice)}</> : '-'}
+                          </td>
                           <td className="border !border-base-300">{formatDateWithTime(order.createdAt)}</td>
                           <td className="border !border-base-300 text-center">
                             {order.hasBeenPaid ? (
@@ -121,7 +126,7 @@ const Orders: NextPageWithLayout = () => {
                           </td>
                           <td className="border !border-base-300 text-center">{order?.paidAt ? formatDateWithTime(order.paidAt) : '-'}</td>
                           <td className="border !border-base-300 text-center">
-                            <div className="flex">
+                            <div className="flex justify-center">
                               {' '}
                               {isHasBeenPaidLoading ? (
                                 <button className="btn btn-xs btn-outline">

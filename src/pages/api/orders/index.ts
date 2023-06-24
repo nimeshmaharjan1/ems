@@ -8,6 +8,8 @@ interface CreateOrderItem {
   productId: string;
   quantity: number;
   price: string;
+  discountedPrice?: string;
+  hasOffer?: boolean;
 }
 
 interface CreateOrderRequest {
@@ -31,6 +33,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const itemPrice = parseFloat(item.price);
         return sum + item.quantity * itemPrice;
       }, 0);
+      const totalDiscountedPrice = items.reduce((sum, item) => {
+        if (item.hasOffer) {
+          return sum + parseFloat(item.discountedPrice!) * item.quantity;
+        }
+        return sum + parseFloat(item.price) * item.quantity;
+      }, 0);
 
       await prisma.$connect();
 
@@ -44,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               })),
             },
             totalPrice,
+            totalDiscountedPrice,
             userId,
           },
           include: {

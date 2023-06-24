@@ -1,7 +1,7 @@
 import { SubmitReview } from '@/shared/interfaces/reviews.interface';
 import { showToast, Toast } from '@/shared/utils/toast.util';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -30,7 +30,7 @@ const WriteReviewModal: React.FC<{ reviewUseForm: UseFormReturn<SubmitReview> }>
       onError: (error: any) => {
         showToast(Toast.error, error?.response?.data?.message);
         if (error?.response?.status === 401) {
-          router.push('/api/auth/signin');
+          signIn()
         }
       },
     }

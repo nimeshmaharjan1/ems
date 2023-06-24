@@ -4,14 +4,15 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
 import { Trash2 } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
-  const { cartItems, setCartItems, getTotalPrice } = useCartStore();
+  const { cartItems, setCartItems, getTotalPrice, getTotalDiscountedPrice } = useCartStore();
+  console.log(cartItems);
   const { status } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
@@ -25,7 +26,7 @@ const Cart = () => {
           <span className="text-[8px]">{cartItems.length > 9 ? '9+' : cartItems.length}</span>
         </div>
       </label>
-      <div tabIndex={0} className="dropdown-content w-52 md:w-[30rem] z-20 card mt-2 shadow-2xl bg-base-200 ">
+      <div tabIndex={0} className="dropdown-content w-64 md:w-[30rem] z-20 card mt-2 shadow-2xl bg-base-100 ">
         <div className="card-body ">
           <h3 className="card-title">Your Cart</h3>
           {cartItems.length === 0 && (
@@ -39,17 +40,24 @@ const Cart = () => {
           )}
           {cartItems.length > 0 && (
             <>
-              <ul className="block space-y-4 md:hidden">
+              <ul className="block space-y-1 divide-y divide-gray-700 md:hidden">
                 {cartItems.map((item) => (
-                  <li key={item.productId} className="flex items-center gap-4">
-                    <div className="relative object-cover w-16 h-10 rounded">
+                  <li key={item.productId} className="flex items-center gap-4 py-3">
+                    <div className="relative object-cover w-32 h-10 rounded">
                       <Image src={item.image} alt={item.slug} fill />
                     </div>
 
                     <div>
-                      <h3 className="text-sm">{item.slug}</h3>
-                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600"> {item.quantity}</dl>
-                      <dl className="mt-1.5 space-y-px text-[11px] text-gray-600">रू {formatPrice(item.price)}</dl>
+                      <h3 className="text-sm font-medium">{item.slug.length > 30 ? `${item.slug.slice(0, 30)}...` : item.slug}</h3>
+                      <dl className="mt-1.5 text-[13px] text-gray-600"> x{item.quantity}</dl>
+                      {item.hasOffer ? (
+                        <>
+                          <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.price)}</dl>
+                          <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.discountedPrice!)}</dl>
+                        </>
+                      ) : (
+                        <dl className="mt-1.5  text-[13px] font-medium text-gray-600">रू {formatPrice(item.price)}</dl>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -65,12 +73,22 @@ const Cart = () => {
                         <div className="flex flex-col w-full pb-2 gap-y-3 md:gap-y-0 md:flex-row md:justify-between md:space-x-2">
                           <div className="space-y-1">
                             <h3 className="text-sm font-medium leading-snug md:text-[1rem] sm:pr-8">
-                              {cartItem.slug} <span className="text-primary font-[600]">x {cartItem.quantity}</span>
+                              {cartItem.slug.length > 60 ? `${cartItem.slug.slice(0, 60)}...` : cartItem.slug}
+                              <span className="text-primary font-[600]"> x {cartItem.quantity}</span>
                             </h3>
                             {/* <p className="text-sm dark:text-gray-400">Classic</p> */}
                           </div>
                           <div className="md:text-right">
-                            <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.price)}</p>
+                            {cartItem.hasOffer ? (
+                              <>
+                                <p className="text-sm line-through font-medium text-gray-400 md:text-[0.8rem]">
+                                  रू{formatPrice(cartItem.price)}
+                                </p>
+                                <p className="text-sm font-medium mt-1 md:text-[1rem]">रू{formatPrice(cartItem.discountedPrice!)}</p>
+                              </>
+                            ) : (
+                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.price)}</p>
+                            )}
                             {/* <p className="text-sm line-through dark:text-gray-600">75.50€</p> */}
                           </div>
                         </div>
@@ -125,9 +143,21 @@ const Cart = () => {
             </li> */}
               </ul>
               <div className="hidden space-y-1 text-right md:block">
-                <p>
-                  Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
-                </p>
+                {cartItems.find((item) => item.hasOffer) ? (
+                  <>
+                    <p>
+                      <span className="text-sm font-medium text-gray-400 line-through">रू{formatPrice(getTotalPrice())}</span>
+                    </p>
+
+                    <p>
+                      Total amount: <span className="font-semibold">रू{formatPrice(getTotalDiscountedPrice())}</span>
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
+                  </p>
+                )}
                 <p className="text-sm dark:text-gray-400">Not including taxes and shipping costs</p>
               </div>
               {/* <div className="flex justify-end space-x-4"> */}
@@ -136,7 +166,7 @@ const Cart = () => {
                 onClick={() => {
                   if (status === 'unauthenticated') {
                     showToast(Toast.warning, 'You must be logged in.');
-                    router.push('/api/auth/signin');
+                    signIn();
                   } else {
                     router.push('/checkout');
                   }

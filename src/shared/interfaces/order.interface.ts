@@ -16,6 +16,7 @@ export interface Order {
   paidAt: Date;
   user: User;
   items: Item[];
+  totalDiscountedPrice?: number;
 }
 
 export interface Item {

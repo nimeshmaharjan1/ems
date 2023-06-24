@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.userId as string;
-  await isAuthenticated(req, res);
+
   const { name, email, phone_number, image } = req.body;
   if (req.method === 'PATCH') {
     try {
