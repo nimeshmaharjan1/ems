@@ -48,3 +48,8 @@ export const deleteCompany = async (id: string) => {
     showToast(Toast.error, 'Something went wrong while deleting company');
   }
 };
+
+export const getAllProducts = async (params: { limit: number; page: number; searchKeyword: string }) => {
+  const response = await axios.get(`/api/products?page=${params.page}&limit=${params.limit}&title=${params.searchKeyword || '530'}`);
+  return response.data?.products;
+};

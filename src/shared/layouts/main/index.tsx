@@ -22,6 +22,11 @@ import UserProfileModal from '@/features/user/profile-modal';
 import NavAvatarDropdown from '@/features/user/avatar-dropdown';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
+import Combobox from '@/shared/components/combobox';
+import { useInfiniteQuery } from 'react-query';
+import { getAllProducts } from '@/features/admin/services/products/products.service';
+
+import { useInView } from 'react-intersection-observer';
 
 const inter = Inter({
   preload: false,
@@ -76,6 +81,27 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
     }
   }, [session]);
 
+  const { ref, inView } = useInView();
+  const limit = 10;
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  // const { data, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+  //   'getAllProducts',
+  //   ({ pageParam = 1 }) => getAllProducts({ page: pageParam, limit, searchKeyword }),
+  //   {
+  //     getNextPageParam: (lastPage, allPages) => {
+  //       const nextPage = lastPage.length === limit ? allPages.length + 1 : undefined;
+  //       return nextPage;
+  //     },
+  //   }
+  // );
+
+  // useEffect(() => {
+  //   if (inView && hasNextPage) {
+  //     fetchNextPage();
+  //   }
+  // }, [inView, fetchNextPage, hasNextPage]);
+
   if (!isMounted) return null;
 
   return (
@@ -96,19 +122,19 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
       <div className="drawer">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">
-          <div className="shadow-lg nav-wrapper bg-base-100">
-            <div className="w-full h-20 gap-2 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
+          <div className="shadow nav-wrapper bg-base-100">
+            <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
-              <div className="flex-1">
-                <Link href="/products" className="relative w-24 h-12 md:w-32 md:h-16">
-                  <Image src="/logo.jpeg" fill alt="logo"></Image>
+              <div className="">
+                <Link href="/products" className="relative w-[5.5rem] mb-1 h-14 md:w-[7.5rem] md:h-20">
+                  <Image src="/logo.png" fill alt="logo"></Image>
                 </Link>
               </div>
-              <div className="flex items-center gap-2 mx-4 lg:hidden theme">
+              <div className="flex items-center gap-2 lg:hidden theme">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 {/* <ThemeToggler></ThemeToggler> */}
@@ -141,8 +167,21 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
               </div>
             </div>
           </div>
+
           <main className="flex-1 ">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)]">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">
+              {/* <div className="mb-6">
+                <Combobox
+                  value={searchKeyword}
+                  onChange={(e) => {
+                    setSearchKeyword(e.target.value);
+                  }}
+                  ref={ref}
+                  results={data}
+                  isSuccess={isSuccess}></Combobox>
+              </div> */}
+              {children}
+            </div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

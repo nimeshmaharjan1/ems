@@ -42,10 +42,10 @@ export default function Sidebar({
             router.push('/products');
           }}
           className={classnames('logo cursor-pointer mt-4 relative gap-2 px-2', {
-            'w-36 h-16  ml-3': !isSidebarCollapsed,
-            'w-12 h-6': isSidebarCollapsed,
+            'w-28 h-16  ml-4': !isSidebarCollapsed,
+            'w-8 ml-2 h-6': isSidebarCollapsed,
           })}>
-          <Image src="/logo.jpeg" alt="logo" fill></Image>
+          <Image src="/logo.png" alt="logo" fill></Image>
           {/* <GoLocation className={classnames('text-primary text-2xl duration-1000')}></GoLocation>
           <h1
             className={classnames('text-primary font-bold text-xl', {
