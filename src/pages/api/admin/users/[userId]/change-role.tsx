@@ -7,9 +7,10 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.userId as string;
-  await isSuperAdmin(req, res);
   const { role } = req.body;
   if (req.method === 'PATCH') {
+    await isSuperAdmin(req, res);
+
     try {
       const updatedUser = await prisma.user.update({
         where: { id },

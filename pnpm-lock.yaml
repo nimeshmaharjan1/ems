@@ -124,6 +124,9 @@ dependencies:
   react-icons:
     specifier: ^4.7.1
     version: 4.7.1(react@18.2.0)
+  react-intersection-observer:
+    specifier: ^9.5.1
+    version: 9.5.1(react@18.2.0)
   react-query:
     specifier: ^3.39.2
     version: 3.39.2(react-dom@18.2.0)(react@18.2.0)
@@ -4103,6 +4106,14 @@ packages:
     resolution: {integrity: sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw==}
     peerDependencies:
       react: '*'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-intersection-observer@9.5.1(react@18.2.0):
+    resolution: {integrity: sha512-YwcNF/4WsMAG1rLVDQHSbpdEW9vDaIl4QW88d+vqeXNUewFV4AJDQB14oHpAJ3rRCnKRmwu3nqfwwYe6wioNIg==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
     dev: false
