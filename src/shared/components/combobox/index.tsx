@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, JSXElementConstructor, Key, ReactElement, ReactFragment, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props<T> {
   results?: any;
@@ -100,14 +100,39 @@ const Combobox = <T extends object>({
         {/* Search Results Container */}
         {showResults && isSuccess && (
           <div className="absolute z-50 w-full p-2 mt-1 overflow-y-auto bg-white rounded-bl rounded-br shadow-lg max-h-56">
-            {results.pages.map((page) =>
-              page.map((product, productIndex) => {
-                if (page.length === productIndex - 3) {
+            {results.pages.map((page: any[]) =>
+              page.map(
+                (
+                  product: {
+                    title:
+                      | string
+                      | number
+                      | boolean
+                      | ReactElement<any, string | JSXElementConstructor<any>>
+                      | ReactFragment
+                      | null
+                      | undefined;
+                  },
+                  productIndex: number
+                ) => {
+                  if (page.length === productIndex - 3) {
+                    return (
+                      <div
+                        ref={ref}
+                        key={productIndex}
+                        // onMouseDown={() => handleSelection(productIndex)}
+                        style={{
+                          backgroundColor: productIndex === focusedIndex ? 'rgba(0,0,0,0.1)' : '',
+                        }}
+                        className="z-50 p-2 cursor-pointer hover:bg-black hover:bg-opacity-10">
+                        {product.title}
+                      </div>
+                    );
+                  }
                   return (
                     <div
-                      ref={ref}
                       key={productIndex}
-                      // onMouseDown={() => handleSelection(productIndex)}
+                      onMouseDown={() => handleSelection(productIndex)}
                       style={{
                         backgroundColor: productIndex === focusedIndex ? 'rgba(0,0,0,0.1)' : '',
                       }}
@@ -116,18 +141,7 @@ const Combobox = <T extends object>({
                     </div>
                   );
                 }
-                return (
-                  <div
-                    key={productIndex}
-                    onMouseDown={() => handleSelection(productIndex)}
-                    style={{
-                      backgroundColor: productIndex === focusedIndex ? 'rgba(0,0,0,0.1)' : '',
-                    }}
-                    className="z-50 p-2 cursor-pointer hover:bg-black hover:bg-opacity-10">
-                    {product.title}
-                  </div>
-                );
-              })
+              )
             )}
           </div>
         )}
