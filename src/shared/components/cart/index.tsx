@@ -12,7 +12,6 @@ import React from 'react';
 
 const Cart = () => {
   const { cartItems, setCartItems, getTotalPrice, getTotalDiscountedPrice } = useCartStore();
-  console.log(cartItems);
   const { status } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
