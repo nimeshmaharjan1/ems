@@ -1,7 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Review } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
-import { getSession } from 'next-auth/react';
+import { PrismaClient, Review } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export type RatingSummary = {
   [key: string]: number;

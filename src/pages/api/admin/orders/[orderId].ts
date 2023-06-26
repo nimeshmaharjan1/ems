@@ -6,11 +6,12 @@ import isSuperAdmin from '@/features/admin/hof/is-super-admin';
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const auth = await isSuperAdmin(req, res);
-
   const orderId = req.query.orderId as string;
   if (req.method === 'PATCH') {
-    if (!auth) return;
+    const auth = await isSuperAdmin(req, res);
+    if (!auth) {
+      return res.status(401).json({ message: 'This action needs a super admin role authority.' });
+    }
     try {
       const { hasBeenPaid } = req.body;
       const dataToUpdate: any = { hasBeenPaid };
@@ -34,7 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.$disconnect();
     }
   } else if (req.method === 'DELETE') {
-    if (!auth) return;
+    const auth = await isSuperAdmin(req, res);
+    if (!auth) {
+      return res.status(401).json({ message: 'This action needs a super admin role authority.' });
+    }
     try {
       const order = await prisma.order.findUnique({ where: { id: orderId } });
       if (!order) {

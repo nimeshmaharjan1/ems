@@ -6,7 +6,7 @@ import { useCartStore } from '@/store/user-cart';
 import { setCookie } from 'cookies-next';
 import { Trash2 } from 'lucide-react';
 import { GetServerSideProps } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { getServerSession, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { ReactNode, useRef, useState } from 'react';
 import { motion } from 'framer-motion';

@@ -1,8 +1,9 @@
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
 export default async function isAuthenticated(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
   if (session) {
     return true;
   }

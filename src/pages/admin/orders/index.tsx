@@ -35,6 +35,7 @@ const Orders: NextPageWithLayout = () => {
     setIsMounted(true);
   }, []);
   const markAsPaidModalRef = useRef<HTMLDialogElement>(null);
+
   const { mutate: mutateHasBeenPaid, isLoading: isHasBeenPaidLoading } = useMutation(
     async (args: ChangePaidStatus) => {
       const response = await axios.patch(`/api/admin/orders/${args.orderId}`, {
@@ -70,8 +71,6 @@ const Orders: NextPageWithLayout = () => {
   const changePaidStatus = (args: ChangePaidStatus) => {
     mutateHasBeenPaid(args);
   };
-  const { data: session } = useSession();
-  console.log(ordersData);
   if (!isMounted) return null;
   return (
     <>
@@ -128,27 +127,29 @@ const Orders: NextPageWithLayout = () => {
                           <td className="border !border-base-300 text-center">
                             <div className="flex justify-center">
                               {' '}
-                              {isHasBeenPaidLoading ? (
+                              {/* {isHasBeenPaidLoading ? (
                                 <button className="btn btn-xs btn-outline">
                                   <span className="loading loading-spinner loading-xs"></span>
                                 </button>
-                              ) : (
-                                <>
-                                  {order.hasBeenPaid ? (
-                                    <button
-                                      className="gap-1 btn btn-warning btn-xs btn-outline"
-                                      onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
-                                      <RxCross1></RxCross1> Mark as Unpaid
-                                    </button>
-                                  ) : (
-                                    <button
-                                      className="gap-1 btn btn-success btn-xs btn-outline"
-                                      onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
-                                      <AiOutlineCheck></AiOutlineCheck> Mark as Paid
-                                    </button>
-                                  )}
-                                </>
-                              )}
+                              ) : ( */}
+                              <>
+                                {order.hasBeenPaid ? (
+                                  <button
+                                    disabled={isHasBeenPaidLoading}
+                                    className="gap-1 btn btn-warning btn-xs btn-outline"
+                                    onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
+                                    <RxCross1></RxCross1> Mark as Unpaid
+                                  </button>
+                                ) : (
+                                  <button
+                                    disabled={isHasBeenPaidLoading}
+                                    className="gap-1 btn btn-success btn-xs btn-outline"
+                                    onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
+                                    <AiOutlineCheck></AiOutlineCheck> Mark as Paid
+                                  </button>
+                                )}
+                              </>
+                              {/* )} */}
                               <button
                                 className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
                                 onClick={() => mutateDeleteOrder({ orderId: order.id })}>
