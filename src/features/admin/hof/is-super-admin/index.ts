@@ -5,7 +5,6 @@ import { getServerSession } from 'next-auth/next';
 
 export default async function isSuperAdmin(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
   const session = await getServerSession(req, res, authOptions);
-  console.log({ session });
   if (session && session.user?.role === USER_ROLES.SUPER_ADMIN) {
     return true;
   }

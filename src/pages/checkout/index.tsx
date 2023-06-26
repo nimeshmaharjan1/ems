@@ -3,16 +3,14 @@ import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
-import { setCookie } from 'cookies-next';
-import { Trash2 } from 'lucide-react';
-import { GetServerSideProps } from 'next';
-import { getServerSession, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import { ReactNode, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import classNames from 'classnames';
 import axios from 'axios';
+import classNames from 'classnames';
+import { motion } from 'framer-motion';
+import { Trash2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { ReactNode, useRef, useState } from 'react';
 
 const Checkout = () => {
   const { cartItems, setCartItems, getTotalDiscountedPrice, getTotalPrice, getItemTotalPrice, getItemTotalDiscountedPrice } =
