@@ -7,7 +7,7 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
