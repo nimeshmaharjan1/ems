@@ -27,6 +27,7 @@ import { useInfiniteQuery } from 'react-query';
 import { getAllProducts } from '@/features/admin/services/products/products.service';
 
 import { useInView } from 'react-intersection-observer';
+import Drawer from '@/shared/components/drawer';
 
 const inter = Inter({
   preload: false,
@@ -101,6 +102,8 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   //     fetchNextPage();
   //   }
   // }, [inView, fetchNextPage, hasNextPage]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   if (!isMounted) return null;
 
@@ -180,6 +183,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   results={data}
                   isSuccess={isSuccess}></Combobox>
               </div> */}
+              <button className="btn" onClick={() => setIsOpen(!isOpen)}>
+                Hello
+              </button>
+              <Drawer setIsOpen={setIsOpen} isOpen={isOpen}>
+                <div>Hello</div>
+              </Drawer>
               {children}
             </div>
             <MainSharedFooter></MainSharedFooter>
