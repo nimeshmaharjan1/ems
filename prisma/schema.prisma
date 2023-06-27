@@ -52,10 +52,8 @@ enum USER_ROLES {
 }
 
 enum PAYMENT_METHOD {
-  CASH
-  ESEWA
-  KHALTI
-  BANK
+  COD
+  FONEPAY
 }
 
 model User {
@@ -74,32 +72,69 @@ model User {
   orders                   Order[]
   Review                   Review[]
   address                  String?
+  Comment                  Comment[]
+}
+
+enum ORDER_STATUS {
+  Pending
+  Processing
+  Dispatched
+  Delivered
+  Cancelled
+  Returned
+}
+
+enum PAYMENT_STATUS {
+  Paid
+  Unpaid
+  Refunded
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  comment   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Order {
   id                      String                     @id @default(cuid())
+  orderNumber             Int
   items                   OrderItem[]
   totalPrice              Float
   user                    User                       @relation(fields: [userId], references: [id])
   userId                  String
   createdAt               DateTime                   @default(now())
   updatedAt               DateTime                   @updatedAt
-  hasBeenPaid             Boolean                    @default(false)
-  paidAt                  DateTime?
-  totalDiscountedPrice    Float?
+  deliveryCharge          Float
+  status                  ORDER_STATUS               @default(Pending)
+  paymentStatus           PAYMENT_STATUS             @default(Unpaid)
   selectedWholesaleOption SELECTED_WHOLESALE_OPTION? @default(CASH)
+  paymentMethod           PAYMENT_METHOD             @default(COD)
+  comments                Comment[]
+  customerAddress         String
+  customerAddressCity     String
+  customerAddressLandmark String?
+  // customerAddressProvince 
+  customerEmail           String
+  customerFullName        String
+  customerPhoneNumber     String
 }
 
 model OrderItem {
-  id           String          @id @default(cuid())
-  quantity     Int
-  product      Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId    String
-  order        Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId      String
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  paid_through PAYMENT_METHOD?
+  id        String   @id @default(cuid())
+  quantity  Int
+  price     Float
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Company {
@@ -125,28 +160,33 @@ enum SELECTED_WHOLESALE_OPTION {
   CASH
 }
 
+enum PRODUCT_STATUS {
+  ACTIVE
+  DRAFT
+}
+
 model Product {
-  id                   String      @id @default(cuid())
+  id                   String          @id @default(cuid())
   images               String[]
   title                String
   description          String
   price                Float
-  category             Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sellingPrice         Float?
+  hasOffer             Boolean?        @default(false)
+  modal                String
+  wholesaleCreditPrice Float?
+  wholesaleCashPrice   Float?
+  status               PRODUCT_STATUS? @default(ACTIVE)
+  category             Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId           String
-  company              Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company              Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId            String
   quantity             String
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
   slug                 String
   OrderItem            OrderItem[]
   Review               Review[]
-  modal                String
-  discountPercentage   Float?
-  hasOffer             Boolean?    @default(false)
-  discountedPrice      Float?
-  wholesaleCreditPrice Float?
-  wholesaleCashPrice   Float?
 }
 
 model Review {

@@ -49,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               create: items.map((item) => ({
                 quantity: item.quantity,
                 productId: item.productId,
+                price: item.price,
               })),
             },
             totalPrice,

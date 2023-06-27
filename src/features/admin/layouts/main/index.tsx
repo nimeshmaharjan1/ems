@@ -26,9 +26,9 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
         <title>{title ? `${title} - EME` : 'EME'}</title>
       </Head>
 
-      <div className={`flex ${inter.className}`}>
+      <div className={`${inter.className}`}>
         <Sidebar {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Sidebar>
-        <section className="flex-1">
+        <section className="ml-64">
           <div className="h-[70px]">
             <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
           </div>

@@ -71,7 +71,7 @@ const Products: NextPageWithLayout = () => {
         ) : productData?.products.length === 0 ? (
           <h2 className="p-2 font-medium text-warning">No products have been added.</h2>
         ) : (
-          <table className="table w-full table-xs">
+          <table className="table w-full overflow-auto">
             <thead>
               <tr>
                 <th className="border !border-base-300">Title</th>
