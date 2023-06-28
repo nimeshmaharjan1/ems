@@ -2,14 +2,17 @@ import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
-import { formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
+import { formatDateWithTime, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
+import { Settings, Trash } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
+import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const Products: NextPageWithLayout = () => {
@@ -73,48 +76,55 @@ const Products: NextPageWithLayout = () => {
         ) : (
           <table className="table w-full overflow-auto">
             <thead>
-              <tr>
-                <th className="border !border-base-300">Title</th>
-                <th className="border !border-base-300">Modal</th>
-                <th className="border !border-base-300">Category</th>
-                <th className="border !border-base-300">Company</th>
-                <th className="border !border-base-300">Quantity</th>
-                <th className="border !border-base-300">Price</th>
-                <th className="border !border-base-300">Discount</th>
-                <th className="border !border-base-300">Discounted Price</th>
-                <th className="border !border-base-300">Created On</th>
-                <th className="border !border-base-300">Actions</th>
+              <tr className="bg-base-200">
+                <th>#</th>
+                <th>Title</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Inventory</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {productData?.products.map((product) => {
+              {productData?.products.map((product, index) => {
                 return (
                   <tr key={product.id}>
-                    <td className="border !border-base-300">
+                    <td>{`${index + 1}`}</td>
+                    <td className="flex items-center gap-x-3">
+                      <Image className="rounded-lg" src={product.images[0]} width={50} height={50} alt={product.slug}></Image>
                       {`${product.title.substring(0, 60)}${product.title.length > 60 ? '...' : ''}`}
                     </td>
-                    <td className="border !border-base-300">
-                      {`${product.modal.substring(0, 60)}${product.modal.length > 60 ? '...' : ''}`}
+                    <td>{`${product.modal.substring(0, 60)}${product.modal.length > 60 ? '...' : ''}`}</td>
+                    <td>रू {formatPrice(product.price)}</td>
+                    <td>
+                      <span className="px-2 py-1 text-xs font-medium text-white rounded-md bg-gradient-to-r from-cyan-400 to-blue-400">
+                        {product.quantity}
+                      </span>
                     </td>
-                    <td className="border !border-base-300">{product.category?.name}</td>
-                    <td className="border !border-base-300">{product.company?.name}</td>
-                    <td className="border !border-base-300">{product.quantity}</td>
-                    <td className="border !border-base-300">रू {formatPrice(product.price)}</td>
-                    <td className="border !border-base-300">{product.hasOffer ? product.discountPercentage : '-'}</td>
-                    <td className="border !border-base-300">{product.hasOffer ? <>रू {formatPrice(product.discountedPrice)}</> : '-'}</td>
-                    <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
-                    <td className="border !border-base-300 text-center">
+                    <td>
+                      <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md ring-1 ring-inset ring-green-600/20">
+                        {product.status}
+                      </span>
+                    </td>
+                    <td>{formatDateWithTime(product.createdAt)}</td>
+                    <td className="text-center ">
                       <div className="flex">
-                        <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
-                          <FaCogs></FaCogs>
+                        <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-primary btn-xs btn-outline">
+                          <FiSettings></FiSettings>
                         </Link>
                         <button
-                          className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
+                          className="gap-1 ml-2 btn group btn-error btn-xs btn-outline"
                           disabled={isProductDeleting}
                           onClick={() => {
                             mutateDeleteProduct({ productId: product.id });
                           }}>
-                          {isProductDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
+                          {isProductDeleting ? (
+                            <span className="loading loading-spinner loading-xs"></span>
+                          ) : (
+                            <Trash className="group-hover:text-white" size={14}></Trash>
+                          )}
                         </button>
                       </div>
                     </td>

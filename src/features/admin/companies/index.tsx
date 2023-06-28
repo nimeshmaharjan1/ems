@@ -292,7 +292,7 @@ const SettingCompany = () => {
                   className={classNames('btn btn-primary btn-block')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
-                  {addCompanyMutation.isLoading || (updateCompanyMutation.isLoading && <span className="loading loading-spinner"></span>)}
+                  {(addCompanyMutation.isLoading || updateCompanyMutation.isLoading) && <span className="loading loading-spinner"></span>}
                   Submit
                 </button>
               </div>

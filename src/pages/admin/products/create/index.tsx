@@ -125,7 +125,7 @@ const CreateProduct: NextPageWithLayout = () => {
       setIsUploading(false);
     }
   };
-
+  console.log({ errors, hasOffer: watch('hasOffer') });
   const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);
@@ -199,8 +199,6 @@ const CreateProduct: NextPageWithLayout = () => {
     }
   };
 
-  console.log(watch('description'));
-
   return (
     <div className="min-h-screen">
       <h2 className="text-3xl font-semibold ">Add Product</h2>
@@ -214,7 +212,7 @@ const CreateProduct: NextPageWithLayout = () => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+          <FormControl label="Model" errorMessage={errors?.modal?.message as string}>
             <input
               type="text"
               placeholder="Type here"
@@ -234,7 +232,6 @@ const CreateProduct: NextPageWithLayout = () => {
               </FormControl>
             )}
           />
-
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -273,7 +270,7 @@ const CreateProduct: NextPageWithLayout = () => {
           </div>
           <div className="grid grid-cols-12 gap-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Price" errorMessage={errors?.price?.message as string}>
+              <FormControl label="Cost per item" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
                   <span>रू</span>
                   <input
@@ -300,6 +297,45 @@ const CreateProduct: NextPageWithLayout = () => {
                   className={`input input-bordered w-full ${errors?.quantity ? 'input-error' : ''}`}
                 />
               </FormControl>
+            </div>
+          </div>{' '}
+          <div className="grid items-center grid-cols-6 gap-2 mb-2">
+            <div className="col-span-3 mt-1">
+              <FormControl label="Selling Price" errorMessage={errors?.sellingPrice?.message as string}>
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  placeholder="Type here"
+                  {...register('sellingPrice', {
+                    required: 'Selling price is required.',
+                  })}
+                  className={`input input-bordered w-full ${errors?.sellingPrice ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+            <div className="col-span-3 mt-1">
+              <div className="w-full gap-1 form-control">
+                <div className="flex items-center gap-2">
+                  <label className="line-through label">Crossed Price</label>
+                  <input
+                    type="checkbox"
+                    {...register('hasOffer', {
+                      onChange: () => setValue('crossedPrice', ''),
+                    })}
+                    className="toggle toggle-sm"
+                  />
+                </div>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type crossed price here"
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
+                />
+                {errors?.crossedPrice?.message && (
+                  <label className="label text-sm font-[400] opacity-80 text-error">{errors?.crossedPrice?.message}</label>
+                )}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-2">
@@ -333,31 +369,6 @@ const CreateProduct: NextPageWithLayout = () => {
                     className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
                   />
                 </label>
-              </FormControl>
-            </div>
-          </div>
-          <div className="grid grid-cols-6 mb-2">
-            <div className="col-span-6 form-control">
-              <label className="cursor-pointer label !justify-start gap-x-3">
-                <span className="!text-sm">Apply Offer</span>
-                <input
-                  type="checkbox"
-                  {...register('hasOffer', {
-                    onChange: () => setValue('crossedPrice', ''),
-                  })}
-                  className="toggle toggle-sm"
-                />
-              </label>
-            </div>
-            <div className="col-span-6 mt-1">
-              <FormControl errorMessage={errors?.crossedPrice?.message as string}>
-                <input
-                  type="text"
-                  disabled={!watch('hasOffer')}
-                  placeholder="Type discount percentage here"
-                  {...register('crossedPrice')}
-                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
-                />
               </FormControl>
             </div>
           </div>

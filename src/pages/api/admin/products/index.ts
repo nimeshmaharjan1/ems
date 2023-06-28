@@ -15,26 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         slug,
         modal,
         hasOffer,
-        discountPercentage,
         wholesaleCashPrice,
         wholesaleCreditPrice,
       } = req.body;
 
-      parseFloat(wholesaleCashPrice);
-      parseFloat(wholesaleCreditPrice);
-
-      parseFloat(price);
-      parseFloat(discountPercentage);
-
       const categoryId = category?.value;
       const companyId = company?.value;
-      let discountedPrice: number | null = null;
-
-      if (hasOffer) {
-        discountedPrice = price - price * (discountPercentage / 100);
-      } else {
-        discountedPrice = null;
-      }
 
       const product = await prisma.product.create({
         data: {
@@ -42,16 +28,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title,
           description,
           price: parseFloat(price),
+          sellingPrice: parseFloat(price),
+          crossedPrice: parseFloat(price),
           categoryId,
           companyId,
           quantity,
           slug,
           modal,
           hasOffer,
-          discountedPrice,
-          discountPercentage: parseFloat(discountPercentage),
-          wholesaleCashPrice,
-          wholesaleCreditPrice,
+          wholesaleCashPrice: parseFloat(wholesaleCashPrice),
+          wholesaleCreditPrice: parseFloat(wholesaleCreditPrice),
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });

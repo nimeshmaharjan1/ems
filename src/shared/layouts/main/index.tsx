@@ -69,12 +69,18 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   useEffect(() => {
     const getUserData = async () => {
       const response = await axios.get(`/api/users/${session?.user?.id}`);
+      if (!response.data?.user) {
+        signOut();
+        return;
+      }
       if (response.data.user?.phone_number) {
         return;
       } else {
-        showToast(Toast.warning, 'Please add your phone number.');
-        setIsFromNoPhoneNumber(true);
-        profileModalRef.current?.show();
+        setTimeout(() => {
+          showToast(Toast.warning, 'Please add your phone number.');
+          setIsFromNoPhoneNumber(true);
+          profileModalRef.current?.show();
+        }, 10000);
       }
     };
     if (session) {
@@ -165,6 +171,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </Link>
                   </>
                 )}
+                <ThemeToggler></ThemeToggler>
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <div className="-ml-1">{/* <ThemeToggler></ThemeToggler> */}</div>
               </div>

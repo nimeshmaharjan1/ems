@@ -299,7 +299,7 @@ const SettingCategory = () => {
                   className={classNames('btn btn-primary btn-block ')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
-                  {addCategoryMutation.isLoading || (updateCategoryMutation.isLoading && <span className="loading loading-spinner"></span>)}
+                  {(addCategoryMutation.isLoading || updateCategoryMutation.isLoading) && <span className="loading loading-spinner"></span>}
                   Submit
                 </button>
               </div>

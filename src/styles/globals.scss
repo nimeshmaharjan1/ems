@@ -31,8 +31,20 @@ body::-webkit-scrollbar-thumb {
 //     @apply ;
 //   }
 // }
-
+@layer base {
+  th {
+    @apply font-semibold;
+  }
+  td {
+    @apply font-medium;
+  }
+}
 @layer components {
+  .table {
+    :where(thead, tfoot) {
+      @apply text-current text-sm;
+    }
+  }
   .btn {
     @apply font-medium normal-case;
   }
