@@ -2,11 +2,11 @@ import React, { ReactNode, useCallback, useEffect } from 'react';
 import { NextPageWithLayout } from '@/pages/_app';
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 
-const Home: NextPageWithLayout = () => {
-  return <div>Home</div>;
+const AdminDashboard: NextPageWithLayout = () => {
+  return <div>Dashboard</div>;
 };
 
-export default Home;
-Home.getLayout = (page: ReactNode) => {
+export default AdminDashboard;
+AdminDashboard.getLayout = (page: ReactNode) => {
   return <AdminDashboardLayout title="Dashboard">{page}</AdminDashboardLayout>;
 };

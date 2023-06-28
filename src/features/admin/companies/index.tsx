@@ -8,13 +8,14 @@ import { getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
+import { Trash } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-const SettingCategory = () => {
+const SettingCompany = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
     name: '',
@@ -154,10 +155,10 @@ const SettingCategory = () => {
 
   return (
     <div className="grid grid-cols-6 gap-6">
-      <section className="overflow-x-auto col-span-6 lg:col-span-4 ">
+      <section className="col-span-6 overflow-x-auto lg:col-span-4 ">
         <table className="table w-full">
           <thead>
-            <tr className="bg-base-100">
+            <tr className="bg-base-200">
               <th>SN</th>
               <th>Name</th>
               <th>Categories</th>
@@ -174,23 +175,13 @@ const SettingCategory = () => {
               </tr>
             </tbody>
           ) : isCompanyLoading ? (
-            Array.from({ length: 10 })
-              .fill(0)
-              .map((_, index) => {
-                return (
-                  <tbody key={index}>
-                    <tr>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                      <td className="animate-pulse bg-base-100"></td>
-                    </tr>
-                  </tbody>
-                );
-              })
+            <tbody>
+              <tr className="!border-none">
+                <td className="w-full text-center h-72" colSpan={6} rowSpan={6}>
+                  <span className="loading loading-spinner"></span>
+                </td>
+              </tr>
+            </tbody>
           ) : !companyData?.data.length ? (
             <tbody>
               <tr>
@@ -205,7 +196,7 @@ const SettingCategory = () => {
                     <td>{categoryIndex + 1}</td>
                     <td>{company.name}</td>
                     <td>
-                      <div className="flex gap-2 flex-wrap">
+                      <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
                               <span className="badge badge-accent !text-white" key={category.id}>
@@ -216,10 +207,10 @@ const SettingCategory = () => {
                       </div>
                     </td>
                     <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
-                    <td className="h- flex justify-center">
-                      <div className="btn-group gap-2">
+                    <td className="flex justify-center h-">
+                      <div className="gap-2 join">
                         <button
-                          className="btn btn-sm btn-primary gap-1 items-center !font-medium"
+                          className="btn btn-sm btn-outline btn-primary gap-1 items-center !font-medium"
                           onClick={() => {
                             setSelectedAction(SELECTED_ACTION.EDIT);
                             setValue('id', company.id);
@@ -237,7 +228,7 @@ const SettingCategory = () => {
                             setIsSubmitting(true);
                             deleteCompanyMutation.mutate(company.id);
                           }}>
-                          <BsTrash></BsTrash>
+                          <Trash size={16} className="group-hover:text-white"></Trash>
                         </button>
                       </div>
                     </td>
@@ -251,14 +242,14 @@ const SettingCategory = () => {
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCompanyLoading ? (
           <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
-            <div className="card-body">
+            <div className="flex items-center justify-center card-body">
               <button className="btn btn-ghost loading"></button>
             </div>
           </div>
         ) : (
           <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
             <div className="card-body !gap-4">
-              <div className="card-title justify-between items-center">
+              <div className="items-center justify-between card-title">
                 {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
                 {selectedAction === SELECTED_ACTION.EDIT && (
                   <button
@@ -313,4 +304,4 @@ const SettingCategory = () => {
   );
 };
 
-export default SettingCategory;
+export default SettingCompany;

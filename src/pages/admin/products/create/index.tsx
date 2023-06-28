@@ -42,34 +42,36 @@ const productSchema = z
       .max(5, { message: 'Images cannot be more than five.' })
       .optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
+    sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
+    crossedPrice: z.string().optional(),
     wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
     wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
     quantity: z.string().min(1, { message: 'Quantity is required.' }),
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
     hasOffer: z.boolean(),
-    discountPercentage: z.string().optional(),
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {
-      if (!values.discountPercentage) {
+      if (!values.crossedPrice) {
         ctx.addIssue({
-          message: 'Discount percentage is required.',
+          message: 'Crossed price is required.',
           code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
-        });
-      } else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
-        ctx.addIssue({
-          message: 'Discount percentage must be between 1 and 99.',
-          code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
+          path: ['crossedPrice'],
         });
       }
+      // else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
+      //   ctx.addIssue({
+      //     message: 'Discount percentage must be between 1 and 99.',
+      //     code: z.ZodIssueCode.custom,
+      //     path: ['discountPercentage'],
+      //   });
+      // }
     }
   });
 export type ProductSchema = z.infer<typeof productSchema>;
 
-const CreateUser: NextPageWithLayout = () => {
+const CreateProduct: NextPageWithLayout = () => {
   const defaultValues: ProductSchema = {
     category: { label: 'Select category', value: '' },
     company: { label: 'Select company', value: '' },
@@ -77,13 +79,14 @@ const CreateUser: NextPageWithLayout = () => {
     description: '',
     images: [],
     price: '',
+    sellingPrice: '',
+    crossedPrice: '',
     wholesaleCashPrice: '',
     wholesaleCreditPrice: '',
     title: '',
     quantity: '',
     slug: '',
     hasOffer: false,
-    discountPercentage: '',
   };
 
   const {
@@ -196,6 +199,8 @@ const CreateUser: NextPageWithLayout = () => {
     }
   };
 
+  console.log(watch('description'));
+
   return (
     <div className="min-h-screen">
       <h2 className="text-3xl font-semibold ">Add Product</h2>
@@ -226,23 +231,6 @@ const CreateUser: NextPageWithLayout = () => {
             render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
               <FormControl label="Description" errorMessage={errors?.description?.message as string}>
                 <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
-                {/* 
-            <textarea
-              placeholder="Type here"
-              {...register('description', {
-                required: 'Description is required.',
-                minLength: {
-                  value: 2,
-                  message: 'Description must be above 2 characters.',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Description must be below 255 characters.',
-                },
-              })}
-              rows={6}
-              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            /> */}
               </FormControl>
             )}
           />
@@ -355,20 +343,20 @@ const CreateUser: NextPageWithLayout = () => {
                 <input
                   type="checkbox"
                   {...register('hasOffer', {
-                    onChange: () => setValue('discountPercentage', ''),
+                    onChange: () => setValue('crossedPrice', ''),
                   })}
                   className="toggle toggle-sm"
                 />
               </label>
             </div>
             <div className="col-span-6 mt-1">
-              <FormControl errorMessage={errors?.discountPercentage?.message as string}>
+              <FormControl errorMessage={errors?.crossedPrice?.message as string}>
                 <input
                   type="text"
                   disabled={!watch('hasOffer')}
                   placeholder="Type discount percentage here"
-                  {...register('discountPercentage')}
-                  className={`input input-bordered w-full  ${errors?.discountPercentage ? 'input-error' : ''}`}
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
                 />
               </FormControl>
             </div>
@@ -422,8 +410,8 @@ const CreateUser: NextPageWithLayout = () => {
   );
 };
 
-export default CreateUser;
+export default CreateProduct;
 
-CreateUser.getLayout = (page: ReactNode) => {
+CreateProduct.getLayout = (page: ReactNode) => {
   return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };

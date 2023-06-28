@@ -172,6 +172,7 @@ model Product {
   description          String
   price                Float
   sellingPrice         Float?
+  crossedPrice         Float?
   hasOffer             Boolean?        @default(false)
   modal                String
   wholesaleCreditPrice Float?
