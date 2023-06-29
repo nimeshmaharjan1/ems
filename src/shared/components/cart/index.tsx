@@ -1,4 +1,3 @@
-import { removeFromCart } from '@/features/cart/cart.service';
 import { formatPrice, rupees } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
@@ -11,11 +10,11 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
-  const { cartItems, setCartItems, getTotalPrice, getTotalDiscountedPrice } = useCartStore();
+  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice } = useCartStore();
   const { status } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
-    removeFromCart(productId, cartItems, setCartItems);
+    handleRemoveFromCart(productId);
   };
   return (
     <div className="mr-4 dropdown dropdown-hover dropdown-end">
@@ -51,11 +50,11 @@ const Cart = () => {
                       <dl className="mt-1.5 text-[13px] text-gray-600"> x{item.quantity}</dl>
                       {item.hasOffer ? (
                         <>
-                          <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.price)}</dl>
-                          <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.discountedPrice!)}</dl>
+                          <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.crossedPrice!)}</dl>
+                          <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.sellingPrice!)}</dl>
                         </>
                       ) : (
-                        <dl className="mt-1.5  text-[13px] font-medium text-gray-600">रू {formatPrice(item.price)}</dl>
+                        <dl className="mt-1.5  text-[13px] font-medium text-gray-600">रू {formatPrice(item.sellingPrice)}</dl>
                       )}
                     </div>
                   </li>
@@ -81,12 +80,12 @@ const Cart = () => {
                             {cartItem.hasOffer ? (
                               <>
                                 <p className="text-sm line-through font-medium text-gray-400 md:text-[0.8rem]">
-                                  रू{formatPrice(cartItem.price)}
+                                  रू{formatPrice(cartItem.crossedPrice!)}
                                 </p>
-                                <p className="text-sm font-medium mt-1 md:text-[1rem]">रू{formatPrice(cartItem.discountedPrice!)}</p>
+                                <p className="text-sm font-medium mt-1 md:text-[1rem]">रू{formatPrice(cartItem.sellingPrice!)}</p>
                               </>
                             ) : (
-                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.price)}</p>
+                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.sellingPrice)}</p>
                             )}
                             {/* <p className="text-sm line-through dark:text-gray-600">75.50€</p> */}
                           </div>
@@ -145,11 +144,11 @@ const Cart = () => {
                 {cartItems.find((item) => item.hasOffer) ? (
                   <>
                     <p>
-                      <span className="text-sm font-medium text-gray-400 line-through">रू{formatPrice(getTotalPrice())}</span>
+                      <span className="text-sm font-medium text-gray-400 line-through">रू{formatPrice(getTotalCrossedPrice())}</span>
                     </p>
 
                     <p>
-                      Total amount: <span className="font-semibold">रू{formatPrice(getTotalDiscountedPrice())}</span>
+                      Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                     </p>
                   </>
                 ) : (

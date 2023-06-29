@@ -1,4 +1,3 @@
-import { decreaseCartItemQuantity, increaseCartItemQuantity, removeFromCart, updateCartItemQuantity } from '@/features/cart/cart.service';
 import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
@@ -13,8 +12,18 @@ import { useRouter } from 'next/router';
 import { ReactNode, useRef, useState } from 'react';
 
 const Checkout = () => {
-  const { cartItems, setCartItems, getTotalDiscountedPrice, getTotalPrice, getItemTotalPrice, getItemTotalDiscountedPrice } =
-    useCartStore();
+  const {
+    cartItems,
+    setCartItems,
+    getTotalCrossedPrice,
+    getTotalPrice,
+    getItemTotalPrice,
+    getItemTotalDiscountedPrice,
+    removeFromCart,
+    decreaseCartItemQuantity,
+    increaseCartItemQuantity,
+    updateCartItemQuantity,
+  } = useCartStore();
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const handleCreateOrder = async () => {
@@ -108,7 +117,7 @@ const Checkout = () => {
                                     <button
                                       disabled={isLoading}
                                       className="rounded-l-full btn btn-primary btn-xs join-item"
-                                      onClick={() => decreaseCartItemQuantity(item.productId, cartItems, setCartItems)}>
+                                      onClick={() => decreaseCartItemQuantity(item.productId)}>
                                       -
                                     </button>
                                     <input
@@ -119,14 +128,14 @@ const Checkout = () => {
                                         if (parseInt(e.target.value) > item.maxQuantity) {
                                           return showToast(Toast.warning, 'Exceeded available quantity.');
                                         }
-                                        updateCartItemQuantity(item.productId, parseInt(e.target.value), cartItems, setCartItems);
+                                        updateCartItemQuantity(item.productId, parseInt(e.target.value));
                                       }}
                                       value={item.quantity}
                                     />
                                     <button
                                       className="rounded-r-full btn btn-primary btn-xs join-item"
                                       disabled={isLoading}
-                                      onClick={() => increaseCartItemQuantity(item.productId, cartItems, setCartItems)}>
+                                      onClick={() => increaseCartItemQuantity(item.productId)}>
                                       +
                                     </button>
                                   </div>
@@ -149,7 +158,7 @@ const Checkout = () => {
                                   if (isLoading) {
                                     return;
                                   }
-                                  removeFromCart(item.productId, cartItems, setCartItems);
+                                  removeFromCart(item.productId);
                                 }}
                                 strokeWidth="1px"
                                 className="text-xs transition-all cursor-pointer md:text-base hover:text-red-400"></Trash2>
@@ -176,11 +185,11 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between mt-3">
                     <p className="max-w-[9rem] font-medium">Discount</p>
-                    <p className="font-medium">रू{formatPrice(getTotalPrice() - getTotalDiscountedPrice())}</p>
+                    <p className="font-medium">रू{formatPrice(getTotalPrice() - getTotalCrossedPrice())}</p>
                   </div>
                   <div className="flex justify-between mt-3">
                     <p className="max-w-[9rem] font-medium">To Pay</p>
-                    <p className="font-medium">रू{formatPrice(getTotalDiscountedPrice())}</p>
+                    <p className="font-medium">रू{formatPrice(getTotalCrossedPrice())}</p>
                   </div>
                 </div>
               ) : (

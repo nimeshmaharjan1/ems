@@ -14,7 +14,13 @@ export interface IProduct {
   images: string[];
   title: string;
   description: string;
+
   price: number;
+  sellingPrice: number;
+  crossedPrice: number;
+  wholesaleCreditPrice: number;
+  wholesaleCashPrice: number;
+
   categoryId: string;
   companyId: string;
   quantity: string;
@@ -22,9 +28,7 @@ export interface IProduct {
   updatedAt: Date;
   slug: string;
   modal: string;
-  discountPercentage: number;
   hasOffer: boolean;
-  discountedPrice: number;
   category: Category;
   company: Category;
   Review: Review[];

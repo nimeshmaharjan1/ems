@@ -1,4 +1,3 @@
-import { addToCart } from '@/features/cart/cart.service';
 import Rating from '@/shared/components/rating';
 import { useCartStore } from '@/store/user-cart';
 import Image from 'next/image';
@@ -9,26 +8,25 @@ import { useRouter } from 'next/router';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import classNames from 'classnames';
 import { IProduct } from '@/shared/interfaces/product.interface';
+import { getPercentageDifference } from '@/shared/utils/helper.util';
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
-  const { cartItems, setCartItems } = useCartStore();
+  const { cartItems, setCartItems, addToCart } = useCartStore();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    addToCart(
-      {
-        price: product.price,
-        quantity: 1,
-        productId: product.id,
-        image: product.images[0],
-        slug: product.slug,
-        maxQuantity: parseInt(product.quantity),
-        discountedPrice: product.discountedPrice,
-        discountPercentage: product.discountPercentage,
-        hasOffer: product.hasOffer,
-      },
-      cartItems,
-      setCartItems
-    );
+    addToCart({
+      price: product.price,
+      quantity: 1,
+      productId: product.id,
+      image: product.images[0],
+      slug: product.slug,
+      maxQuantity: parseInt(product.quantity),
+      hasOffer: product.hasOffer,
+      crossedPrice: product?.crossedPrice,
+      sellingPrice: product.sellingPrice,
+      wholesaleCashPrice: product.wholesaleCashPrice,
+      wholesaleCreditPrice: product.wholesaleCreditPrice,
+    });
   };
   const router = useRouter();
   return (
@@ -42,7 +40,7 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
       </figure>
       {product.hasOffer && (
         <span className="absolute top-0 right-0 z-30 p-2 text-xs text-white rounded-bl-lg bg-primary">
-          Save {product.discountPercentage}%
+          Save {getPercentageDifference(product.sellingPrice, product.crossedPrice)}%
         </span>
       )}
       <div className="card-body justify-between !gap-1 !p-4">
@@ -56,10 +54,10 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
           {product.hasOffer ? (
             <div className="space-y-1">
               <p className="text-xs font-medium line-through opacity-60">
-                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.price))}
+                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.crossedPrice))}
               </p>
               <p className="font-medium text-red-500">
-                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.discountedPrice))}
+                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.sellingPrice))}
               </p>
             </div>
           ) : (

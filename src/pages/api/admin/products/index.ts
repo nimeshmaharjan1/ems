@@ -17,6 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         hasOffer,
         wholesaleCashPrice,
         wholesaleCreditPrice,
+        crossedPrice,
+        sellingPrice,
       } = req.body;
 
       const categoryId = category?.value;
@@ -28,8 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title,
           description,
           price: parseFloat(price),
-          sellingPrice: parseFloat(price),
-          crossedPrice: parseFloat(price),
+          sellingPrice: parseFloat(sellingPrice),
+          crossedPrice: parseFloat(crossedPrice),
           categoryId,
           companyId,
           quantity,
