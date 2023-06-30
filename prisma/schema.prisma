@@ -51,11 +51,6 @@ enum USER_ROLES {
   BUSINESS_CLIENT
 }
 
-enum PAYMENT_METHOD {
-  COD
-  FONEPAY
-}
-
 model User {
   id                       String     @id @default(cuid())
   username                 String     @unique
@@ -101,9 +96,14 @@ model Comment {
   updatedAt DateTime @updatedAt
 }
 
+enum PAYMENT_METHOD {
+  COD
+  FONEPAY
+}
+
 model Order {
   id                      String                     @id @default(cuid())
-  orderNumber             Int
+  orderNumber             Int                        @default(autoincrement())
   items                   OrderItem[]
   totalPrice              Float
   user                    User                       @relation(fields: [userId], references: [id])

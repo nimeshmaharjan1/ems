@@ -10,11 +10,11 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
-  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice } = useCartStore();
+  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice, removeFromCart } = useCartStore();
   const { status } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
-    handleRemoveFromCart(productId);
+    removeFromCart(productId);
   };
   return (
     <div className="mr-4 dropdown dropdown-hover dropdown-end">

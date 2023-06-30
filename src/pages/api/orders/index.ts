@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }, 0);
 
       await prisma.$connect();
-
+      //TODO Create order needs to have customer details and stuff
       await prisma.$transaction(async (prisma) => {
         const order: Order & { items: OrderItem[] } = await prisma.order.create({
           data: {
@@ -53,7 +53,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               })),
             },
             totalPrice,
-            totalDiscountedPrice,
             userId,
           },
           include: {

@@ -1,6 +1,6 @@
-import { updateCartItemQuantity } from '@/features/cart/cart.service';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { create } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 export type CartItem = {
   productId: string;
@@ -101,3 +101,6 @@ export const useCartStore = create<Store>((set, get) => ({
     set({ cartItems: updatedCartItems });
   },
 }));
+
+// ts-tip: auto infer return type
+export const useShallowCartStore = <T>(cb: (state: Store) => T) => useCartStore(cb, shallow);

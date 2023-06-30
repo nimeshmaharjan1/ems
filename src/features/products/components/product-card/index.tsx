@@ -11,6 +11,7 @@ import { IProduct } from '@/shared/interfaces/product.interface';
 import { getPercentageDifference } from '@/shared/utils/helper.util';
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
+  console.log(product);
   const { cartItems, setCartItems, addToCart } = useCartStore();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();

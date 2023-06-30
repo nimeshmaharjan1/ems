@@ -31,8 +31,7 @@ const Checkout = () => {
       items: cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.price,
-        discountedPrice: item?.discountedPrice,
+        price: item.sellingPrice,
         hasOffer: item?.hasOffer,
       })),
       userId: session?.user?.id,
@@ -185,7 +184,7 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between mt-3">
                     <p className="max-w-[9rem] font-medium">Discount</p>
-                    <p className="font-medium">रू{formatPrice(getTotalPrice() - getTotalCrossedPrice())}</p>
+                    <p className="font-medium">रू{formatPrice(getTotalCrossedPrice() - getTotalPrice())}</p>
                   </div>
                   <div className="flex justify-between mt-3">
                     <p className="max-w-[9rem] font-medium">To Pay</p>
