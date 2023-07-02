@@ -162,12 +162,12 @@ const Cart = () => {
               {/* <Link href="/checkout"> */}
               <button
                 onClick={() => {
-                  if (status === 'unauthenticated') {
-                    showToast(Toast.warning, 'You must be logged in.');
-                    signIn();
-                  } else {
-                    router.push('/checkout');
-                  }
+                  // if (status === 'unauthenticated') {
+                  //   showToast(Toast.warning, 'You must be logged in.');
+                  //   signIn();
+                  // } else {
+                  router.push('/checkout');
+                  // }
                 }}
                 type="button"
                 className="mt-3 btn btn-primary btn-block">

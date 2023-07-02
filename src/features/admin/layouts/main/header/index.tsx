@@ -1,6 +1,7 @@
 import ThemeToggler from '@/shared/components/theme-toggler';
 import classNames from 'classnames';
 import { User } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { RiMenuFoldFill } from 'react-icons/ri';
 
@@ -18,7 +19,7 @@ const Header: React.FC<{
           <li>
             <a>Profile</a>
           </li>
-          <li>
+          <li onClick={() => signOut()}>
             <a>Sign Out</a>
           </li>
         </ul>

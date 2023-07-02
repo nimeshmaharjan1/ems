@@ -64,16 +64,16 @@ const Login: NextPageWithLayout = () => {
     handleSubmit,
   } = useForm<ILoginWithPassword>({ defaultValues: { username: '', password: '' }, mode: 'onChange' });
   return (
-    <div className="card-body">
+    <form onSubmit={handleSubmit(handleLogin)} className="card-body">
       <h2 className="text-center text-lg lg:text-xl font-[800] tracking-wide mb-2 lg:mb-3">Login</h2>
-      <p className="text-sm lg:text-lg text-center w-full mb-4">Hey, enter your details here to sign in to your account.</p>
-      <div className="form-control w-full mb-2 relative">
+      <p className="w-full mb-4 text-sm text-center lg:text-lg">Hey, enter your details here to sign in to your account.</p>
+      <div className="relative w-full mb-2 form-control">
         <input
           {...register('username', {
-            required: 'username is required.',
+            required: 'Username/E-mail is required.',
           })}
           type="text"
-          placeholder="Username"
+          placeholder="Username or E-mail"
           disabled={isSubmitting}
           autoComplete="off"
           className={classNames('input input-sm lg:input-md input-bordered w-full', {
@@ -86,7 +86,7 @@ const Login: NextPageWithLayout = () => {
             'text-error': errors?.username,
           })}></FaUser>
       </div>
-      <div className="form-control w-full mb-2 lg:mb-4 relative">
+      <div className="relative w-full mb-2 form-control lg:mb-4">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -114,10 +114,7 @@ const Login: NextPageWithLayout = () => {
             onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
-      <button
-        className={classNames('btn btn-primary btn-block lg:mb-1 btn-square gap-2')}
-        disabled={isSubmitting}
-        onClick={handleSubmit(handleLogin)}>
+      <button type="submit" className={classNames('btn btn-primary btn-block lg:mb-1 btn-square gap-2')} disabled={isSubmitting}>
         {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign In
       </button>
@@ -125,33 +122,35 @@ const Login: NextPageWithLayout = () => {
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
         <button
-          className="btn  btn-xs lg:btn-md btn-outline  gap-2"
+          type="button"
+          className="gap-2 btn btn-xs lg:btn-md btn-outline"
           disabled={isSubmitting}
           onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
           Google
         </button>
         <button
-          className="btn btn-xs lg:btn-md btn-outline  gap-2"
+          type="button"
+          className="gap-2 btn btn-xs lg:btn-md btn-outline"
           disabled={isSubmitting}
           onClick={() => handleLoginWithProviders('github')}>
           <FaGithub className="text-lg" />
           Github
         </button>
-        {/* <button className="btn btn-outline  gap-2" disabled={isSubmitting}>
+        {/* <button className="gap-2 btn btn-outline" disabled={isSubmitting}>
           <BsFacebook className="text-lg" />
           Facebook
         </button> */}
       </div>
       {!isSubmitting && (
-        <p className="mt-3 text-xs lg:text-sm text-center">
+        <p className="mt-3 text-xs text-center lg:text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/register" className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300">
+          <Link href="/auth/register" className="duration-300 cursor-pointer text-secondary hover:text-primary hover:underline">
             Register now
           </Link>
         </p>
       )}
-    </div>
+    </form>
   );
 };
 

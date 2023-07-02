@@ -7,6 +7,9 @@ export interface IRegister {
   phone_number: string;
   role: USER_ROLES;
   address?: string;
+  applyingAsBusinessClient: boolean;
+  taxId?: string;
+  shopAddress?: string;
 }
 
 export interface ILoginWithPassword {

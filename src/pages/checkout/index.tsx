@@ -5,11 +5,15 @@ import { useCartStore } from '@/store/user-cart';
 import axios from 'axios';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useRef, useState } from 'react';
+import OrderSummary from './order-summary';
+import ContactInformation from './contact-information';
+import { useForm } from 'react-hook-form';
 
 const Checkout = () => {
   const {
@@ -24,28 +28,13 @@ const Checkout = () => {
     increaseCartItemQuantity,
     updateCartItemQuantity,
   } = useCartStore();
-  const { data: session } = useSession();
+
   const [isLoading, setIsLoading] = useState(false);
-  const handleCreateOrder = async () => {
-    const payload = {
-      items: cartItems.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.sellingPrice,
-        hasOffer: item?.hasOffer,
-      })),
-      userId: session?.user?.id,
-    };
-    setIsLoading(true);
-    try {
-      await axios.post('/api/orders', payload);
-      modalRef.current?.show();
-    } catch (error) {
-      setIsLoading(false);
-      showToast(Toast.error, 'Something went wrong while trying to create the order.');
-      console.error(error);
-    }
-  };
+
+  const { data: session } = useSession();
+  const { register } = useForm({
+    defaultValues: {},
+  });
   const router = useRouter();
   const modalRef = useRef<HTMLDialogElement>(null);
   return (
@@ -76,15 +65,23 @@ const Checkout = () => {
           </div>
         </div>
       </dialog>
+      <div className="flex gap-3 mb-5">
+        <Link href="/products" passHref>
+          <button className="btn btn-ghost btn-sm">
+            <ArrowLeft />
+          </button>
+        </Link>
+        <h2 className="text-2xl font-semibold">Checkout</h2>
+      </div>
       <div className="grid grid-cols-6 gap-x-6 gap-y-8">
         <motion.section
           layout
           className={classNames('col-span-6 lg:col-span-4', {
             'col-span-6': cartItems.length === 0,
           })}>
-          <div className="shadow-lg card">
+          <div className="shadow-lg card bg-base-200">
             <div className="card-body">
-              <div className="card-title">Your Cart</div>
+              {/* <div className="card-title">Your Cart</div> */}
               {cartItems.length === 0 ? (
                 <>
                   <>
@@ -143,9 +140,9 @@ const Checkout = () => {
                               {item.hasOffer ? (
                                 <>
                                   <p className="mt-4 text-sm text-gray-400 line-through">
-                                    रू {formatPrice(getItemTotalPrice(item.productId))}
+                                    रू {formatPrice(getItemTotalDiscountedPrice(item.productId))}
                                   </p>
-                                  <p className="my-2 font-medium">रू {formatPrice(getItemTotalDiscountedPrice(item.productId))}</p>
+                                  <p className="my-2 font-medium">रू {formatPrice(getItemTotalPrice(item.productId))}</p>
                                 </>
                               ) : (
                                 <p className="mt-4 font-medium">रू {formatPrice(getItemTotalPrice(item.productId))}</p>
@@ -173,38 +170,8 @@ const Checkout = () => {
           </div>
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
-          <div className="card shadow min-h-[244px]">
-            <div className="card-body">
-              <div className="card-title">Order Summary</div>
-              {cartItems.find((item) => item.hasOffer) ? (
-                <div className="flex flex-col gap-y-2">
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">Total</p>
-                    <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
-                  </div>
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">Discount</p>
-                    <p className="font-medium">रू{formatPrice(getTotalCrossedPrice() - getTotalPrice())}</p>
-                  </div>
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">To Pay</p>
-                    <p className="font-medium">रू{formatPrice(getTotalCrossedPrice())}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex justify-between mt-3">
-                  <p className="font-medium">To Pay</p>
-
-                  <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
-                </div>
-              )}
-
-              <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>
-                {isLoading && <span className="loading loading-infinity"></span>}
-                Create Order
-              </button>
-            </div>
-          </div>
+          <ContactInformation></ContactInformation>
+          <OrderSummary {...{ isLoading, modalRef, setIsLoading }}></OrderSummary>
         </motion.section>
       </div>
     </>

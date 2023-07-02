@@ -7,6 +7,9 @@ declare module 'next-auth' {
       username: string;
       id: string;
       phone_number?: string;
+      shopAddress?: string;
+      taxId?: string;
+      name?: string;
     };
   }
   interface User extends User {
@@ -14,6 +17,9 @@ declare module 'next-auth' {
     username: string;
     id: string;
     phone_number?: string;
+    shopAddress?: string;
+    taxId?: string;
+    name?: string;
   }
 }
 
@@ -23,5 +29,8 @@ declare module 'next-auth/jwt' {
     username: string;
     id: string;
     phone_number?: string;
+    shopAddress?: string;
+    taxId?: string;
+    name?: string;
   }
 }

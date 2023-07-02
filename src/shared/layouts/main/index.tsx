@@ -1,4 +1,4 @@
-import { Inter, Poppins } from '@next/font/google';
+import { Inter, Poppins, Work_Sans } from '@next/font/google';
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
@@ -36,7 +36,7 @@ const inter = Inter({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
 
-// const work = Poppins({ preload: true, subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '700', '800'] });
+// const inter = Work_Sans({ preload: true, subsets: ['latin'] });
 // const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({

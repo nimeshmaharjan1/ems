@@ -1,4 +1,4 @@
-import { BaggageClaim, Cog, Hotel, LayoutDashboard, LayoutGrid, Package, Repeat2 } from 'lucide-react';
+import { BaggageClaim, Cog, Hotel, LayoutDashboard, LayoutGrid, Package, Repeat2, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -70,7 +70,11 @@ export default function Sidebar({
 
         <div className="space-y-3 ">
           <label className="px-3 text-xs text-gray-500 uppercase">Customization</label>
-
+          <SidebarItem
+            isActive={router.pathname === DASHBOARD_LINKS.users}
+            href={DASHBOARD_LINKS.users}
+            Icon={Users}
+            title="Users"></SidebarItem>
           <SidebarItem
             isActive={router.pathname === DASHBOARD_LINKS.settings}
             href={DASHBOARD_LINKS.settings}
