@@ -10,12 +10,40 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, useRef, useState } from 'react';
-import OrderSummary from './order-summary';
-import ContactInformation from './contact-information';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import ContactInformation from '../../features/checkout/components/contact-information';
 import { useForm } from 'react-hook-form';
+import { Session, getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { GetServerSideProps, NextPage } from 'next';
+import { NextPageWithLayout } from '../_app';
+import OrderSummary from '@/features/checkout/components/order-summary';
 
-const Checkout = () => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: true,
+      },
+    };
+  }
+  return {
+    props: {
+      session: JSON.parse(JSON.stringify(session)),
+    },
+  };
+};
+
+export interface IAddressDetails {
+  deliveryAddress: string;
+  additionalPhoneNumber: string;
+  chosenAddress: 'shop-address' | 'not-shop-address';
+  isInvalid: boolean;
+}
+
+const Checkout: NextPageWithLayout = () => {
   const {
     cartItems,
     setCartItems,
@@ -30,13 +58,44 @@ const Checkout = () => {
   } = useCartStore();
 
   const [isLoading, setIsLoading] = useState(false);
-
   const { data: session } = useSession();
-  const { register } = useForm({
-    defaultValues: {},
+  const [addressDetails, setAddressDetails] = useState<IAddressDetails>({
+    deliveryAddress: '',
+    chosenAddress: 'not-shop-address',
+    isInvalid: false,
+    additionalPhoneNumber: '',
   });
+  const handleCreateOrder = async () => {
+    if (addressDetails.chosenAddress === 'not-shop-address' && !addressDetails.deliveryAddress) {
+      setAddressDetails((prev) => ({
+        ...prev,
+        isInvalid: true,
+      }));
+      return;
+    }
+    const payload = {
+      items: cartItems.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.sellingPrice,
+      })),
+      customerAddress: addressDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : addressDetails.deliveryAddress,
+      userId: session?.user?.id,
+      additionalPhoneNumber: addressDetails.additionalPhoneNumber,
+    };
+    setIsLoading(true);
+    try {
+      await axios.post('/api/orders', payload);
+      modalRef.current?.show();
+    } catch (error) {
+      setIsLoading(false);
+      showToast(Toast.error, 'Something went wrong while trying to create the order.');
+      console.error(error);
+    }
+  };
   const router = useRouter();
   const modalRef = useRef<HTMLDialogElement>(null);
+
   return (
     <>
       {/* Open the modal using ID.showModal() method */}
@@ -170,8 +229,8 @@ const Checkout = () => {
           </div>
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
-          <ContactInformation></ContactInformation>
-          <OrderSummary {...{ isLoading, modalRef, setIsLoading }}></OrderSummary>
+          <ContactInformation {...{ addressDetails, setAddressDetails }}></ContactInformation>
+          <OrderSummary {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, addressDetails, setAddressDetails }}></OrderSummary>
         </motion.section>
       </div>
     </>

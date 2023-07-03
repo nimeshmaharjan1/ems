@@ -33,20 +33,15 @@ export const authOptions: NextAuthOptions = {
         if (!isValidPassword) {
           throw new Error('Invalid password.');
         }
-        if (user?.phone_number) {
-          return {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            role: user.role,
-            phone_number: user.phone_number,
-          };
-        }
         return {
           id: user.id,
           email: user.email,
           username: user.username,
           role: user.role,
+          phone_number: user?.phone_number || '',
+          taxId: user?.taxId || '',
+          shopAddress: user?.shopAddress || '',
+          name: user?.name || '',
         };
       },
     }),

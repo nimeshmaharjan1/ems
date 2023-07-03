@@ -5,37 +5,22 @@ import { formatPrice } from '@/shared/utils/helper.util';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import { IAddressDetails } from '@/pages/checkout';
 const OrderSummary = ({
   modalRef,
   isLoading,
   setIsLoading,
+  handleCreateOrder,
+  addressDetails,
+  setAddressDetails,
 }: {
   modalRef: any;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  handleCreateOrder: () => void;
+  addressDetails: IAddressDetails;
+  setAddressDetails: Dispatch<SetStateAction<IAddressDetails>>;
 }) => {
-  const { data: session } = useSession();
-
-  const handleCreateOrder = async () => {
-    const payload = {
-      items: cartItems.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.sellingPrice,
-        hasOffer: item?.hasOffer,
-      })),
-      userId: session?.user?.id,
-    };
-    setIsLoading(true);
-    try {
-      await axios.post('/api/orders', payload);
-      modalRef.current?.show();
-    } catch (error) {
-      setIsLoading(false);
-      showToast(Toast.error, 'Something went wrong while trying to create the order.');
-      console.error(error);
-    }
-  };
   const { cartItems, getTotalCrossedPrice, getTotalPrice } = useCartStore();
   return (
     <div className="card shadow-lg min-h-[244px] bg-base-200">

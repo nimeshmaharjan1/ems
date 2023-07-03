@@ -7,14 +7,14 @@ const prisma = new PrismaClient();
 interface CreateOrderItem {
   productId: string;
   quantity: number;
-  price: string;
-  discountedPrice?: string;
-  hasOffer?: boolean;
+  price: number; // Changed from string to number
 }
 
 interface CreateOrderRequest {
   items: CreateOrderItem[];
   userId: string;
+  customerAddress: string;
+  additionalPhoneNumber?: string;
 }
 
 interface CreateOrderResponse {
@@ -26,19 +26,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     await isAuthenticated(req, res);
     try {
-      const { items, userId }: CreateOrderRequest = req.body;
+      const { items, userId, customerAddress, additionalPhoneNumber }: CreateOrderRequest = req.body;
 
       // Calculate the total price by iterating over the items and multiplying the quantity with the provided price
       const totalPrice = items.reduce((sum, item) => {
-        const itemPrice = parseFloat(item.price);
-        return sum + item.quantity * itemPrice;
+        return sum + item.quantity * item.price;
       }, 0);
-      const totalDiscountedPrice = items.reduce((sum, item) => {
-        if (item.hasOffer) {
-          return sum + parseFloat(item.discountedPrice!) * item.quantity;
-        }
-        return sum + parseFloat(item.price) * item.quantity;
-      }, 0);
+      let deliveryCharge: number;
+      try {
+        const product = await prisma.settings.findFirst();
+        deliveryCharge = product?.deliveryCharge!;
+      } catch (error) {
+        return res.status(500).json({ error, message: 'Something went wrong while trying to get the delivery charge.' });
+      }
 
       await prisma.$connect();
       //TODO Create order needs to have customer details and stuff
@@ -52,8 +52,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 price: item.price,
               })),
             },
-            totalPrice,
             userId,
+            customerAddress,
+            totalPrice: totalPrice + deliveryCharge,
           },
           include: {
             items: true,
