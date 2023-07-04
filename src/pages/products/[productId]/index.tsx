@@ -15,9 +15,8 @@ import { useRouter } from 'next/router';
 import React, { ReactNode, useState } from 'react';
 import { shallow } from 'zustand/shallow';
 
-const prisma = new PrismaClient();
-
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const prisma = new PrismaClient();
   // Get the current home from the database
   const id = ctx?.params?.productId as string;
   try {
@@ -43,6 +42,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
         product: null,
       },
     };
+  } finally {
+    await prisma.$disconnect();
   }
   return {
     props: {

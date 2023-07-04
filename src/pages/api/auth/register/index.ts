@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'argon2';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const prisma = new PrismaClient();
+
   const { email, username, password, role, phone_number, name, applyingAsBusinessClient, taxId, shopAddress } = req.body;
   switch (req.method) {
     case 'POST':

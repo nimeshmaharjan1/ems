@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
         user.phone_number = dbUser?.phone_number;
       }
       user.id = dbUser.id;
-
+      await prisma.$disconnect();
       return true;
     },
 

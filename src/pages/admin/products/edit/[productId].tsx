@@ -24,12 +24,12 @@ const TextEditor = dynamic(() => import('../../../../shared/components/text-edit
   ssr: false,
 }) as any;
 
-const prisma = new PrismaClient();
-
 /**
  * @author Nimesh Maharjan
  */
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+
   try {
     const id = context?.params?.productId as string;
     const product = await prisma.product.findUnique({ where: { id }, include: { category: true, company: true } });
@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (error) {
     console.error('error: ', error);
   } finally {
-    prisma.$disconnect();
+    await prisma.$disconnect();
   }
   return {
     props: {

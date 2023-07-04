@@ -20,9 +20,9 @@ import { NextPageWithLayout } from '../_app';
 import OrderSummary from '@/features/checkout/components/order-summary';
 import { PrismaClient, Settings } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const prisma = new PrismaClient();
+
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
   if (!session) {
     return {
