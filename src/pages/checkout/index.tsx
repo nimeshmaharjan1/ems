@@ -18,6 +18,9 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { GetServerSideProps, NextPage } from 'next';
 import { NextPageWithLayout } from '../_app';
 import OrderSummary from '@/features/checkout/components/order-summary';
+import { PrismaClient, Settings } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
@@ -29,9 +32,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+  const settings = await prisma.settings.findFirst();
   return {
     props: {
-      session: JSON.parse(JSON.stringify(session)),
+      settings: JSON.parse(JSON.stringify(settings)),
     },
   };
 };
@@ -43,7 +47,7 @@ export interface IAddressDetails {
   isInvalid: boolean;
 }
 
-const Checkout: NextPageWithLayout = () => {
+const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
   const {
     cartItems,
     setCartItems,
@@ -56,7 +60,6 @@ const Checkout: NextPageWithLayout = () => {
     increaseCartItemQuantity,
     updateCartItemQuantity,
   } = useCartStore();
-
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
   const [addressDetails, setAddressDetails] = useState<IAddressDetails>({
@@ -138,7 +141,7 @@ const Checkout: NextPageWithLayout = () => {
           className={classNames('col-span-6 lg:col-span-4', {
             'col-span-6': cartItems.length === 0,
           })}>
-          <div className="shadow-lg card bg-base-200">
+          <div className="shadow-lg card">
             <div className="card-body">
               {/* <div className="card-title">Your Cart</div> */}
               {cartItems.length === 0 ? (
@@ -161,7 +164,7 @@ const Checkout: NextPageWithLayout = () => {
                       <li key={item.productId} className="py-6">
                         <div className="grid items-center grid-cols-6 md:items-stretch gap-x-8">
                           <div className="col-span-2">
-                            <Image src={item.image} className="md:shadow" alt={item.slug} width={300} height={300}></Image>
+                            <Image src={item.image} className="rounded md:shadow" alt={item.slug} width={300} height={300}></Image>
                           </div>
                           <section className="flex flex-col justify-between col-span-4 py-2 gap-y-6 md:gap-y-0 product-detail">
                             <section className="upper-section">
@@ -230,7 +233,9 @@ const Checkout: NextPageWithLayout = () => {
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
           <ContactInformation {...{ addressDetails, setAddressDetails }}></ContactInformation>
-          <OrderSummary {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, addressDetails, setAddressDetails }}></OrderSummary>
+          <OrderSummary
+            deliveryCharge={settings?.deliveryCharge!}
+            {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, addressDetails, setAddressDetails }}></OrderSummary>
         </motion.section>
       </div>
     </>

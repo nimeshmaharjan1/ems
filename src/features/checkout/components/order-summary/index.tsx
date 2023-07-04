@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store/user-cart';
 import { formatPrice } from '@/shared/utils/helper.util';
@@ -13,6 +13,7 @@ const OrderSummary = ({
   handleCreateOrder,
   addressDetails,
   setAddressDetails,
+  deliveryCharge,
 }: {
   modalRef: any;
   isLoading: boolean;
@@ -20,10 +21,11 @@ const OrderSummary = ({
   handleCreateOrder: () => void;
   addressDetails: IAddressDetails;
   setAddressDetails: Dispatch<SetStateAction<IAddressDetails>>;
+  deliveryCharge: number;
 }) => {
   const { cartItems, getTotalCrossedPrice, getTotalPrice } = useCartStore();
   return (
-    <div className="card shadow-lg min-h-[244px] bg-base-200">
+    <div className="card shadow-lg min-h-[244px] mt-2">
       <div className="card-body">
         <div className="card-title">Order Summary</div>
         {cartItems.find((item) => item.hasOffer) ? (
@@ -37,16 +39,26 @@ const OrderSummary = ({
               <p className="font-medium">रू{formatPrice(getTotalCrossedPrice() - getTotalPrice())}</p>
             </div>
             <div className="flex justify-between mt-3">
+              <p className="max-w-[9rem] font-medium">Discount</p>
+              <p className="font-medium">रू{formatPrice(deliveryCharge)}</p>
+            </div>
+            <div className="flex justify-between mt-3">
               <p className="max-w-[9rem] font-medium">To Pay</p>
-              <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
+              <p className="font-medium">रू{formatPrice(getTotalPrice() + deliveryCharge)}</p>
             </div>
           </div>
         ) : (
-          <div className="flex justify-between mt-3">
-            <p className="font-medium">To Pay</p>
+          <>
+            <div className="flex justify-between mt-3">
+              <p className="max-w-[9rem] font-medium">Discount</p>
+              <p className="font-medium">रू{formatPrice(deliveryCharge)}</p>
+            </div>
+            <div className="flex justify-between mt-3">
+              <p className="font-medium">To Pay</p>
 
-            <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
-          </div>
+              <p className="font-medium">रू{formatPrice(getTotalPrice() + deliveryCharge)}</p>
+            </div>
+          </>
         )}
 
         <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>

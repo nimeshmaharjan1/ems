@@ -32,7 +32,6 @@ const Users: NextPageWithLayout = () => {
     const response = await axios.get(`/api/admin/users?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
-  console.log(userData);
   const { mutate: mutateChangeRole, isLoading: isChangingRole } = useMutation(
     async (args: { userId: string; role: USER_ROLES }) => {
       const response = await axios.patch(`/api/admin/users/${args.userId}/change-role`, {

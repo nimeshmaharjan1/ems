@@ -7,6 +7,9 @@ export interface PaginatedOrders {
 }
 
 export interface Order {
+  orderNumber: number;
+  paymentMethod: string;
+  status: string;
   id: string;
   totalPrice: number;
   userId: string;

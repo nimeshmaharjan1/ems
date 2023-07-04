@@ -26,7 +26,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 const Settings: NextPageWithLayout<{ settings: any }> = ({ settings }) => {
-  console.log(settings);
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);

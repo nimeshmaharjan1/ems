@@ -7,7 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const auth = await isAuthenticated(req, res);
     if (!auth) return res.status(401).json({ message: 'Unauthorized.' });
-    console.log('here');
     try {
       const { name, products, companies } = req.body;
       const companyIds = companies?.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];

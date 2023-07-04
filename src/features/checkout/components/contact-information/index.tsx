@@ -11,7 +11,7 @@ const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddress
 }) => {
   const { data: session } = useSession();
   return (
-    <div className="mb-4 shadow card">
+    <div className="mb-4 shadow-lg card">
       <div className="card-body">
         <div className="card-title">Contact Information</div>
         <FormControl label="Full Name">

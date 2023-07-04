@@ -89,17 +89,17 @@ const Orders: NextPageWithLayout = () => {
                 </button>
               </table>
             ) : (
-              <table className="table w-full table-xs">
+              <table className="table w-full">
                 <thead>
-                  <tr>
-                    <th className="border !border-base-300">Ordered By</th>
-                    <th className="border !border-base-300">Phone Number</th>
-                    <th className="border !border-base-300">Total</th>
-                    <th className="border !border-base-300">Discounted Total</th>
-                    <th className="border !border-base-300">Ordered At</th>
-                    <th className="border !border-base-300">Paid Status</th>
-                    <th className="border !border-base-300">Paid At</th>
-                    <th className="border !border-base-300">Action</th>
+                  <tr className="bg-base-200">
+                    <th>#</th>
+                    <th className="">Ordered By</th>
+                    <th className="">Total</th>
+                    <th className="">Ordered At</th>
+                    <th className="">Payment Status</th>
+                    <th className="">Payment Method</th>
+                    <th className="">Status</th>
+                    <th className="">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -109,30 +109,29 @@ const Orders: NextPageWithLayout = () => {
                     ordersData?.orders.map((order) => {
                       return (
                         <tr key={order.id}>
-                          <td className="border !border-base-300">{order.user.name}</td>
-                          <td className="border !border-base-300">{order.user?.phone_number}</td>
-                          <td className="border !border-base-300">रू {formatPrice(order.totalPrice)}</td>
-                          <td className="border !border-base-300">
-                            {order?.totalDiscountedPrice ? <>रू {formatPrice(order.totalDiscountedPrice)}</> : '-'}
-                          </td>
-                          <td className="border !border-base-300">{formatDateWithTime(order.createdAt)}</td>
-                          <td className="border !border-base-300 text-center">
+                          <td>{order.orderNumber}</td>
+                          <td className="">{order.user.name}</td>
+                          {/* <td className="">{order.user?.phone_number}</td> */}
+                          <td className="">रू {formatPrice(order.totalPrice)}</td>
+
+                          <td className="">{formatDateWithTime(order.createdAt)}</td>
+                          <td>
                             {order.hasBeenPaid ? (
                               <div className="badge badge-sm badge-success">Paid</div>
                             ) : (
                               <div className="badge badge-sm badge-warning">Not Paid</div>
                             )}
                           </td>
-                          <td className="border !border-base-300 text-center">{order?.paidAt ? formatDateWithTime(order.paidAt) : '-'}</td>
-                          <td className="border !border-base-300 text-center">
-                            <div className="flex justify-center">
-                              {' '}
-                              {/* {isHasBeenPaidLoading ? (
+                          <td>{order.paymentMethod}</td>
+                          <td>{order.status}</td>
+                          <td>
+                            {' '}
+                            {/* {isHasBeenPaidLoading ? (
                                 <button className="btn btn-xs btn-outline">
                                   <span className="loading loading-spinner loading-xs"></span>
                                 </button>
                               ) : ( */}
-                              <>
+                            {/* <>
                                 {order.hasBeenPaid ? (
                                   <button
                                     disabled={isHasBeenPaidLoading}
@@ -148,14 +147,12 @@ const Orders: NextPageWithLayout = () => {
                                     <AiOutlineCheck></AiOutlineCheck> Mark as Paid
                                   </button>
                                 )}
-                              </>
-                              {/* )} */}
-                              <button
-                                className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
-                                onClick={() => mutateDeleteOrder({ orderId: order.id })}>
-                                {isOrderDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
-                              </button>
-                            </div>
+                              </> */}
+                            <button
+                              className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
+                              onClick={() => mutateDeleteOrder({ orderId: order.id })}>
+                              {isOrderDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
+                            </button>
                           </td>
                         </tr>
                       );

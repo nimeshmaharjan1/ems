@@ -125,7 +125,6 @@ const CreateProduct: NextPageWithLayout = () => {
       setIsUploading(false);
     }
   };
-  console.log({ errors, hasOffer: watch('hasOffer') });
   const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);

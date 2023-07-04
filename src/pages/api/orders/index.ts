@@ -55,6 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             userId,
             customerAddress,
             totalPrice: totalPrice + deliveryCharge,
+            additionalPhoneNumber,
           },
           include: {
             items: true,
@@ -81,11 +82,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
         }
 
-        const response: CreateOrderResponse = { message: 'Order successfully created.', order };
+        const response: CreateOrderResponse = { message: 'Your order has been placed.', order };
 
         res.status(200).json(response);
       });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error, message: 'Something went wrong' });
     } finally {
       await prisma.$disconnect();

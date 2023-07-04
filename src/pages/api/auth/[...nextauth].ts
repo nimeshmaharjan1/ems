@@ -84,13 +84,11 @@ export const authOptions: NextAuthOptions = {
         user.phone_number = dbUser?.phone_number;
       }
       user.id = dbUser.id;
-      console.log({ user });
 
       return true;
     },
 
     jwt(params) {
-      console.log('parmas user: ', params.user);
       if (params?.user?.role) {
         params.token.username = params.user.username;
         params.token.role = params.user?.role;
