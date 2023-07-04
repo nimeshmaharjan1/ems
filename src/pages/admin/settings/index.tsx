@@ -1,13 +1,31 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { SETTING_TAB } from '@/features/admin/settings/types';
 import { NextPageWithLayout } from '@/pages/_app';
+import FormControl from '@/shared/components/form-control';
+import { PrismaClient } from '@prisma/client';
 import classNames from 'classnames';
+import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
-import SettingCategory from './categories';
-import SettingCompany from './companies';
 
-const Settings: NextPageWithLayout = () => {
-  const [selectedTab, setSelectedTab] = useState<SETTING_TAB>(SETTING_TAB.CATEGORY);
+const prisma = new PrismaClient();
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const settings = await prisma.settings.findFirst();
+    return {
+      props: {
+        settings,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {},
+    };
+  }
+};
+
+const Settings: NextPageWithLayout<{ settings: any }> = ({ settings }) => {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -16,26 +34,36 @@ const Settings: NextPageWithLayout = () => {
     return null;
   }
   return (
-    <>
-      <div className="tabs">
-        {Object.values(SETTING_TAB).map((tab) => {
-          return (
-            <a
-              className={classNames('tab-lg tab tab-bordered', {
-                'tab-active': tab === selectedTab,
-              })}
-              onClick={() => setSelectedTab(tab)}
-              key={tab}>
-              {tab}
-            </a>
-          );
-        })}
+    <section className="grid grid-cols-6 gap-x-4 gap-y-3">
+      <div className="col-span-6 md:col-span-3">
+        <FormControl label="Store Address">
+          <input type="text" className="input input-bordered" />
+        </FormControl>
       </div>
-      <section className="mt-3">
-        {selectedTab === SETTING_TAB.CATEGORY && <SettingCategory></SettingCategory>}
-        {selectedTab === SETTING_TAB.COMPANY && <SettingCompany></SettingCompany>}
-      </section>
-    </>
+      <div className="col-span-6 md:col-span-3">
+        <FormControl label="Contact Number">
+          <input type="text" className="input input-bordered" />
+        </FormControl>
+      </div>
+      <div className="col-span-6 md:col-span-3">
+        <FormControl label="Tiktok">
+          <input type="text" className="input input-bordered" />
+        </FormControl>
+      </div>
+      <div className="col-span-6 md:col-span-3">
+        <FormControl label="Facebook">
+          <input type="text" className="input input-bordered" />
+        </FormControl>
+      </div>
+      <div className="col-span-6 md:col-span-3">
+        <FormControl label="Delivery Charge">
+          <input type="text" className="input input-bordered" />
+        </FormControl>
+      </div>
+      <div className="col-span-6 mt-3">
+        <button className="btn btn-primary">Save Settings</button>
+      </div>
+    </section>
   );
 };
 

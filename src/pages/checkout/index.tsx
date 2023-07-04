@@ -1,4 +1,3 @@
-import { decreaseCartItemQuantity, increaseCartItemQuantity, removeFromCart, updateCartItemQuantity } from '@/features/cart/cart.service';
 import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
@@ -6,27 +5,86 @@ import { useCartStore } from '@/store/user-cart';
 import axios from 'axios';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import ContactInformation from '../../features/checkout/components/contact-information';
+import { useForm } from 'react-hook-form';
+import { Session, getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { GetServerSideProps, NextPage } from 'next';
+import { NextPageWithLayout } from '../_app';
+import OrderSummary from '@/features/checkout/components/order-summary';
+import { PrismaClient, Settings } from '@prisma/client';
 
-const Checkout = () => {
-  const { cartItems, setCartItems, getTotalDiscountedPrice, getTotalPrice, getItemTotalPrice, getItemTotalDiscountedPrice } =
-    useCartStore();
-  const { data: session } = useSession();
+const prisma = new PrismaClient();
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: true,
+      },
+    };
+  }
+  const settings = await prisma.settings.findFirst();
+  return {
+    props: {
+      settings: JSON.parse(JSON.stringify(settings)),
+    },
+  };
+};
+
+export interface IAddressDetails {
+  deliveryAddress: string;
+  additionalPhoneNumber: string;
+  chosenAddress: 'shop-address' | 'not-shop-address';
+  isInvalid: boolean;
+}
+
+const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
+  const {
+    cartItems,
+    setCartItems,
+    getTotalCrossedPrice,
+    getTotalPrice,
+    getItemTotalPrice,
+    getItemTotalDiscountedPrice,
+    removeFromCart,
+    decreaseCartItemQuantity,
+    increaseCartItemQuantity,
+    updateCartItemQuantity,
+  } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
+  const [addressDetails, setAddressDetails] = useState<IAddressDetails>({
+    deliveryAddress: '',
+    chosenAddress: 'not-shop-address',
+    isInvalid: false,
+    additionalPhoneNumber: '',
+  });
   const handleCreateOrder = async () => {
+    if (addressDetails.chosenAddress === 'not-shop-address' && !addressDetails.deliveryAddress) {
+      setAddressDetails((prev) => ({
+        ...prev,
+        isInvalid: true,
+      }));
+      return;
+    }
     const payload = {
       items: cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.price,
-        discountedPrice: item?.discountedPrice,
-        hasOffer: item?.hasOffer,
+        price: item.sellingPrice,
       })),
+      customerAddress: addressDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : addressDetails.deliveryAddress,
       userId: session?.user?.id,
+      additionalPhoneNumber: addressDetails.additionalPhoneNumber,
     };
     setIsLoading(true);
     try {
@@ -40,6 +98,7 @@ const Checkout = () => {
   };
   const router = useRouter();
   const modalRef = useRef<HTMLDialogElement>(null);
+
   return (
     <>
       {/* Open the modal using ID.showModal() method */}
@@ -68,6 +127,14 @@ const Checkout = () => {
           </div>
         </div>
       </dialog>
+      <div className="flex gap-3 mb-5">
+        <Link href="/products" passHref>
+          <button className="btn btn-ghost btn-sm">
+            <ArrowLeft />
+          </button>
+        </Link>
+        <h2 className="text-2xl font-semibold">Checkout</h2>
+      </div>
       <div className="grid grid-cols-6 gap-x-6 gap-y-8">
         <motion.section
           layout
@@ -76,7 +143,7 @@ const Checkout = () => {
           })}>
           <div className="shadow-lg card">
             <div className="card-body">
-              <div className="card-title">Your Cart</div>
+              {/* <div className="card-title">Your Cart</div> */}
               {cartItems.length === 0 ? (
                 <>
                   <>
@@ -97,7 +164,7 @@ const Checkout = () => {
                       <li key={item.productId} className="py-6">
                         <div className="grid items-center grid-cols-6 md:items-stretch gap-x-8">
                           <div className="col-span-2">
-                            <Image src={item.image} className="md:shadow" alt={item.slug} width={300} height={300}></Image>
+                            <Image src={item.image} className="rounded md:shadow" alt={item.slug} width={300} height={300}></Image>
                           </div>
                           <section className="flex flex-col justify-between col-span-4 py-2 gap-y-6 md:gap-y-0 product-detail">
                             <section className="upper-section">
@@ -108,7 +175,7 @@ const Checkout = () => {
                                     <button
                                       disabled={isLoading}
                                       className="rounded-l-full btn btn-primary btn-xs join-item"
-                                      onClick={() => decreaseCartItemQuantity(item.productId, cartItems, setCartItems)}>
+                                      onClick={() => decreaseCartItemQuantity(item.productId)}>
                                       -
                                     </button>
                                     <input
@@ -119,14 +186,14 @@ const Checkout = () => {
                                         if (parseInt(e.target.value) > item.maxQuantity) {
                                           return showToast(Toast.warning, 'Exceeded available quantity.');
                                         }
-                                        updateCartItemQuantity(item.productId, parseInt(e.target.value), cartItems, setCartItems);
+                                        updateCartItemQuantity(item.productId, parseInt(e.target.value));
                                       }}
                                       value={item.quantity}
                                     />
                                     <button
                                       className="rounded-r-full btn btn-primary btn-xs join-item"
                                       disabled={isLoading}
-                                      onClick={() => increaseCartItemQuantity(item.productId, cartItems, setCartItems)}>
+                                      onClick={() => increaseCartItemQuantity(item.productId)}>
                                       +
                                     </button>
                                   </div>
@@ -135,9 +202,9 @@ const Checkout = () => {
                               {item.hasOffer ? (
                                 <>
                                   <p className="mt-4 text-sm text-gray-400 line-through">
-                                    रू {formatPrice(getItemTotalPrice(item.productId))}
+                                    रू {formatPrice(getItemTotalDiscountedPrice(item.productId))}
                                   </p>
-                                  <p className="my-2 font-medium">रू {formatPrice(getItemTotalDiscountedPrice(item.productId))}</p>
+                                  <p className="my-2 font-medium">रू {formatPrice(getItemTotalPrice(item.productId))}</p>
                                 </>
                               ) : (
                                 <p className="mt-4 font-medium">रू {formatPrice(getItemTotalPrice(item.productId))}</p>
@@ -149,7 +216,7 @@ const Checkout = () => {
                                   if (isLoading) {
                                     return;
                                   }
-                                  removeFromCart(item.productId, cartItems, setCartItems);
+                                  removeFromCart(item.productId);
                                 }}
                                 strokeWidth="1px"
                                 className="text-xs transition-all cursor-pointer md:text-base hover:text-red-400"></Trash2>
@@ -165,38 +232,10 @@ const Checkout = () => {
           </div>
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
-          <div className="card shadow min-h-[244px]">
-            <div className="card-body">
-              <div className="card-title">Order Summary</div>
-              {cartItems.find((item) => item.hasOffer) ? (
-                <div className="flex flex-col gap-y-2">
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">Total</p>
-                    <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
-                  </div>
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">Discount</p>
-                    <p className="font-medium">रू{formatPrice(getTotalPrice() - getTotalDiscountedPrice())}</p>
-                  </div>
-                  <div className="flex justify-between mt-3">
-                    <p className="max-w-[9rem] font-medium">To Pay</p>
-                    <p className="font-medium">रू{formatPrice(getTotalDiscountedPrice())}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex justify-between mt-3">
-                  <p className="font-medium">To Pay</p>
-
-                  <p className="font-medium">रू{formatPrice(getTotalPrice())}</p>
-                </div>
-              )}
-
-              <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>
-                {isLoading && <span className="loading loading-infinity"></span>}
-                Create Order
-              </button>
-            </div>
-          </div>
+          <ContactInformation {...{ addressDetails, setAddressDetails }}></ContactInformation>
+          <OrderSummary
+            deliveryCharge={settings?.deliveryCharge!}
+            {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, addressDetails, setAddressDetails }}></OrderSummary>
         </motion.section>
       </div>
     </>

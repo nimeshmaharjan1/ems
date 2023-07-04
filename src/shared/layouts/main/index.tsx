@@ -1,4 +1,4 @@
-import { Inter, Poppins } from '@next/font/google';
+import { Inter, Poppins, Work_Sans } from '@next/font/google';
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
@@ -27,6 +27,7 @@ import { useInfiniteQuery } from 'react-query';
 import { getAllProducts } from '@/features/admin/services/products/products.service';
 
 import { useInView } from 'react-intersection-observer';
+import Drawer from '@/shared/components/drawer';
 
 const inter = Inter({
   preload: false,
@@ -35,7 +36,7 @@ const inter = Inter({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
 
-// const work = Poppins({ preload: true, subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '700', '800'] });
+// const inter = Work_Sans({ preload: true, subsets: ['latin'] });
 // const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
@@ -68,12 +69,18 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   useEffect(() => {
     const getUserData = async () => {
       const response = await axios.get(`/api/users/${session?.user?.id}`);
+      if (!response.data?.user) {
+        signOut();
+        return;
+      }
       if (response.data.user?.phone_number) {
         return;
       } else {
-        showToast(Toast.warning, 'Please add your phone number.');
-        setIsFromNoPhoneNumber(true);
-        profileModalRef.current?.show();
+        setTimeout(() => {
+          showToast(Toast.warning, 'Please add your phone number.');
+          setIsFromNoPhoneNumber(true);
+          profileModalRef.current?.show();
+        }, 10000);
       }
     };
     if (session) {
@@ -101,6 +108,8 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
   //     fetchNextPage();
   //   }
   // }, [inView, fetchNextPage, hasNextPage]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   if (!isMounted) return null;
 
@@ -162,6 +171,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </Link>
                   </>
                 )}
+                <ThemeToggler></ThemeToggler>
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <div className="-ml-1">{/* <ThemeToggler></ThemeToggler> */}</div>
               </div>
@@ -180,6 +190,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   results={data}
                   isSuccess={isSuccess}></Combobox>
               </div> */}
+              {/* <button className="btn" onClick={() => setIsOpen(!isOpen)}>
+                Hello
+              </button> */}
+              {/* <Drawer setIsOpen={setIsOpen} isOpen={isOpen}>
+                <div>Hello</div>
+              </Drawer> */}
               {children}
             </div>
             <MainSharedFooter></MainSharedFooter>

@@ -74,13 +74,11 @@ const Combobox = <T extends object>({
       block: 'center',
     });
   }, [focusedIndex]);
-  console.log({ results });
   useEffect(() => {
     if (results.pages[0].length > 0 && !showResults) setShowResults(true);
 
     if (results.pages[0].length <= 0) setShowResults(false);
   }, [results, showResults]);
-  console.log({ showResults });
 
   useEffect(() => {
     if (value) setDefaultValue(value);

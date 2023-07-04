@@ -49,7 +49,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             price: product?.price.toString(),
             wholesaleCreditPrice: product?.wholesaleCreditPrice?.toString(),
             wholesaleCashPrice: product?.wholesaleCashPrice?.toString(),
-            discountPercentage: product?.discountPercentage?.toString(),
+            sellingPrice: product?.sellingPrice?.toString(),
+            crossedPrice: product?.crossedPrice?.toString(),
             company: reactSelectCompany,
             category: reactSelectCategory,
           })
@@ -83,6 +84,8 @@ const productSchema = z
     }),
     images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
+    sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
+    crossedPrice: z.string().optional(),
     wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
     wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
     quantity: z.string().min(1, { message: 'Quantity is required.' }),
@@ -93,17 +96,11 @@ const productSchema = z
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {
-      if (!values.discountPercentage) {
+      if (!values.crossedPrice) {
         ctx.addIssue({
-          message: 'Discount percentage is required.',
+          message: 'Crossed price is required.',
           code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
-        });
-      } else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
-        ctx.addIssue({
-          message: 'Discount percentage must be between 1 and 99.',
-          code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
+          path: ['crossedPrice'],
         });
       }
     }
@@ -245,7 +242,6 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               className={`input input-bordered w-full max-w-3xl ${errors?.modal ? 'input-error' : ''}`}
             />
           </FormControl>
-
           <Controller
             rules={{
               required: 'Description is required.',
@@ -313,7 +309,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
           </div>
           <div className="grid grid-cols-12 gap-x-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Price" errorMessage={errors?.price?.message as string}>
+              <FormControl label="Cost per item" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
                   <span>रू</span>
                   <input
@@ -340,6 +336,45 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                   className={`input input-bordered w-full ${errors?.quantity ? 'input-error' : ''}`}
                 />
               </FormControl>
+            </div>
+          </div>{' '}
+          <div className="grid items-center grid-cols-6 gap-2 mb-2">
+            <div className="col-span-3 mt-1">
+              <FormControl label="Selling Price" errorMessage={errors?.sellingPrice?.message as string}>
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  placeholder="Type here"
+                  {...register('sellingPrice', {
+                    required: 'Selling price is required.',
+                  })}
+                  className={`input input-bordered w-full ${errors?.sellingPrice ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+            <div className="col-span-3 mt-1">
+              <div className="w-full gap-1 form-control">
+                <div className="flex items-center gap-2">
+                  <label className="line-through label">Crossed Price</label>
+                  <input
+                    type="checkbox"
+                    {...register('hasOffer', {
+                      onChange: () => setValue('crossedPrice', ''),
+                    })}
+                    className="toggle toggle-sm"
+                  />
+                </div>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type crossed price here"
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
+                />
+                {errors?.crossedPrice?.message && (
+                  <label className="label text-sm font-[400] opacity-80 text-error">{errors?.crossedPrice?.message}</label>
+                )}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-2">
@@ -376,32 +411,6 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               </FormControl>
             </div>
           </div>
-          <div className="grid grid-cols-6 my-2">
-            <div className="col-span-6 form-control">
-              <label className="cursor-pointer label !justify-start gap-x-3">
-                <span className="!text-base">Apply Offer</span>
-                <input
-                  type="checkbox"
-                  {...register('hasOffer', {
-                    onChange: () => setValue('discountPercentage', ''),
-                  })}
-                  className="toggle"
-                />
-              </label>
-            </div>
-            <div className="col-span-6 mt-1">
-              <FormControl errorMessage={errors?.discountPercentage?.message as string}>
-                <input
-                  type="text"
-                  disabled={!watch('hasOffer')}
-                  placeholder="Type discount percentage here"
-                  {...register('discountPercentage')}
-                  className={`input input-bordered w-full  ${errors?.discountPercentage ? 'input-error' : ''}`}
-                />
-              </FormControl>
-            </div>
-          </div>
-
           <div className="hidden col-span-12 mt-4 lg:block">
             <button
               className={classNames('btn btn-primary btn-block')}

@@ -42,34 +42,36 @@ const productSchema = z
       .max(5, { message: 'Images cannot be more than five.' })
       .optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
+    sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
+    crossedPrice: z.string().optional(),
     wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
     wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
     quantity: z.string().min(1, { message: 'Quantity is required.' }),
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
     hasOffer: z.boolean(),
-    discountPercentage: z.string().optional(),
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {
-      if (!values.discountPercentage) {
+      if (!values.crossedPrice) {
         ctx.addIssue({
-          message: 'Discount percentage is required.',
+          message: 'Crossed price is required.',
           code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
-        });
-      } else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
-        ctx.addIssue({
-          message: 'Discount percentage must be between 1 and 99.',
-          code: z.ZodIssueCode.custom,
-          path: ['discountPercentage'],
+          path: ['crossedPrice'],
         });
       }
+      // else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
+      //   ctx.addIssue({
+      //     message: 'Discount percentage must be between 1 and 99.',
+      //     code: z.ZodIssueCode.custom,
+      //     path: ['discountPercentage'],
+      //   });
+      // }
     }
   });
 export type ProductSchema = z.infer<typeof productSchema>;
 
-const CreateUser: NextPageWithLayout = () => {
+const CreateProduct: NextPageWithLayout = () => {
   const defaultValues: ProductSchema = {
     category: { label: 'Select category', value: '' },
     company: { label: 'Select company', value: '' },
@@ -77,13 +79,14 @@ const CreateUser: NextPageWithLayout = () => {
     description: '',
     images: [],
     price: '',
+    sellingPrice: '',
+    crossedPrice: '',
     wholesaleCashPrice: '',
     wholesaleCreditPrice: '',
     title: '',
     quantity: '',
     slug: '',
     hasOffer: false,
-    discountPercentage: '',
   };
 
   const {
@@ -122,7 +125,6 @@ const CreateUser: NextPageWithLayout = () => {
       setIsUploading(false);
     }
   };
-
   const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);
@@ -209,7 +211,7 @@ const CreateUser: NextPageWithLayout = () => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+          <FormControl label="Model" errorMessage={errors?.modal?.message as string}>
             <input
               type="text"
               placeholder="Type here"
@@ -226,27 +228,9 @@ const CreateUser: NextPageWithLayout = () => {
             render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
               <FormControl label="Description" errorMessage={errors?.description?.message as string}>
                 <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
-                {/* 
-            <textarea
-              placeholder="Type here"
-              {...register('description', {
-                required: 'Description is required.',
-                minLength: {
-                  value: 2,
-                  message: 'Description must be above 2 characters.',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Description must be below 255 characters.',
-                },
-              })}
-              rows={6}
-              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            /> */}
               </FormControl>
             )}
           />
-
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -285,7 +269,7 @@ const CreateUser: NextPageWithLayout = () => {
           </div>
           <div className="grid grid-cols-12 gap-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Price" errorMessage={errors?.price?.message as string}>
+              <FormControl label="Cost per item" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
                   <span>रू</span>
                   <input
@@ -312,6 +296,45 @@ const CreateUser: NextPageWithLayout = () => {
                   className={`input input-bordered w-full ${errors?.quantity ? 'input-error' : ''}`}
                 />
               </FormControl>
+            </div>
+          </div>{' '}
+          <div className="grid items-center grid-cols-6 gap-2 mb-2">
+            <div className="col-span-3 mt-1">
+              <FormControl label="Selling Price" errorMessage={errors?.sellingPrice?.message as string}>
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  placeholder="Type here"
+                  {...register('sellingPrice', {
+                    required: 'Selling price is required.',
+                  })}
+                  className={`input input-bordered w-full ${errors?.sellingPrice ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+            <div className="col-span-3 mt-1">
+              <div className="w-full gap-1 form-control">
+                <div className="flex items-center gap-2">
+                  <label className="line-through label">Crossed Price</label>
+                  <input
+                    type="checkbox"
+                    {...register('hasOffer', {
+                      onChange: () => setValue('crossedPrice', ''),
+                    })}
+                    className="toggle toggle-sm"
+                  />
+                </div>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type crossed price here"
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
+                />
+                {errors?.crossedPrice?.message && (
+                  <label className="label text-sm font-[400] opacity-80 text-error">{errors?.crossedPrice?.message}</label>
+                )}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-2">
@@ -345,31 +368,6 @@ const CreateUser: NextPageWithLayout = () => {
                     className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
                   />
                 </label>
-              </FormControl>
-            </div>
-          </div>
-          <div className="grid grid-cols-6 mb-2">
-            <div className="col-span-6 form-control">
-              <label className="cursor-pointer label !justify-start gap-x-3">
-                <span className="!text-sm">Apply Offer</span>
-                <input
-                  type="checkbox"
-                  {...register('hasOffer', {
-                    onChange: () => setValue('discountPercentage', ''),
-                  })}
-                  className="toggle toggle-sm"
-                />
-              </label>
-            </div>
-            <div className="col-span-6 mt-1">
-              <FormControl errorMessage={errors?.discountPercentage?.message as string}>
-                <input
-                  type="text"
-                  disabled={!watch('hasOffer')}
-                  placeholder="Type discount percentage here"
-                  {...register('discountPercentage')}
-                  className={`input input-bordered w-full  ${errors?.discountPercentage ? 'input-error' : ''}`}
-                />
               </FormControl>
             </div>
           </div>
@@ -422,8 +420,8 @@ const CreateUser: NextPageWithLayout = () => {
   );
 };
 
-export default CreateUser;
+export default CreateProduct;
 
-CreateUser.getLayout = (page: ReactNode) => {
+CreateProduct.getLayout = (page: ReactNode) => {
   return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };

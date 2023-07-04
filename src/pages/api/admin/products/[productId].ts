@@ -60,19 +60,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         slug,
         modal,
         hasOffer,
-        discountPercentage,
         wholesaleCreditPrice,
         wholesaleCashPrice,
+        crossedPrice,
+        sellingPrice,
       } = req.body;
       parseFloat(price);
       const categoryId = category?.value;
       const companyId = company?.value;
-      let discountedPrice: number | null = null;
-      if (hasOffer) {
-        discountedPrice = price - price * (discountPercentage / 100);
-      } else {
-        discountedPrice = null;
-      }
+      // let discountedPrice: number | null = null;
+      // if (hasOffer) {
+      //   discountedPrice = price - price * (discountPercentage / 100);
+      // } else {
+      //   discountedPrice = null;
+      // }
       const product = await prisma.product.update({
         where: { id },
         data: {
@@ -80,14 +81,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title,
           description,
           price: parseFloat(price),
+          sellingPrice: parseFloat(sellingPrice),
+          crossedPrice: parseFloat(crossedPrice),
           categoryId,
           companyId,
           quantity,
           slug,
           modal,
           hasOffer,
-          discountedPrice,
-          discountPercentage: parseFloat(discountPercentage),
           wholesaleCashPrice: parseFloat(wholesaleCashPrice),
           wholesaleCreditPrice: parseFloat(wholesaleCreditPrice),
         },

@@ -1,5 +1,0 @@
--- AlterEnum
-ALTER TYPE "USER_ROLES" ADD VALUE 'BUSINESS_CLIENT';
-
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "applyingAsBusinessClient" BOOLEAN NOT NULL DEFAULT false;

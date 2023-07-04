@@ -1,37 +1,39 @@
+import ThemeToggler from '@/shared/components/theme-toggler';
 import classNames from 'classnames';
-import { useTheme } from 'next-themes';
+import { User } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import React, { Dispatch, SetStateAction } from 'react';
-import { BsFillMoonFill, BsSun } from 'react-icons/bs';
 import { RiMenuFoldFill } from 'react-icons/ri';
+
+const getRoute = (route: string): string => {
+  return route.slice(7);
+};
 
 const Header: React.FC<{
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: Dispatch<SetStateAction<boolean>>;
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
-  const { resolvedTheme, setTheme } = useTheme();
+  const router = useRouter();
   return (
-    <header className="z-50 h-[4.2rem] flex justify-between items-center bg-base-100 w-full shadow px-6">
-      <button
-        className=" p-1 cursor-pointer  duration-300"
-        onClick={() => {
-          setIsSidebarCollapsed((prev) => !prev);
-        }}>
-        <RiMenuFoldFill
-          className={classNames(` text-xl `, {
-            ['rotate-180']: isSidebarCollapsed,
-          })}></RiMenuFoldFill>
-      </button>
-      {/* <button
-        onClick={() => {
-          resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
-        }}
-        className={classNames('!bg-transparent btn-sm')}>
-        {resolvedTheme === 'corporate' ? (
-          <BsFillMoonFill className="text-lg hover:text-primary duration-300"></BsFillMoonFill>
-        ) : (
-          <BsSun className="text-2xl hover:text-amber-400 duration-300"></BsSun>
-        )}
-      </button> */}
+    <header className="z-50 flex items-center justify-between w-full h-16 px-8 border-b shadow border-b-base-300 bg-base-100 gap-x-3">
+      <h3 className="text-xl font-semibold capitalize">{getRoute(router.pathname)}</h3>
+      <section className="flex items-center gap-2">
+        <div className="dropdown dropdown-end">
+          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+            <User></User>
+          </label>
+          <ul tabIndex={0} className="mt-1 z-[1] p-2 shadow-lg bg-base-200 menu space-y-1 dropdown-content rounded-box w-52">
+            <li>
+              <a>Profile</a>
+            </li>
+            <li onClick={() => signOut()}>
+              <a>Sign Out</a>
+            </li>
+          </ul>
+        </div>
+        <ThemeToggler></ThemeToggler>
+      </section>
     </header>
   );
 };

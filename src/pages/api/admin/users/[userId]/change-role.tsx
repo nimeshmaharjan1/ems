@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { id },
         data: {
           role,
+          applyingAsBusinessClient: false,
         },
       });
       res.status(200).json({ updatedUser, message: "User's role has been updated." });

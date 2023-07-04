@@ -1,3 +1,5 @@
+import { PRODUCT_STATUS } from '@prisma/client';
+
 export interface IProductCreate {
   image: string | ArrayBuffer | null;
   title: string;
@@ -12,7 +14,13 @@ export interface IProduct {
   images: string[];
   title: string;
   description: string;
+
   price: number;
+  sellingPrice: number;
+  crossedPrice: number;
+  wholesaleCreditPrice: number;
+  wholesaleCashPrice: number;
+
   categoryId: string;
   companyId: string;
   quantity: string;
@@ -20,13 +28,12 @@ export interface IProduct {
   updatedAt: Date;
   slug: string;
   modal: string;
-  discountPercentage: number;
   hasOffer: boolean;
-  discountedPrice: number;
   category: Category;
   company: Category;
   Review: Review[];
   ratingSummary: IRatingSummary;
+  status: PRODUCT_STATUS;
 }
 
 export interface Review {

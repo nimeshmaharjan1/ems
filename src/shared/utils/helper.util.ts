@@ -45,3 +45,6 @@ export const downloadFile = (base64String: string, fileName: string) => {
 };
 
 export const rupees = 'रू';
+
+export const getPercentageDifference = (sellingPrice: number, crossedPrice: number) =>
+  Math.round(((crossedPrice - sellingPrice) / sellingPrice) * 100);

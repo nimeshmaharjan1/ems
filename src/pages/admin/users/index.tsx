@@ -3,13 +3,21 @@ import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { PaginatedUsers } from '@/shared/interfaces/users.interface';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import { USER_ROLES } from '@prisma/client';
+import { PrismaClient, USER_ROLES } from '@prisma/client';
 import axios from 'axios';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+
+// const prisma = new PrismaClient();
+// export const getServerSideProps = async () => {
+//   await prisma.user.delete({
+//     where: { id: 'cljlnbhc70000p9k4js35ixzy' },
+//   });
+//   return { props: {} };
+// };
 
 const Users: NextPageWithLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +32,6 @@ const Users: NextPageWithLayout = () => {
     const response = await axios.get(`/api/admin/users?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
-  console.log(userData);
   const { mutate: mutateChangeRole, isLoading: isChangingRole } = useMutation(
     async (args: { userId: string; role: USER_ROLES }) => {
       const response = await axios.patch(`/api/admin/users/${args.userId}/change-role`, {
@@ -53,14 +60,14 @@ const Users: NextPageWithLayout = () => {
       <section className="overflow-x-auto">
         <table className="table w-full table-auto">
           <thead>
-            <tr>
-              <th className="border !border-base-300">Name</th>
-              <th className="border !border-base-300">Phone Number</th>
-              <th className="border !border-base-300">Email</th>
-              <th className="border !border-base-300">Username</th>
-              <th className="border !border-base-300">Applying as a Business</th>
-              <th className="border !border-base-300">Role</th>
-              {/* <th className="border !border-base-300 ">Actions</th> */}
+            <tr className="bg-base-200">
+              <th className="">Name</th>
+              <th className="">Phone Number</th>
+              <th className="">Email</th>
+              <th className="">Username</th>
+              {/* <th className="">Applying as a Business</th> */}
+              <th className="">Role</th>
+              {/* <th className="">Actions</th> */}
             </tr>
           </thead>
           <tbody>
@@ -77,15 +84,17 @@ const Users: NextPageWithLayout = () => {
                 {userData &&
                   userData.data.map((user) => {
                     return (
-                      <tr key={user.id}>
-                        <td className="border !border-base-300">{`${user.name.substring(0, 40)}${user.name.length > 40 ? '...' : ''}`}</td>
-                        <td className="border !border-base-300">{user.phone_number || '-'}</td>
-                        <td className="border !border-base-300">{`${user.email.substring(0, 40)}${
-                          user.email.length > 40 ? '...' : ''
-                        }`}</td>
-                        <td className="border !border-base-300">{user.username}</td>
-                        <td className="border !border-base-300">{user.applyingAsBusinessClient ? 'Yes' : 'No'}</td>
-                        <td className={classNames('border !border-base-300')}>
+                      <tr
+                        key={user.id}
+                        className={classNames('', {
+                          'bg-base-300': user.applyingAsBusinessClient,
+                        })}>
+                        <td className="">{`${user.name.substring(0, 40)}${user.name.length > 40 ? '...' : ''}`}</td>
+                        <td className="">{user.phone_number || '-'}</td>
+                        <td className="">{`${user.email.substring(0, 40)}${user.email.length > 40 ? '...' : ''}`}</td>
+                        <td className="">{user.username}</td>
+                        {/* <td className="">{user.applyingAsBusinessClient ? 'Yes' : 'No'}</td> */}
+                        <td className={classNames('')}>
                           <select
                             value={user.role}
                             disabled={isChangingRole}
@@ -108,7 +117,7 @@ const Users: NextPageWithLayout = () => {
                             {user.role}
                           </span> */}
                         </td>
-                        {/* <td className="border !border-base-300 text-center">
+                        {/* <td className="text-center ">
                     <Link href={`/admin/users/edit/${user.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
                       <FaCogs></FaCogs> Edit
                     </Link> 
