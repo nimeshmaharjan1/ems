@@ -1,6 +1,7 @@
 import { formatPrice, rupees } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
+import { USER_ROLES } from '@prisma/client';
 import { Trash2 } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
@@ -11,7 +12,7 @@ import React from 'react';
 
 const Cart = () => {
   const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice, removeFromCart } = useCartStore();
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
     removeFromCart(productId);
@@ -41,20 +42,26 @@ const Cart = () => {
               <ul className="block space-y-1 divide-y divide-gray-700 md:hidden">
                 {cartItems.map((item) => (
                   <li key={item.productId} className="flex items-center gap-4 py-3">
-                    <div className="relative object-cover w-32 h-10 rounded">
+                    <div className="relative object-cover w-32 h-20 rounded">
                       <Image src={item.image} alt={item.slug} fill />
                     </div>
 
                     <div>
                       <h3 className="text-sm font-medium">{item.slug.length > 30 ? `${item.slug.slice(0, 30)}...` : item.slug}</h3>
                       <dl className="mt-1.5 text-[13px] text-gray-600"> x{item.quantity}</dl>
-                      {item.hasOffer ? (
-                        <>
-                          <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.crossedPrice!)}</dl>
-                          <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.sellingPrice!)}</dl>
-                        </>
+                      {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+                        <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">रू {formatPrice(item.wholesaleCashPrice!)}</dl>
                       ) : (
-                        <dl className="mt-1.5  text-[13px] font-medium text-gray-600">रू {formatPrice(item.sellingPrice)}</dl>
+                        <>
+                          {item.hasOffer ? (
+                            <>
+                              <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.crossedPrice!)}</dl>
+                              <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.sellingPrice!)}</dl>
+                            </>
+                          ) : (
+                            <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">रू {formatPrice(item.sellingPrice)}</dl>
+                          )}
+                        </>
                       )}
                     </div>
                   </li>
@@ -76,6 +83,7 @@ const Cart = () => {
                             </h3>
                             {/* <p className="text-sm dark:text-gray-400">Classic</p> */}
                           </div>
+                          {/* //TODO cart wholesaele */}
                           <div className="md:text-right">
                             {cartItem.hasOffer ? (
                               <>

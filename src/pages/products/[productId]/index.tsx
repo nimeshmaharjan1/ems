@@ -4,11 +4,12 @@ import { IProduct } from '@/shared/interfaces/product.interface';
 import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { useCartStore, useShallowCartStore } from '@/store/user-cart';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
 import parse from 'html-react-parser';
 import { ShieldCheck } from 'lucide-react';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -101,6 +102,8 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
     });
   };
 
+  const { data: session } = useSession();
+
   if (!product) {
     return <>Something went wrong while trying to get the product.</>;
   }
@@ -143,7 +146,7 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
           <div className="col-span-6 space-y-2">
             <div className="flex flex-col-reverse justify-between gap-2 lg:flex-row">
               <p>
-                Modal: <span className="font-bold">{product.modal}</span>
+                Model: <span className="font-bold">{product.modal}</span>
               </p>
               <p className="flex items-center gap-2">
                 <ShieldCheck strokeWidth={1.5} /> 100% Genuine Product{' '}
@@ -162,13 +165,19 @@ const Product: NextPageWithLayout<{ product: IProduct }> = ({ product }) => {
             </div>
           </div>
           <p className="mt-3 mb-6 prose text-justify description">{parse(product.description)}</p>
-          {product.hasOffer ? (
-            <p className="p-4 font-bold border-t border-b price mb-9">
-              <span className="text-sm text-gray-400 line-through">रू {formatPrice(product.crossedPrice)}</span>
-              <span className="ml-4 text-lg text-error">रू {formatPrice(product.sellingPrice)}</span>
-            </p>
+          {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+            <p className="p-4 text-lg font-bold border-t border-b price text-error mb-9">रू {formatPrice(product.wholesaleCashPrice)}</p>
           ) : (
-            <p className="p-4 text-lg font-bold border-t border-b price text-error mb-9">रू {formatPrice(product.sellingPrice)}</p>
+            <>
+              {product.hasOffer ? (
+                <p className="p-4 font-bold border-t border-b price mb-9">
+                  <span className="text-sm text-gray-400 line-through">रू {formatPrice(product.crossedPrice)}</span>
+                  <span className="ml-4 text-lg text-error">रू {formatPrice(product.sellingPrice)}</span>
+                </p>
+              ) : (
+                <p className="p-4 text-lg font-bold border-t border-b price text-error mb-9">रू {formatPrice(product.sellingPrice)}</p>
+              )}
+            </>
           )}
           <section className="grid items-center grid-cols-6 gap-3 mb-8 quantity-section gap-y-7">
             <div className="flex items-center col-span-6 gap-3">
