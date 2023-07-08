@@ -22,7 +22,7 @@ module.exports = {
         night: {
           ...require('daisyui/src/theming/themes')['[data-theme=night]'],
           'base-200': '#0E1627',
-          'base-300': '#090E18',
+          'base-300': '#0D1423',
         },
       },
     ],

@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
-  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice, removeFromCart } = useCartStore();
+  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice, removeFromCart, getTotalWholesaleCashPrice } = useCartStore();
   const { status, data: session } = useSession();
   const router = useRouter();
   const handleRemoveFromCart = (productId: string) => {
@@ -42,13 +42,21 @@ const Cart = () => {
               <ul className="block space-y-1 divide-y divide-gray-700 md:hidden">
                 {cartItems.map((item) => (
                   <li key={item.productId} className="flex items-center gap-4 py-3">
-                    <div className="relative object-cover w-32 h-20 rounded">
+                    <div className="relative object-cover w-32 h-16 rounded">
                       <Image src={item.image} alt={item.slug} fill />
                     </div>
 
                     <div>
                       <h3 className="text-sm font-medium">{item.slug.length > 30 ? `${item.slug.slice(0, 30)}...` : item.slug}</h3>
-                      <dl className="mt-1.5 text-[13px] text-gray-600"> x{item.quantity}</dl>
+                      <div className="flex justify-between mt-1.5">
+                        <dl className="text-[13px] text-neutral-content"> x{item.quantity}</dl>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFromCart(item.productId)}
+                          className="transition-all hover:text-error">
+                          <Trash2 strokeWidth={'1px'} size={16}></Trash2>
+                        </button>
+                      </div>
                       {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
                         <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">रू {formatPrice(item.wholesaleCashPrice!)}</dl>
                       ) : (
@@ -85,7 +93,9 @@ const Cart = () => {
                           </div>
                           {/* //TODO cart wholesaele */}
                           <div className="md:text-right">
-                            {cartItem.hasOffer ? (
+                            {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.wholesaleCashPrice!)}</p>
+                            ) : cartItem.hasOffer ? (
                               <>
                                 <p className="text-sm line-through font-medium text-gray-400 md:text-[0.8rem]">
                                   रू{formatPrice(cartItem.crossedPrice!)}
@@ -103,13 +113,13 @@ const Cart = () => {
                             <button type="button" className="transition-all hover:text-error">
                               <Trash2 strokeWidth={'1px'}></Trash2>
                             </button>
-                            {/* <button type="button" className="flex items-center px-2 py-1 space-x-1">
+                          </div>
+                          {/* <button type="button" className="flex items-center px-2 py-1 space-x-1">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4 h-4 fill-current">
                         <path d="M453.122,79.012a128,128,0,0,0-181.087.068l-15.511,15.7L241.142,79.114l-.1-.1a128,128,0,0,0-181.02,0l-6.91,6.91a128,128,0,0,0,0,181.019L235.485,449.314l20.595,21.578.491-.492.533.533L276.4,450.574,460.032,266.94a128.147,128.147,0,0,0,0-181.019ZM437.4,244.313,256.571,425.146,75.738,244.313a96,96,0,0,1,0-135.764l6.911-6.91a96,96,0,0,1,135.713-.051l38.093,38.787,38.274-38.736a96,96,0,0,1,135.765,0l6.91,6.909A96.11,96.11,0,0,1,437.4,244.313Z"></path>
                       </svg>
                       <span>Add to favorites</span>
                     </button> */}
-                          </div>
                         </section>
                       </div>
                     </div>
@@ -149,7 +159,11 @@ const Cart = () => {
             </li> */}
               </ul>
               <div className="hidden space-y-1 text-right md:block">
-                {cartItems.find((item) => item.hasOffer) ? (
+                {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+                  <p>
+                    Total amount: <span className="font-semibold">रू{formatPrice(getTotalWholesaleCashPrice())}</span>
+                  </p>
+                ) : cartItems.find((item) => item.hasOffer) ? (
                   <>
                     <p>
                       <span className="text-sm font-medium text-gray-400 line-through">रू{formatPrice(getTotalCrossedPrice())}</span>
@@ -164,7 +178,7 @@ const Cart = () => {
                     Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                   </p>
                 )}
-                <p className="text-sm dark:text-gray-400">Not including taxes and shipping costs</p>
+                <p className="text-sm dark:text-gray-400">Not including taxes and delivery charges.</p>
               </div>
               {/* <div className="flex justify-end space-x-4"> */}
               {/* <Link href="/checkout"> */}

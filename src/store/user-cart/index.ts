@@ -20,8 +20,12 @@ interface Store {
   cartItems: CartItem[];
   setCartItems: (items: CartItem[]) => void;
   getTotalPrice: () => number;
+  getTotalWholesaleCashPrice: () => number;
+  getTotalWholesaleCreditPrice: () => number;
   getTotalCrossedPrice: () => number;
   getItemTotalPrice: (id: string) => number;
+  getItemTotalWholesaleCashPrice: (id: string) => number;
+  getItemTotalWholesaleCreditPrice: (id: string) => number;
   getItemTotalDiscountedPrice: (id: string) => number;
   addToCart: (item: CartItem) => void;
   removeFromCart: (productId: string) => void;
@@ -38,6 +42,16 @@ export const useCartStore = create<Store>((set, get) => ({
       return total + item.sellingPrice * item.quantity;
     }, 0);
   },
+  getTotalWholesaleCashPrice: () => {
+    return get().cartItems.reduce((total: number, item: CartItem) => {
+      return total + item.wholesaleCashPrice! * item.quantity;
+    }, 0);
+  },
+  getTotalWholesaleCreditPrice: () => {
+    return get().cartItems.reduce((total: number, item: CartItem) => {
+      return total + item.wholesaleCreditPrice! * item.quantity;
+    }, 0);
+  },
   getTotalCrossedPrice: () => {
     return get().cartItems.reduce((total: number, item: CartItem) => {
       if (item.hasOffer) {
@@ -49,6 +63,14 @@ export const useCartStore = create<Store>((set, get) => ({
   getItemTotalPrice: (id: string) => {
     const item = get().cartItems.find((cartItem: CartItem) => cartItem.productId === id);
     return item ? item.sellingPrice * item.quantity : 0;
+  },
+  getItemTotalWholesaleCashPrice: (id: string) => {
+    const item = get().cartItems.find((cartItem: CartItem) => cartItem.productId === id);
+    return item ? item.wholesaleCashPrice! * item.quantity : 0;
+  },
+  getItemTotalWholesaleCreditPrice: (id: string) => {
+    const item = get().cartItems.find((cartItem: CartItem) => cartItem.productId === id);
+    return item ? item.wholesaleCreditPrice! * item.quantity : 0;
   },
   getItemTotalDiscountedPrice: (id: string) => {
     const item = get().cartItems.find((cartItem: CartItem) => cartItem.productId === id);

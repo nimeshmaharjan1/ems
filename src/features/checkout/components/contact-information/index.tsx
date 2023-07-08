@@ -1,17 +1,19 @@
 import FormControl from '@/shared/components/form-control';
 import { useSession } from 'next-auth/react';
 import React, { Dispatch, SetStateAction } from 'react';
-import { IAddressDetails } from '../../../../pages/checkout';
-import { USER_ROLES } from '@prisma/client';
+import { ICheckoutDetails } from '../../../../pages/checkout';
+import { PAYMENT_METHOD, SELECTED_WHOLESALE_OPTION, USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
+import { QrCode, Truck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddressDetails: Dispatch<SetStateAction<IAddressDetails>> }> = ({
-  addressDetails,
-  setAddressDetails,
-}) => {
+const ContactInformation: React.FC<{
+  checkoutDetails: ICheckoutDetails;
+  setCheckoutDetails: Dispatch<SetStateAction<ICheckoutDetails>>;
+}> = ({ checkoutDetails, setCheckoutDetails }) => {
   const { data: session } = useSession();
   return (
-    <div className="mb-4 shadow-lg card">
+    <div className="mb-4 shadow-lg card bg-base-200">
       <div className="card-body">
         <div className="card-title">Contact Information</div>
         <FormControl label="Full Name">
@@ -23,8 +25,8 @@ const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddress
         <FormControl label="Additional Phone Number">
           <input
             type="text"
-            value={addressDetails.additionalPhoneNumber}
-            onChange={(e) => setAddressDetails((prev) => ({ ...prev, additionalPhoneNumber: e.target.value }))}
+            value={checkoutDetails.additionalPhoneNumber}
+            onChange={(e) => setCheckoutDetails((prev) => ({ ...prev, additionalPhoneNumber: e.target.value }))}
             className="input input-bordered"
           />
         </FormControl>
@@ -34,15 +36,15 @@ const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddress
               <label className="gap-3 !justify-start cursor-pointer label">
                 <input
                   type="checkbox"
-                  checked={addressDetails.chosenAddress === 'shop-address'}
+                  checked={checkoutDetails.chosenAddress === 'shop-address'}
                   onChange={() => {
-                    if (addressDetails.chosenAddress === 'shop-address') {
-                      setAddressDetails((prev) => ({
+                    if (checkoutDetails.chosenAddress === 'shop-address') {
+                      setCheckoutDetails((prev) => ({
                         ...prev,
                         chosenAddress: 'not-shop-address',
                       }));
                     } else {
-                      setAddressDetails((prev) => ({
+                      setCheckoutDetails((prev) => ({
                         ...prev,
                         chosenAddress: 'shop-address',
                       }));
@@ -55,16 +57,16 @@ const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddress
             </div>
           </>
         )}
-        {addressDetails.chosenAddress === 'not-shop-address' ? (
-          <FormControl label="Delivery Address" errorMessage={addressDetails.isInvalid ? 'Delivery Address is required.' : ''}>
+        {checkoutDetails.chosenAddress === 'not-shop-address' ? (
+          <FormControl label="Delivery Address" errorMessage={checkoutDetails.isInvalid ? 'Delivery Address is required.' : ''}>
             <input
               type="text"
-              value={addressDetails.deliveryAddress}
+              value={checkoutDetails.deliveryAddress}
               onChange={(e) => {
-                setAddressDetails((prev) => ({ ...prev, deliveryAddress: e.target.value, isInvalid: false }));
+                setCheckoutDetails((prev) => ({ ...prev, deliveryAddress: e.target.value, isInvalid: false }));
               }}
               className={classNames('input input-bordered', {
-                'input-error': addressDetails.isInvalid,
+                'input-error': checkoutDetails.isInvalid,
               })}
             />
           </FormControl>
@@ -73,6 +75,69 @@ const ContactInformation: React.FC<{ addressDetails: IAddressDetails; setAddress
             <input type="text" value={session?.user?.shopAddress} disabled className="input input-bordered" />
           </FormControl>
         )}
+        {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
+          <section>
+            <FormControl label="Wholesale Option">
+              <select
+                className="select select-bordered"
+                onChange={(e) => {
+                  setCheckoutDetails((prev) => ({
+                    ...prev,
+                    wholesaleOption: e.target.value as SELECTED_WHOLESALE_OPTION,
+                  }));
+                }}>
+                <option value={SELECTED_WHOLESALE_OPTION.CASH}>Cash</option>
+                <option value={SELECTED_WHOLESALE_OPTION.CREDIT}>Credit</option>
+              </select>
+            </FormControl>
+          </section>
+        )}
+
+        <section className="flex flex-col mt-3 gap-x-2 gap-y-4 payment-method">
+          <label htmlFor="Pl" className="label">
+            Please select your desired payment method:
+          </label>
+          <motion.div
+            whileTap={{ scale: 0.8 }}
+            onClick={() => setCheckoutDetails((prev) => ({ ...prev, paymentMethod: PAYMENT_METHOD.COD }))}
+            className={classNames('transition-all cursor-pointer card bg-base-300 group', {
+              // 'border-primary border-2': checkoutDetails.paymentMethod === PAYMENT_METHOD.COD,
+            })}>
+            <div className="items-center justify-center card-body">
+              <Truck
+                className={classNames('transition-all group-hover:text-primary', {
+                  'text-primary': checkoutDetails.paymentMethod === PAYMENT_METHOD.COD,
+                })}
+              />
+              <p
+                className={classNames('text-xs font-medium transition-all lg:text-sm group-hover:text-primary', {
+                  'text-primary': checkoutDetails.paymentMethod === PAYMENT_METHOD.COD,
+                })}>
+                Cash On Delivery
+              </p>
+            </div>
+          </motion.div>
+          <motion.div
+            whileTap={{ scale: 0.8 }}
+            onClick={() => setCheckoutDetails((prev) => ({ ...prev, paymentMethod: PAYMENT_METHOD.FONEPAY }))}
+            className={classNames('transition-all cursor-pointer card bg-base-300 group', {
+              // 'border-primary border-2': checkoutDetails.paymentMethod === PAYMENT_METHOD.FONEPAY,
+            })}>
+            <div className="items-center justify-center card-body">
+              <QrCode
+                className={classNames('transition-all group-hover:text-primary', {
+                  'text-primary': checkoutDetails.paymentMethod === PAYMENT_METHOD.FONEPAY,
+                })}
+              />
+              <p
+                className={classNames('text-xs font-medium transition-all lg:text-sm group-hover:text-primary', {
+                  'text-primary': checkoutDetails.paymentMethod === PAYMENT_METHOD.FONEPAY,
+                })}>
+                Fonepay
+              </p>
+            </div>
+          </motion.div>
+        </section>
       </div>
     </div>
   );
