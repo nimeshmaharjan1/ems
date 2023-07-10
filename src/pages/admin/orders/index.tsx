@@ -67,7 +67,7 @@ const Orders: NextPageWithLayout = () => {
     {
       onSuccess: (data) => {
         showToast(Toast.success, data?.message);
-        queryClient.invalidateQueries({ queryKey: ['fetchProducts'] });
+        queryClient.invalidateQueries({ queryKey: ['fetchOrders'] });
       },
       onError: (error: any) => {
         showToast(Toast.error, error?.response?.data?.message);
@@ -131,7 +131,6 @@ const Orders: NextPageWithLayout = () => {
                           <td className="">{order.items.length}</td>
                           {/* <td className="">{order.user?.phone_number}</td> */}
                           <td className="">रू {formatPrice(order.totalPrice)}</td>
-
                           <td
                             className="text-center cursor-pointer"
                             onClick={(e) => {
@@ -171,7 +170,10 @@ const Orders: NextPageWithLayout = () => {
                           <td>
                             <button
                               className="gap-1 ml-2 btn group btn-error btn-xs btn-outline"
-                              onClick={() => mutateDeleteOrder({ orderId: order.id })}>
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                mutateDeleteOrder({ orderId: order.id });
+                              }}>
                               {isOrderDeleting ? (
                                 <span className="loading loading-spinner loading-xs"></span>
                               ) : (

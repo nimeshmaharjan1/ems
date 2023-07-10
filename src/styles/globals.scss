@@ -44,7 +44,7 @@
     border-radius: 24px;
   }
   .badge {
-    @apply font-semibold uppercase min-w-[62px];
+    @apply font-semibold uppercase;
   }
   .table {
     :where(thead, tfoot) {

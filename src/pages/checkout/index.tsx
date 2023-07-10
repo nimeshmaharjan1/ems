@@ -86,12 +86,19 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
       items: cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.sellingPrice,
+        price:
+          session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+            ? checkoutDetails.wholesaleOption === 'CASH'
+              ? item.wholesaleCashPrice
+              : checkoutDetails.wholesaleOption === 'CREDIT'
+              ? item.wholesaleCreditPrice
+              : item.sellingPrice
+            : item.sellingPrice,
       })),
       customerAddress: checkoutDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : checkoutDetails.deliveryAddress,
       userId: session?.user?.id,
       additionalPhoneNumber: checkoutDetails.additionalPhoneNumber,
-      selectedWholesaleOption: checkoutDetails.wholesaleOption,
+      selectedWholesaleOption: session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? checkoutDetails.wholesaleOption : null,
       paymentMethod: checkoutDetails.paymentMethod,
     };
     setIsLoading(true);
