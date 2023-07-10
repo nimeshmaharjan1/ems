@@ -19,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         wholesaleCreditPrice,
         crossedPrice,
         sellingPrice,
+        status,
       } = req.body;
 
       const categoryId = category?.value;
@@ -40,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           hasOffer,
           wholesaleCashPrice: parseFloat(wholesaleCashPrice),
           wholesaleCreditPrice: parseFloat(wholesaleCreditPrice),
+          status,
         },
       });
       res.status(200).json({ message: 'Product successfully created.', product });

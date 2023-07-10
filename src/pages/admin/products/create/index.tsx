@@ -11,7 +11,7 @@ import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
-import { Category, Company } from '@prisma/client';
+import { Category, Company, PRODUCT_STATUS } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
@@ -50,6 +50,7 @@ const productSchema = z
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
     hasOffer: z.boolean(),
+    status: z.enum(['ACTIVE', 'DRAFT']),
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {
@@ -87,6 +88,7 @@ const CreateProduct: NextPageWithLayout = () => {
     quantity: '',
     slug: '',
     hasOffer: false,
+    status: PRODUCT_STATUS.ACTIVE,
   };
 
   const {
@@ -398,6 +400,16 @@ const CreateProduct: NextPageWithLayout = () => {
                 {...register('slug')}
                 className={`input input-bordered w-full  ${errors?.slug ? 'input-error' : ''}`}
               />
+            </FormControl>
+            <FormControl label="Status" className="lg:mt-3">
+              <select className="select select-bordered" {...register('status')}>
+                <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
+                  ACTIVE
+                </option>
+                <option value={PRODUCT_STATUS.DRAFT} defaultChecked>
+                  DRAFT
+                </option>
+              </select>
             </FormControl>
           </div>
           {/* <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">

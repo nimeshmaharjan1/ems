@@ -25,7 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               email: true,
             },
           },
-          items: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       });
       res.status(200).json({ orders, limit: limit as number, page: Number(page), totalPages, totalRecords });

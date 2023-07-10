@@ -18,11 +18,11 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { GetServerSideProps, NextPage } from 'next';
 import { NextPageWithLayout } from '../_app';
 import OrderSummary from '@/features/checkout/components/order-summary';
-import { PrismaClient, Settings } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { PAYMENT_METHOD, PrismaClient, SELECTED_WHOLESALE_OPTION, Settings, USER_ROLES } from '@prisma/client';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const prisma = new PrismaClient();
+
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
   if (!session) {
     return {
@@ -40,11 +40,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export interface IAddressDetails {
+export interface ICheckoutDetails {
   deliveryAddress: string;
   additionalPhoneNumber: string;
   chosenAddress: 'shop-address' | 'not-shop-address';
   isInvalid: boolean;
+  wholesaleOption?: SELECTED_WHOLESALE_OPTION;
+  paymentMethod: PAYMENT_METHOD;
 }
 
 const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
@@ -59,18 +61,22 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
     decreaseCartItemQuantity,
     increaseCartItemQuantity,
     updateCartItemQuantity,
+    getItemTotalWholesaleCashPrice,
+    getItemTotalWholesaleCreditPrice,
   } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
-  const [addressDetails, setAddressDetails] = useState<IAddressDetails>({
+  const [checkoutDetails, setCheckoutDetails] = useState<ICheckoutDetails>({
     deliveryAddress: '',
     chosenAddress: 'not-shop-address',
     isInvalid: false,
     additionalPhoneNumber: '',
+    wholesaleOption: SELECTED_WHOLESALE_OPTION.CASH,
+    paymentMethod: PAYMENT_METHOD.COD,
   });
   const handleCreateOrder = async () => {
-    if (addressDetails.chosenAddress === 'not-shop-address' && !addressDetails.deliveryAddress) {
-      setAddressDetails((prev) => ({
+    if (checkoutDetails.chosenAddress === 'not-shop-address' && !checkoutDetails.deliveryAddress) {
+      setCheckoutDetails((prev) => ({
         ...prev,
         isInvalid: true,
       }));
@@ -80,16 +86,31 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
       items: cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.sellingPrice,
+        price:
+          session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+            ? checkoutDetails.wholesaleOption === 'CASH'
+              ? item.wholesaleCashPrice
+              : checkoutDetails.wholesaleOption === 'CREDIT'
+              ? item.wholesaleCreditPrice
+              : item.sellingPrice
+            : item.sellingPrice,
       })),
-      customerAddress: addressDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : addressDetails.deliveryAddress,
+      customerAddress: checkoutDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : checkoutDetails.deliveryAddress,
       userId: session?.user?.id,
-      additionalPhoneNumber: addressDetails.additionalPhoneNumber,
+      additionalPhoneNumber: checkoutDetails.additionalPhoneNumber,
+      selectedWholesaleOption: session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? checkoutDetails.wholesaleOption : null,
+      paymentMethod: checkoutDetails.paymentMethod,
     };
     setIsLoading(true);
     try {
       await axios.post('/api/orders', payload);
-      modalRef.current?.show();
+      if (checkoutDetails.paymentMethod === PAYMENT_METHOD.FONEPAY) {
+        modalRef.current?.show();
+      } else {
+        localStorage.removeItem('cartItems');
+        setCartItems([]);
+        router.replace('/products');
+      }
     } catch (error) {
       setIsLoading(false);
       showToast(Toast.error, 'Something went wrong while trying to create the order.');
@@ -141,7 +162,7 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
           className={classNames('col-span-6 lg:col-span-4', {
             'col-span-6': cartItems.length === 0,
           })}>
-          <div className="shadow-lg card">
+          <div className="shadow-lg card bg-base-200">
             <div className="card-body">
               {/* <div className="card-title">Your Cart</div> */}
               {cartItems.length === 0 ? (
@@ -199,7 +220,10 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
                                   </div>
                                 </div>
                               </div>
-                              {item.hasOffer ? (
+
+                              {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+                                <p className="mt-4 font-medium">रू {formatPrice(getItemTotalWholesaleCashPrice(item.productId))}</p>
+                              ) : item.hasOffer ? (
                                 <>
                                   <p className="mt-4 text-sm text-gray-400 line-through">
                                     रू {formatPrice(getItemTotalDiscountedPrice(item.productId))}
@@ -232,10 +256,10 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
           </div>
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
-          <ContactInformation {...{ addressDetails, setAddressDetails }}></ContactInformation>
+          <ContactInformation {...{ checkoutDetails, setCheckoutDetails }}></ContactInformation>
           <OrderSummary
             deliveryCharge={settings?.deliveryCharge!}
-            {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, addressDetails, setAddressDetails }}></OrderSummary>
+            {...{ isLoading, modalRef, setIsLoading, handleCreateOrder, checkoutDetails, setCheckoutDetails }}></OrderSummary>
         </motion.section>
       </div>
     </>

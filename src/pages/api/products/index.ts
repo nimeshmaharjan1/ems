@@ -77,11 +77,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         include: {
           category: true,
           company: true,
-          Review: true,
+          reviews: true,
         },
       });
       const productsWithRatingSummary = products.map((product) => {
-        const ratingSummary = getRatingSummary(product.Review);
+        const ratingSummary = getRatingSummary(product.reviews);
         const totalRatings = ratingSummary['1'] + ratingSummary['2'] + ratingSummary['3'] + ratingSummary['4'] + ratingSummary['5'];
 
         const averageRating = (

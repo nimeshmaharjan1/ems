@@ -9,9 +9,12 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import classNames from 'classnames';
 import { IProduct } from '@/shared/interfaces/product.interface';
 import { getPercentageDifference } from '@/shared/utils/helper.util';
+import { useSession } from 'next-auth/react';
+import { USER_ROLES } from '@prisma/client';
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
   const { cartItems, setCartItems, addToCart } = useCartStore();
+  const { data: session } = useSession();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     addToCart({
@@ -38,7 +41,7 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
       <figure className="relative z-20 w-full cursor-pointer h-44" onClick={() => router.push(`/products/${product.id}`)}>
         <Image quality={100} src={product.images?.[0] as string} className="z-10 object-cover border-b-2" fill alt="Shoes" />
       </figure>
-      {product.hasOffer && (
+      {product.hasOffer && session?.user?.role !== USER_ROLES.BUSINESS_CLIENT && (
         <span className="absolute top-0 right-0 z-30 p-2 text-xs text-white rounded-bl-lg bg-primary">
           Save {getPercentageDifference(product.sellingPrice, product.crossedPrice)}%
         </span>
@@ -51,20 +54,32 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
             {product.title}
           </Link>
           <Rating rating={Number.isNaN(product.ratingSummary.averageRating) ? 0 : Number(product.ratingSummary.averageRating)}></Rating>
-          {product.hasOffer ? (
-            <div className="space-y-1">
-              <p className="text-xs font-medium line-through opacity-60">
-                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.crossedPrice))}
-              </p>
+          {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
+            <>
               <p className="font-medium text-red-500">
-                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.sellingPrice))}
+                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.wholesaleCashPrice))}
               </p>
-            </div>
+            </>
           ) : (
-            <p className="font-medium text-red-500">
-              <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.price))}
-            </p>
+            <>
+              {' '}
+              {product.hasOffer ? (
+                <div className="space-y-1">
+                  <p className="text-xs font-medium line-through opacity-60">
+                    <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.crossedPrice))}
+                  </p>
+                  <p className="font-medium text-red-500">
+                    <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.sellingPrice))}
+                  </p>
+                </div>
+              ) : (
+                <p className="font-medium text-red-500">
+                  <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.price))}
+                </p>
+              )}
+            </>
           )}
+
           <div className="flex items-center mt-1 gap-x-2">
             <div
               className={classNames('w-2 h-2 rounded-full', {
