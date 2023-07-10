@@ -16,6 +16,8 @@ import EditOrderStatusModal from '../../../features/admin/orders/edit-status-mod
 import classNames from 'classnames';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
 import { Trash } from 'lucide-react';
+import Drawer from '@/shared/components/drawer';
+import OrderDrawer from '@/features/admin/orders/order-drawer';
 interface ChangePaidStatus {
   orderId: string;
   hasBeenPaid: boolean;
@@ -78,6 +80,7 @@ const Orders: NextPageWithLayout = () => {
 
   const edit_order_status_modal_ref = useRef<HTMLDialogElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | undefined>(undefined);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   if (!isMounted) return null;
   return (
@@ -117,7 +120,12 @@ const Orders: NextPageWithLayout = () => {
                     ordersData.orders.length > 0 &&
                     ordersData?.orders.map((order) => {
                       return (
-                        <tr key={order.id} onClick={() => console.log('hello')}>
+                        <tr
+                          key={order.id}
+                          onClick={(e) => {
+                            setSelectedOrder(order);
+                            setIsDrawerOpen(true);
+                          }}>
                           <td>{order.orderNumber}</td>
                           <td className="">{order.user.name}</td>
                           <td className="">{order.items.length}</td>
@@ -177,27 +185,18 @@ const Orders: NextPageWithLayout = () => {
                 </tbody>
               </table>
             )}
-            {/* <dialog ref={markAsPaidModalRef} className="shadow-lg modal modal-bottom sm:modal-middle">
-          <section className="modal-box">
-            <h3 className="text-lg font-bold">Order Payment</h3>
-            <p className="py-4 font-medium">Mark this order as paid?</p>
-            <div className="modal-action">
-              <button className="btn btn-ghost" onClick={() => markAsPaidModalRef.current?.close()}>
-                Close
-              </button>
-              <button className="btn btn-primary" onClick={() => change}>Mark as Paid</button>
-            </div>
-          </section>
-        </dialog> */}
           </section>
           <div className="flex justify-end mt-8 place-self-end">
             {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
           </div>
           {selectedOrder && (
-            <EditOrderStatusModal
-              order={selectedOrder}
-              setSelectedOrder={setSelectedOrder}
-              ref={edit_order_status_modal_ref}></EditOrderStatusModal>
+            <>
+              <EditOrderStatusModal
+                order={selectedOrder}
+                setSelectedOrder={setSelectedOrder}
+                ref={edit_order_status_modal_ref}></EditOrderStatusModal>
+              <OrderDrawer order={selectedOrder} {...{ isDrawerOpen, setIsDrawerOpen }}></OrderDrawer>
+            </>
           )}
         </>
       )}

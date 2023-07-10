@@ -14,13 +14,10 @@ export default function Drawer({ children, isOpen, setIsOpen }: IProps) {
       }>
       <section
         className={
-          ' w-screen max-w-lg right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
+          ' w-screen max-w-4xl  right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
           (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
         }>
-        <article className="relative flex flex-col w-screen h-full max-w-lg pb-10 space-y-6">
-          <header className="p-4 text-lg font-bold">Header</header>
-          {children}
-        </article>
+        <article className="relative w-screen h-full max-w-4xl p-6">{children}</article>
       </section>
       <section
         className="w-screen h-full cursor-pointer "
