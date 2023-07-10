@@ -59,7 +59,7 @@ const Products: NextPageWithLayout = () => {
           onClick={() => {
             router.push('/admin/products/create');
           }}>
-          Create
+          Add Product
         </button>
       </div>
       <section className="overflow-x-auto">
@@ -93,12 +93,16 @@ const Products: NextPageWithLayout = () => {
                   <tr key={product.id}>
                     <td>{`${index + 1}`}</td>
                     <td className="flex items-center gap-x-3">
-                      <Image className="rounded-lg" src={product.images[0]} width={50} height={50} alt={product.slug}></Image>
-                      {`${product.title.substring(0, 60)}${product.title.length > 60 ? '...' : ''}`}
+                      <Link href={`/admin/products/edit/${product.id}`}>
+                        <Image className="rounded-lg" src={product.images[0]} width={50} height={50} alt={product.slug}></Image>
+                      </Link>
+                      <Link href={`/admin/products/edit/${product.id}`}>
+                        {`${product.title.substring(0, 60)}${product.title.length > 60 ? '...' : ''}`}
+                      </Link>
                     </td>
                     <td>{`${product.modal.substring(0, 60)}${product.modal.length > 60 ? '...' : ''}`}</td>
                     <td>रू {formatPrice(product.price)}</td>
-                    <td>
+                    <td className="text-center">
                       <span className="px-2 py-1 text-xs font-medium text-white rounded-md bg-gradient-to-r from-cyan-400 to-blue-400">
                         {product.quantity}
                       </span>
@@ -111,9 +115,9 @@ const Products: NextPageWithLayout = () => {
                     <td>{formatDateWithTime(product.createdAt)}</td>
                     <td className="text-center ">
                       <div className="flex">
-                        <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-primary btn-xs btn-outline">
+                        {/* <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-primary btn-xs btn-outline">
                           <FiSettings></FiSettings>
-                        </Link>
+                        </Link> */}
                         <button
                           className="gap-1 ml-2 btn group btn-error btn-xs btn-outline"
                           disabled={isProductDeleting}

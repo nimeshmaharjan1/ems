@@ -12,6 +12,7 @@ import { AiOutlineCheck } from 'react-icons/ai';
 import { BsTrash } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import EditOrderStatusModal from './edit-status-modal';
 interface ChangePaidStatus {
   orderId: string;
   hasBeenPaid: boolean;
@@ -71,16 +72,19 @@ const Orders: NextPageWithLayout = () => {
   const changePaidStatus = (args: ChangePaidStatus) => {
     mutateHasBeenPaid(args);
   };
+
+  const edit_order_status_modal_ref = useRef<HTMLDialogElement>(null);
+
   if (!isMounted) return null;
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold">Orders</h2>
-      </div>
       {isError ? (
         <h2 className="text-error">Something went wrong while trying to get the orders.</h2>
       ) : (
         <>
+          <section className="flex justify-end mb-4">
+            <button className="btn btn-primary btn-sm">Create Order</button>
+          </section>
           <section className="overflow-x-auto">
             {isLoading ? (
               <table className="flex items-center justify-center h-96">
@@ -93,13 +97,14 @@ const Orders: NextPageWithLayout = () => {
                 <thead>
                   <tr className="bg-base-200">
                     <th>#</th>
-                    <th className="">Ordered By</th>
-                    <th className="">Total</th>
-                    <th className="">Ordered At</th>
+                    <th className="">Customer Name</th>
+                    <th className="">Quantity</th>
+                    <th className="">Total Price</th>
                     <th className="">Payment Status</th>
                     <th className="">Payment Method</th>
                     <th className="">Status</th>
-                    <th className="">Action</th>
+                    <th className="">Ordered At</th>
+                    <th className="">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -111,19 +116,22 @@ const Orders: NextPageWithLayout = () => {
                         <tr key={order.id}>
                           <td>{order.orderNumber}</td>
                           <td className="">{order.user.name}</td>
+                          <td className="">{order.items.length}</td>
                           {/* <td className="">{order.user?.phone_number}</td> */}
                           <td className="">रू {formatPrice(order.totalPrice)}</td>
 
-                          <td className="">{formatDateWithTime(order.createdAt)}</td>
-                          <td>
+                          <td className="text-center">
                             {order.hasBeenPaid ? (
-                              <div className="badge badge-sm badge-success">Paid</div>
+                              <div className="uppercase badge badge-sm badge-success">Paid</div>
                             ) : (
-                              <div className="badge badge-sm badge-warning">Not Paid</div>
+                              <div className="uppercase badge badge-sm badge-neutral">Unpaid</div>
                             )}
                           </td>
                           <td>{order.paymentMethod}</td>
-                          <td>{order.status}</td>
+                          <td>
+                            <p className="badge badge-sm badge-neutral">{order.status}</p>
+                          </td>
+                          <td className="">{formatDateWithTime(order.createdAt)}</td>
                           <td>
                             {' '}
                             {/* {isHasBeenPaidLoading ? (
@@ -176,6 +184,7 @@ const Orders: NextPageWithLayout = () => {
           <div className="flex justify-end mt-8 place-self-end">
             {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
           </div>
+          <EditOrderStatusModal ref={edit_order_status_modal_ref}></EditOrderStatusModal>
         </>
       )}
     </>

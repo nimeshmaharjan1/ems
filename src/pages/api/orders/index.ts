@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
             userId,
             customerAddress,
-            totalPrice: totalPrice + deliveryCharge + vat,
+            totalPrice: Math.round(totalPrice + deliveryCharge + vat),
             additionalPhoneNumber,
             selectedWholesaleOption,
             paymentMethod,

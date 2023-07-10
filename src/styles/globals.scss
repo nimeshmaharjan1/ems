@@ -40,6 +40,9 @@ body::-webkit-scrollbar-thumb {
   }
 }
 @layer components {
+  .badge {
+    @apply font-semibold uppercase;
+  }
   .table {
     :where(thead, tfoot) {
       @apply text-current text-sm;
