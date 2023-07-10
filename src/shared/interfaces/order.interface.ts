@@ -1,3 +1,5 @@
+import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
+
 export interface PaginatedOrders {
   orders: Order[];
   limit: number;
@@ -7,19 +9,21 @@ export interface PaginatedOrders {
 }
 
 export interface Order {
-  orderNumber: number;
-  paymentMethod: string;
-  status: string;
   id: string;
+  orderNumber: number;
   totalPrice: number;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
-  hasBeenPaid: boolean;
-  paidAt: Date;
+  deliveryCharge: number;
+  status: ORDER_STATUS;
+  paymentStatus: PAYMENT_STATUS;
+  selectedWholesaleOption: string;
+  paymentMethod: string;
+  customerAddress: string;
+  additionalPhoneNumber: string;
   user: User;
   items: Item[];
-  totalDiscountedPrice?: number;
 }
 
 export interface Item {

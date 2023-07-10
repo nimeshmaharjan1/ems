@@ -1,7 +1,7 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
-import { PaginatedOrders } from '@/shared/interfaces/order.interface';
+import { Order, PaginatedOrders } from '@/shared/interfaces/order.interface';
 import { formatDateWithTime, formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
@@ -12,7 +12,10 @@ import { AiOutlineCheck } from 'react-icons/ai';
 import { BsTrash } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import EditOrderStatusModal from './edit-status-modal';
+import EditOrderStatusModal from '../../../features/admin/orders/edit-status-modal';
+import classNames from 'classnames';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
+import { Trash } from 'lucide-react';
 interface ChangePaidStatus {
   orderId: string;
   hasBeenPaid: boolean;
@@ -25,7 +28,7 @@ const Orders: NextPageWithLayout = () => {
     data: ordersData,
     isError,
     isLoading,
-  } = useQuery<PaginatedOrders, Error>(['fetchProducts', currentPage, limit], async () => {
+  } = useQuery<PaginatedOrders, Error>(['fetchOrders', currentPage, limit], async () => {
     const response = await axios.get(`/api/admin/orders?page=${currentPage}&limit=${limit}`);
     return response.data;
   });
@@ -74,6 +77,7 @@ const Orders: NextPageWithLayout = () => {
   };
 
   const edit_order_status_modal_ref = useRef<HTMLDialogElement>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | undefined>(undefined);
 
   if (!isMounted) return null;
   return (
@@ -113,53 +117,58 @@ const Orders: NextPageWithLayout = () => {
                     ordersData.orders.length > 0 &&
                     ordersData?.orders.map((order) => {
                       return (
-                        <tr key={order.id}>
+                        <tr key={order.id} onClick={() => console.log('hello')}>
                           <td>{order.orderNumber}</td>
                           <td className="">{order.user.name}</td>
                           <td className="">{order.items.length}</td>
                           {/* <td className="">{order.user?.phone_number}</td> */}
                           <td className="">रू {formatPrice(order.totalPrice)}</td>
 
-                          <td className="text-center">
-                            {order.hasBeenPaid ? (
-                              <div className="uppercase badge badge-sm badge-success">Paid</div>
-                            ) : (
-                              <div className="uppercase badge badge-sm badge-neutral">Unpaid</div>
-                            )}
+                          <td
+                            className="text-center cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedOrder(order);
+                              edit_order_status_modal_ref.current?.show();
+                            }}>
+                            <div
+                              className={classNames('badge badge-sm', {
+                                'badge-neutral': order.paymentStatus === PAYMENT_STATUS.Unpaid,
+                                'badge-success': order.paymentStatus === PAYMENT_STATUS.Paid,
+                                'badge-error': order.paymentStatus === PAYMENT_STATUS.Refunded,
+                              })}>
+                              {order.paymentStatus}
+                            </div>
                           </td>
                           <td>{order.paymentMethod}</td>
-                          <td>
-                            <p className="badge badge-sm badge-neutral">{order.status}</p>
+                          <td
+                            className="cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedOrder(order);
+                              edit_order_status_modal_ref.current?.show();
+                            }}>
+                            <p
+                              className={classNames('badge badge-sm', {
+                                'badge-neutral': order.status === ORDER_STATUS.Pending,
+                                'badge-warning': order.status === ORDER_STATUS.Processing,
+                                'badge-accent': order.status === ORDER_STATUS.Dispatched,
+                                'badge-success': order.status === ORDER_STATUS.Delivered,
+                                'badge-error': order.status === ORDER_STATUS.Cancelled || order.status === ORDER_STATUS.Returned,
+                              })}>
+                              {order.status}
+                            </p>
                           </td>
                           <td className="">{formatDateWithTime(order.createdAt)}</td>
                           <td>
-                            {' '}
-                            {/* {isHasBeenPaidLoading ? (
-                                <button className="btn btn-xs btn-outline">
-                                  <span className="loading loading-spinner loading-xs"></span>
-                                </button>
-                              ) : ( */}
-                            {/* <>
-                                {order.hasBeenPaid ? (
-                                  <button
-                                    disabled={isHasBeenPaidLoading}
-                                    className="gap-1 btn btn-warning btn-xs btn-outline"
-                                    onClick={() => changePaidStatus({ hasBeenPaid: false, orderId: order.id })}>
-                                    <RxCross1></RxCross1> Mark as Unpaid
-                                  </button>
-                                ) : (
-                                  <button
-                                    disabled={isHasBeenPaidLoading}
-                                    className="gap-1 btn btn-success btn-xs btn-outline"
-                                    onClick={() => changePaidStatus({ hasBeenPaid: true, orderId: order.id })}>
-                                    <AiOutlineCheck></AiOutlineCheck> Mark as Paid
-                                  </button>
-                                )}
-                              </> */}
                             <button
-                              className="gap-1 ml-2 btn btn-error btn-xs btn-outline"
+                              className="gap-1 ml-2 btn group btn-error btn-xs btn-outline"
                               onClick={() => mutateDeleteOrder({ orderId: order.id })}>
-                              {isOrderDeleting ? <span className="loading loading-spinner loading-xs"></span> : <BsTrash></BsTrash>}
+                              {isOrderDeleting ? (
+                                <span className="loading loading-spinner loading-xs"></span>
+                              ) : (
+                                <Trash size={12} className="group-hover:text-white"></Trash>
+                              )}
                             </button>
                           </td>
                         </tr>
@@ -184,7 +193,12 @@ const Orders: NextPageWithLayout = () => {
           <div className="flex justify-end mt-8 place-self-end">
             {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
           </div>
-          <EditOrderStatusModal ref={edit_order_status_modal_ref}></EditOrderStatusModal>
+          {selectedOrder && (
+            <EditOrderStatusModal
+              order={selectedOrder}
+              setSelectedOrder={setSelectedOrder}
+              ref={edit_order_status_modal_ref}></EditOrderStatusModal>
+          )}
         </>
       )}
     </>

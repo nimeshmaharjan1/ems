@@ -16,7 +16,7 @@ const Header: React.FC<{
 }> = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const router = useRouter();
   return (
-    <header className="z-50 flex items-center justify-between w-full h-16 px-8 border-b shadow border-b-base-300 bg-base-100 gap-x-3">
+    <header className="z-50 flex items-center justify-between w-full h-16 px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
       <h3 className="text-2xl font-semibold capitalize">{getRoute(router.pathname)}</h3>
       <section className="flex items-center gap-2">
         <div className="dropdown dropdown-end">
