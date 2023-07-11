@@ -64,6 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             additionalPhoneNumber,
             selectedWholesaleOption,
             paymentMethod,
+            amountLeftToPay: Math.round(totalPrice + deliveryCharge + vat),
+            partiallyPaidAmount: 0,
           },
           include: {
             items: true,

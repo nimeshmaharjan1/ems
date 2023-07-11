@@ -30,7 +30,7 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
         <Sidebar {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Sidebar>
         <section className="ml-[12rem]">
           <div className="h-[70px]">
-            <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
+            <Header></Header>
           </div>
           {/* <div className="my-2 mt-1 text-sm breadcrumbs mx-7">
             <ul>

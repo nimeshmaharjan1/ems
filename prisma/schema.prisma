@@ -82,13 +82,6 @@ enum ORDER_STATUS {
   Returned
 }
 
-enum PAYMENT_STATUS {
-  Paid
-  Unpaid
-  Partial
-  Refunded
-}
-
 model Comment {
   id          String     @id @default(cuid())
   comment     String
@@ -105,6 +98,13 @@ model Comment {
 enum PAYMENT_METHOD {
   COD
   FONEPAY
+}
+
+enum PAYMENT_STATUS {
+  Paid
+  Unpaid
+  Partial
+  Refunded
 }
 
 model Order {
@@ -125,8 +125,9 @@ model Order {
   customerAddress         String
   additionalPhoneNumber   String?
   complaints              Complaint[]
-  partialyPaidAmount      Float?
+  partiallyPaidAmount     Float?
   amountLeftToPay         Float?
+  partialPaymentTime      DateTime?                  @updatedAt
 }
 
 model OrderItem {

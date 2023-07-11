@@ -143,6 +143,7 @@ const Orders: NextPageWithLayout = () => {
                                 'badge-neutral': order.paymentStatus === PAYMENT_STATUS.Unpaid,
                                 'badge-success': order.paymentStatus === PAYMENT_STATUS.Paid,
                                 'badge-error': order.paymentStatus === PAYMENT_STATUS.Refunded,
+                                'badge-accent': order.paymentStatus === PAYMENT_STATUS.Partial,
                               })}>
                               {order.paymentStatus}
                             </div>

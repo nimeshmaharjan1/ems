@@ -9,3 +9,11 @@ export const changeOrderStatus = async (data: { paymentStatus: PAYMENT_STATUS; s
   });
   return response.data;
 };
+
+export const addPartialPayment = async (data: { orderId: string; partiallyPaidAmount: number }) => {
+  const response = await axios.patch(`/api/admin/orders/partially-paid`, {
+    orderId: data.orderId,
+    partiallyPaidAmount: data.partiallyPaidAmount,
+  });
+  return response.data;
+};
