@@ -4,6 +4,11 @@ export const isObj = <T>(arg: T): boolean => {
   return typeof arg === 'object' && !Array.isArray(arg) && arg !== null;
 };
 
+export const formatDateWithTime = (date: Date) => {
+  const newDate = new Date(date);
+  return DateTime.fromJSDate(newDate).toLocaleString(DateTime.DATETIME_MED);
+};
+
 export const getDateWithWeekDay = (date: Date) => {
   const newDate = new Date(date);
   return DateTime.fromJSDate(newDate).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
@@ -38,3 +43,8 @@ export const downloadFile = (base64String: string, fileName: string) => {
   // Release the URL object
   URL.revokeObjectURL(url);
 };
+
+export const rupees = 'रू';
+
+export const getPercentageDifference = (sellingPrice: number, crossedPrice: number) =>
+  Math.round(((crossedPrice - sellingPrice) / sellingPrice) * 100);

@@ -1,93 +1,145 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
-import { IProductResponse } from '@/shared/interfaces/product.interface';
-import { formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
-import { PrismaClient, Product } from '@prisma/client';
-import { GetServerSideProps } from 'next';
+import Pagination from '@/shared/components/pagination';
+import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
+import { formatDateWithTime, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
+import { Toast, showToast } from '@/shared/utils/toast.util';
+import axios from 'axios';
+import { Settings, Trash } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { FaCogs } from 'react-icons/fa';
+import { FiSettings } from 'react-icons/fi';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-const prisma = new PrismaClient();
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const products = await prisma.product.findMany({
-      include: {
-        category: true,
-        company: true,
-      },
-    });
-    return {
-      props: {
-        products: JSON.parse(JSON.stringify(products)),
-      },
-    };
-  } catch (error) {
-    console.error(error);
-  }
-  return {
-    props: {
-      products: null,
-    },
-  };
-};
-
-const Products: NextPageWithLayout<{ products: IProductResponse[] }> = ({ products }) => {
+const Products: NextPageWithLayout = () => {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+  const {
+    data: productData,
+    isError,
+    isLoading,
+  } = useQuery<PaginatedProductsResponse, Error>(['fetchProducts', currentPage, limit], async () => {
+    const response = await axios.get(`/api/products?page=${currentPage}&limit=${limit}`);
+    return response.data;
+  });
+  const totalPages = productData?.totalPages;
+  const [isMounted, setIsMounted] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate: mutateDeleteProduct, isLoading: isProductDeleting } = useMutation(
+    async (args: { productId: string }) => {
+      const response = await axios.delete(`/api/admin/products/${args.productId}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchProducts'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) return null;
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-semibold text-2xl">Products</h2>
+      <div className="flex items-center justify-end mb-6">
         <button
-          className="btn btn-sm btn-secondary"
+          className="btn btn-sm btn-primary"
           onClick={() => {
             router.push('/admin/products/create');
           }}>
-          Create
+          Add Product
         </button>
       </div>
       <section className="overflow-x-auto">
-        <table className="table w-full">
-          <thead>
-            <tr>
-              <th className="border !border-base-300">Title</th>
-              <th className="border !border-base-300">Category</th>
-              <th className="border !border-base-300">Company</th>
-              <th className="border !border-base-300">Quantity</th>
-              <th className="border !border-base-300">Price</th>
-              <th className="border !border-base-300">Created On</th>
-              <th className="border !border-base-300 w-48">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              return (
-                <tr key={product.id}>
-                  <td className="border !border-base-300">
-                    {`${product.title.substring(0, 40)}${product.title.length > 40 ? '...' : ''}`}
-                  </td>
-                  <td className="border !border-base-300">{product.category?.name}</td>
-                  <td className="border !border-base-300">{product.company?.name}</td>
-                  <td className="border !border-base-300">{product.quantity}</td>
-                  <td className="border !border-base-300">&#8377; {formatPrice(product.price)}</td>
-                  <td className="border !border-base-300">{getDateWithWeekDay(product.createdAt)}</td>
-                  <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                    <Link href={`/admin/products/edit/${product.id}`} className="btn btn-info btn-sm  gap-1">
-                      <FaCogs></FaCogs> Edit
-                    </Link>
-                    <button className="btn btn-error btn-sm  gap-1">
-                      <BsTrash></BsTrash> Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {isError ? (
+          <h2 className="p-2 font-medium text-error">Something went wrong while trying to fetch the products.</h2>
+        ) : isLoading ? (
+          <table className="flex items-center justify-center h-96">
+            <button className="btn btn-ghost disabled">
+              <span className="loading loading-spinner"></span>
+            </button>
+          </table>
+        ) : productData?.products.length === 0 ? (
+          <h2 className="p-2 font-medium text-warning">No products have been added.</h2>
+        ) : (
+          <table className="table w-full overflow-auto">
+            <thead>
+              <tr className="bg-base-200">
+                <th>#</th>
+                <th>Title</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Inventory</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productData?.products.map((product, index) => {
+                return (
+                  <tr key={product.id}>
+                    <td>{`${index + 1}`}</td>
+                    <td className="flex items-center gap-x-3">
+                      <Link href={`/admin/products/edit/${product.id}`}>
+                        <Image className="rounded-lg" src={product.images[0]} width={50} height={50} alt={product.slug}></Image>
+                      </Link>
+                      <Link href={`/admin/products/edit/${product.id}`}>
+                        {`${product.title.substring(0, 60)}${product.title.length > 60 ? '...' : ''}`}
+                      </Link>
+                    </td>
+                    <td>{`${product.modal.substring(0, 60)}${product.modal.length > 60 ? '...' : ''}`}</td>
+                    <td>रू {formatPrice(product.price)}</td>
+                    <td className="text-center">
+                      <span className="px-2 py-1 text-xs font-medium text-white rounded-md bg-gradient-to-r from-cyan-400 to-blue-400">
+                        {product.quantity}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md ring-1 ring-inset ring-green-600/20">
+                        {product.status}
+                      </span>
+                    </td>
+                    <td>{formatDateWithTime(product.createdAt)}</td>
+                    <td className="text-center ">
+                      <div className="flex">
+                        {/* <Link href={`/admin/products/edit/${product.id}`} className="gap-1 btn btn-primary btn-xs btn-outline">
+                          <FiSettings></FiSettings>
+                        </Link> */}
+                        <button
+                          className="gap-1 ml-2 btn group btn-error btn-xs btn-outline"
+                          disabled={isProductDeleting}
+                          onClick={() => {
+                            mutateDeleteProduct({ productId: product.id });
+                          }}>
+                          {isProductDeleting ? (
+                            <span className="loading loading-spinner loading-xs"></span>
+                          ) : (
+                            <Trash className="group-hover:text-white" size={14}></Trash>
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </section>
+      <div className="flex justify-end mt-8 place-self-end">
+        {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
+      </div>
     </>
   );
 };

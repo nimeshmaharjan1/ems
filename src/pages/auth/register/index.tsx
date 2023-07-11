@@ -5,7 +5,7 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { NextPageWithLayout } from '@/pages/_app';
 import AuthLayout from '@/features/auth/layout';
 import { useRouter } from 'next/router';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { IRegister } from '@/features/auth/interfaces';
 import classNames from 'classnames';
 import ErrorMessage from '@/shared/components/error-message';
@@ -14,7 +14,8 @@ import axios, { AxiosError } from 'axios';
 import { USER_ROLES } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { Hash, Store } from 'lucide-react';
 
 const Register: NextPageWithLayout = () => {
   const { data: session } = useSession();
@@ -26,22 +27,30 @@ const Register: NextPageWithLayout = () => {
     username: '',
     name: '',
     phone_number: '',
-    role: USER_ROLES.SUPER_ADMIN,
+    role: USER_ROLES.USER,
+    applyingAsBusinessClient: false,
+    shopAddress: '',
+    taxId: '',
   } as IRegister;
   const {
     register,
     watch,
     formState: { errors },
     handleSubmit,
+    control,
   } = useForm<IRegister>({ defaultValues: formValues, mode: 'onSubmit' });
+
+  const { applyingAsBusinessClient } = useWatch({
+    control,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/auth/register', { ...values, role: USER_ROLES.SUPER_ADMIN });
+      await axios.post('/api/auth/register', values);
       showToast(Toast.success, 'User has been successfully created.');
-      router.push('/api/auth/signin');
+      signIn();
     } catch (error: any) {
       console.error(error);
       setIsSubmitting(false);
@@ -54,9 +63,9 @@ const Register: NextPageWithLayout = () => {
 
   return (
     <div className="card-body">
-      <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Register</h2>
-      <p className="text-lg text-center w-full mb-4">Hey, enter your details here to create to your account.</p>
-      <div className="form-control w-full mb-2 relative">
+      <h2 className="text-center text-lg lg:text-2xl font-[800] tracking-wide mb-2 lg:mb-3">Register</h2>
+      <p className="w-full mb-4 text-sm text-center lg:text-base">Hey, enter your details here to create to your account.</p>
+      <div className="relative w-full mb-0 form-control lg:mb-0">
         <input
           {...register('name', {
             required: 'Full name is required.',
@@ -65,17 +74,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Full Name"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.name,
           })}
         />
         <ErrorMessage>{errors?.name?.message}</ErrorMessage>
         <RxLetterCaseCapitalize
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.name,
           })}></RxLetterCaseCapitalize>
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="relative w-full mb-0 form-control lg:mb-0">
         <input
           {...register('username', {
             required: 'Username is required.',
@@ -84,17 +93,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Username"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
         <AiOutlineUser
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.username,
           })}></AiOutlineUser>
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="relative w-full mb-0 form-control lg:mb-0">
         <input
           {...register('email', {
             required: 'Email is required.',
@@ -106,17 +115,17 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="E-mail"
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.email,
           })}
         />
         <ErrorMessage>{errors?.email?.message}</ErrorMessage>
         <AiOutlineMail
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.email,
           })}></AiOutlineMail>
       </div>
-      <div className="form-control w-full mb-4 relative">
+      <div className="relative w-full form-control lg:mb-0">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -125,26 +134,26 @@ const Register: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
         <ErrorMessage>{errors?.password?.message}</ErrorMessage>
         {showPassword ? (
           <FiEye
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
-      <div className="form-control w-full mb-2 relative">
+      <div className="relative w-full mb-0 form-control lg:mb-0">
         <input
           type="phone"
           {...register('phone_number', {
@@ -156,40 +165,93 @@ const Register: NextPageWithLayout = () => {
           placeholder="Phone Number"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.phone_number,
           })}
         />
         <ErrorMessage>{errors?.phone_number?.message}</ErrorMessage>
         <AiOutlinePhone
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.phone_number,
           })}></AiOutlinePhone>
       </div>
       {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
-        <select className="select select-bordered w-full" {...register('role')} disabled={isSubmitting}>
+        <select className="w-full select select-bordered" {...register('role')} disabled={isSubmitting}>
           <option disabled selected>
             Select Role
           </option>
           <option value={USER_ROLES.USER}>User</option>
-          <option value={USER_ROLES.ADMIN}>Admin</option>
-          <option value={USER_ROLES.ADMIN}>Super Admin</option>
+          <option value={USER_ROLES.STAFF}>Admin</option>
+          <option value={USER_ROLES.STAFF}>Super Admin</option>
         </select>
       )}
+      <div className="form-control">
+        <label className="!justify-start gap-3 cursor-pointer label">
+          <input type="checkbox" {...register('applyingAsBusinessClient')} className="checkbox checkbox-sm checkbox-primary" />
+          <span className="label-text">Register as a business client</span>
+        </label>
+      </div>
+      {applyingAsBusinessClient && (
+        <>
+          <div className="relative w-full mt-1 mb-0 form-control lg:mb-0">
+            <input
+              {...register('taxId', {
+                required: {
+                  value: applyingAsBusinessClient,
+                  message: 'Tax ID is required.',
+                },
+              })}
+              type="text"
+              disabled={isSubmitting}
+              placeholder="Tax ID"
+              autoComplete="off"
+              className={classNames('input input-sm lg:input-md input-bordered w-full', {
+                'input-error': errors?.taxId,
+              })}
+            />
+            <ErrorMessage>{errors?.taxId?.message}</ErrorMessage>
+            <Hash
+              strokeWidth={1.25}
+              className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
+                'text-error': errors?.taxId,
+              })}></Hash>
+          </div>
+          <div className="relative w-full mt-1 mb-0 form-control lg:mb-0">
+            <input
+              {...register('shopAddress', {
+                required: {
+                  value: applyingAsBusinessClient,
+                  message: 'Shop address is required.',
+                },
+              })}
+              type="text"
+              disabled={isSubmitting}
+              placeholder="Shop Address"
+              autoComplete="off"
+              className={classNames('input input-sm lg:input-md input-bordered w-full', {
+                'input-error': errors?.shopAddress,
+              })}
+            />
+            <ErrorMessage>{errors?.shopAddress?.message}</ErrorMessage>
+            <Store
+              strokeWidth={1.25}
+              className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
+                'text-error': errors?.shopAddress,
+              })}></Store>
+          </div>
+        </>
+      )}
       <button
-        className={classNames('btn btn-primary btn-block mt-3 my-2 btn-square gap-2', {
-          loading: isSubmitting,
-        })}
+        className={classNames('btn btn-primary btn-block lg:mt-2 mt-0 my-2 btn-square gap-2')}
         disabled={isSubmitting}
         onClick={handleSubmit(signUp)}>
+        {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign Up
       </button>
 
       <p className="text-sm text-center">
         Already have an account?{' '}
-        <span
-          className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300"
-          onClick={() => router.push('/api/auth/signin')}>
+        <span className="duration-300 cursor-pointer text-secondary hover:text-primary hover:underline" onClick={() => signIn()}>
           Sign In now
         </span>
       </p>

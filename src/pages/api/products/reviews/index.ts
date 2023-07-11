@@ -1,9 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Review } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
-import { getSession } from 'next-auth/react';
+import { PrismaClient, Review } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-type RatingSummary = {
+export type RatingSummary = {
   [key: string]: number;
 };
 
@@ -28,11 +27,9 @@ function getRatingSummary(reviews: Review[]): RatingSummary {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    await isAuthenticated(req, res);
-    const session = await getSession({ req });
-
-    const userId = session?.user?.id as string;
-    const { rating, comment, productId } = req.body;
+    const session = await isAuthenticated(req, res);
+    if (session) return res.status(401).json({ message: 'Unauthorized.' });
+    const { rating, comment, productId, userId } = req.body;
     try {
       await prisma.review.create({
         data: {
@@ -45,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(201).json({ message: 'Your review has been added.' });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to create review.' });
+      res.status(500).json({ error, message: 'Failed to create review.' });
     } finally {
       await prisma.$disconnect();
     }

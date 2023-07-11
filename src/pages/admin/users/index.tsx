@@ -1,103 +1,143 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
-import { IProductResponse } from '@/shared/interfaces/product.interface';
-import { IUserResponse } from '@/shared/interfaces/users.interface';
-import { formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
-import { PrismaClient, Product, USER_ROLES } from '@prisma/client';
+import Pagination from '@/shared/components/pagination';
+import { PaginatedUsers } from '@/shared/interfaces/users.interface';
+import { Toast, showToast } from '@/shared/utils/toast.util';
+import { PrismaClient, USER_ROLES } from '@prisma/client';
+import axios from 'axios';
 import classNames from 'classnames';
-import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactNode } from 'react';
-import { BsTrash } from 'react-icons/bs';
-import { FaCogs } from 'react-icons/fa';
+import { ReactNode, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+// export const getServerSideProps = async () => {
+//   await prisma.user.delete({
+//     where: { id: 'cljlnbhc70000p9k4js35ixzy' },
+//   });
+//   return { props: {} };
+// };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        name: true,
-        email: true,
-        phone_number: true,
-        emailVerified: true,
-        role: true,
-        image: true,
-      },
-    });
-    return {
-      props: {
-        users: JSON.parse(JSON.stringify(users)),
-      },
-    };
-  } catch (error) {
-    console.error(error);
-  }
-  return {
-    props: {
-      users: null,
-    },
-  };
-};
-
-const Users: NextPageWithLayout<{ users: IUserResponse[] }> = ({ users }) => {
-  console.log({ users });
+const Users: NextPageWithLayout = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const {
+    data: userData,
+    isError,
+    isLoading,
+  } = useQuery<PaginatedUsers>(['fetchUsers', currentPage, limit], async () => {
+    const response = await axios.get(`/api/admin/users?page=${currentPage}&limit=${limit}`);
+    return response.data;
+  });
+  const { mutate: mutateChangeRole, isLoading: isChangingRole } = useMutation(
+    async (args: { userId: string; role: USER_ROLES }) => {
+      const response = await axios.patch(`/api/admin/users/${args.userId}/change-role`, {
+        role: args.role,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+      },
+      onError: (error: any) => {
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
+  const handleRoleChange = (args: { userId: string; role: USER_ROLES }) => {
+    mutateChangeRole(args);
+  };
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-semibold text-2xl">Users</h2>
-        <Link className="btn btn-sm btn-secondary" href={'/admin/users/create'}>
-          Create
-        </Link>
+        <h2 className="text-2xl font-semibold">Users</h2>
       </div>
       <section className="overflow-x-auto">
-        <table className="table w-full">
+        <table className="table w-full table-auto">
           <thead>
-            <tr>
-              <th className="border !border-base-300">Name</th>
-              <th className="border !border-base-300">Phone Number</th>
-              <th className="border !border-base-300">Email</th>
-              <th className="border !border-base-300">Username</th>
-              <th className="border !border-base-300">Role</th>
-              <th className="border !border-base-300 w-48">Actions</th>
+            <tr className="bg-base-200">
+              <th className="">Name</th>
+              <th className="">Phone Number</th>
+              <th className="">Email</th>
+              <th className="">Username</th>
+              {/* <th className="">Applying as a Business</th> */}
+              <th className="">Role</th>
+              {/* <th className="">Actions</th> */}
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => {
-              return (
-                <tr key={user.id}>
-                  <td className="border !border-base-300">{`${user.name.substring(0, 40)}${user.name.length > 40 ? '...' : ''}`}</td>
-                  <td className="border !border-base-300">{user.phone_number || '-'}</td>
-                  <td className="border !border-base-300">{`${user.email.substring(0, 40)}${user.email.length > 40 ? '...' : ''}`}</td>
-                  <td className="border !border-base-300">{user.username}</td>
-                  <td className={classNames('border !border-base-300')}>
-                    <span
-                      className={classNames('badge-sm', {
-                        'badge badge-accent': user.role === USER_ROLES.SUPER_ADMIN,
-                        'badge badge-secondary': user.role === USER_ROLES.ADMIN,
-                        'badge badge-primary': user.role === USER_ROLES.USER,
-                      })}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="border !border-base-300 flex gap-2 w-48 justify-between">
-                    <Link href={`/admin/users/edit/${user.id}`} className="btn btn-info btn-sm  gap-1">
+            {isError ? (
+              <h2 className="p-2 py-4 text-error">Something went wrong while trying to fetch the users.</h2>
+            ) : isLoading ? (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  <span className="loading loading-spinner"></span>
+                </td>
+              </tr>
+            ) : (
+              <>
+                {userData &&
+                  userData.data.map((user) => {
+                    return (
+                      <tr
+                        key={user.id}
+                        className={classNames('', {
+                          'bg-base-300': user.applyingAsBusinessClient,
+                        })}>
+                        <td className="">{`${user.name.substring(0, 40)}${user.name.length > 40 ? '...' : ''}`}</td>
+                        <td className="">{user.phone_number || '-'}</td>
+                        <td className="">{`${user.email.substring(0, 40)}${user.email.length > 40 ? '...' : ''}`}</td>
+                        <td className="">{user.username}</td>
+                        {/* <td className="">{user.applyingAsBusinessClient ? 'Yes' : 'No'}</td> */}
+                        <td className={classNames('')}>
+                          <select
+                            value={user.role}
+                            disabled={isChangingRole}
+                            className="w-full select select-xs"
+                            onChange={(e) => {
+                              handleRoleChange({ role: e.target.value as USER_ROLES, userId: user.id });
+                            }}>
+                            {Object.values(USER_ROLES).map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
+                          </select>
+                          {/* <span
+                            className={classNames('badge-sm', {
+                              'badge badge-accent': user.role === USER_ROLES.SUPER_ADMIN,
+                              'badge badge-secondary': user.role === USER_ROLES.STAFF,
+                              'badge badge-primary': user.role === USER_ROLES.USER,
+                            })}>
+                            {user.role}
+                          </span> */}
+                        </td>
+                        {/* <td className="text-center ">
+                    <Link href={`/admin/users/edit/${user.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
                       <FaCogs></FaCogs> Edit
-                    </Link>
-                    <button className="btn btn-error btn-sm  gap-1">
+                    </Link> 
+                    <button className="gap-1 ml-2 btn btn-error btn-xs btn-outline">
                       <BsTrash></BsTrash> Delete
                     </button>
-                  </td>
-                </tr>
-              );
-            })}
+                  </td> */}
+                      </tr>
+                    );
+                  })}
+              </>
+            )}
           </tbody>
         </table>
       </section>
+      <div className="flex justify-end mt-8 place-self-end">
+        {userData?.totalPages !== undefined && (
+          <Pagination {...{ currentPage, setCurrentPage }} totalPages={userData?.totalPages}></Pagination>
+        )}
+      </div>
     </>
   );
 };

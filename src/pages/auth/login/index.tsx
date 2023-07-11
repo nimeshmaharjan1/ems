@@ -7,8 +7,7 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { USER_ROLES } from '@prisma/client';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import { BuiltInProviderType } from 'next-auth/providers';
+import { getServerSession } from 'next-auth/next';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,10 +17,10 @@ import { AiOutlineGoogle } from 'react-icons/ai';
 import { FaGithub, FaUser } from 'react-icons/fa';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import styles from './login.module.scss';
+import { getCookie, setCookie } from 'cookies-next';
 
 const Login: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  console.log({ session });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,7 +41,7 @@ const Login: NextPageWithLayout = () => {
       showToast(Toast.error, 'Something went wrong while trying to login please try again.');
     }
   };
-  const handleLoginWithProviders = async (provider: BuiltInProviderType) => {
+  const handleLoginWithProviders = async (provider: any) => {
     setIsSubmitting(true);
     try {
       await signIn(provider);
@@ -65,29 +64,29 @@ const Login: NextPageWithLayout = () => {
     handleSubmit,
   } = useForm<ILoginWithPassword>({ defaultValues: { username: '', password: '' }, mode: 'onChange' });
   return (
-    <div className="card-body">
-      <h2 className="text-center text-3xl font-[800] tracking-wide mb-3">Login</h2>
-      <p className="text-lg text-center w-full mb-4">Hey, enter your details here to sign in to your account.</p>
-      <div className="form-control w-full mb-2 relative">
+    <form onSubmit={handleSubmit(handleLogin)} className="card-body">
+      <h2 className="text-center text-lg lg:text-xl font-[800] tracking-wide mb-2 lg:mb-3">Login</h2>
+      <p className="w-full mb-4 text-sm text-center lg:text-lg">Hey, enter your details here to sign in to your account.</p>
+      <div className="relative w-full mb-2 form-control">
         <input
           {...register('username', {
-            required: 'username is required.',
+            required: 'Username/E-mail is required.',
           })}
           type="text"
-          placeholder="Username"
+          placeholder="Username or E-mail"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
         <FaUser
-          className={classNames('absolute right-4 text-primary text-xl top-3', {
+          className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
             'text-error': errors?.username,
           })}></FaUser>
       </div>
-      <div className="form-control w-full mb-4 relative">
+      <div className="relative w-full mb-2 form-control lg:mb-4">
         <input
           {...register('password', {
             required: 'Password is required.',
@@ -96,58 +95,62 @@ const Login: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-bordered w-full', {
+          className={classNames('input input-sm lg:input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
         <ErrorMessage>{errors?.password?.message}</ErrorMessage>
         {showPassword ? (
           <FiEye
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3 cursor-pointer', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEye>
         ) : (
           <FiEyeOff
-            className={classNames('absolute right-4 text-primary text-xl top-3 cursor-pointer', {
+            className={classNames('absolute right-4 text-primary text-sm lg:text-xl top-2 lg:top-3', {
               'text-error': errors?.password,
             })}
             onClick={() => setShowPassword((prev) => !prev)}></FiEyeOff>
         )}
       </div>
-      <button
-        className={classNames('btn btn-primary btn-block mb-1 btn-square gap-2', {
-          loading: isSubmitting,
-        })}
-        disabled={isSubmitting}
-        onClick={handleSubmit(handleLogin)}>
+      <button type="submit" className={classNames('btn btn-primary btn-block lg:mb-1 btn-square gap-2')} disabled={isSubmitting}>
+        {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign In
       </button>
       <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer mt-2">Forgot password?</p>
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
-        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('google')}>
+        <button
+          type="button"
+          className="gap-2 btn btn-xs lg:btn-md btn-outline"
+          disabled={isSubmitting}
+          onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
           Google
         </button>
-        <button className="btn btn-outline  gap-2" disabled={isSubmitting} onClick={() => handleLoginWithProviders('github')}>
+        <button
+          type="button"
+          className="gap-2 btn btn-xs lg:btn-md btn-outline"
+          disabled={isSubmitting}
+          onClick={() => handleLoginWithProviders('github')}>
           <FaGithub className="text-lg" />
           Github
         </button>
-        {/* <button className="btn btn-outline  gap-2" disabled={isSubmitting}>
+        {/* <button className="gap-2 btn btn-outline" disabled={isSubmitting}>
           <BsFacebook className="text-lg" />
           Facebook
         </button> */}
       </div>
       {!isSubmitting && (
-        <p className="mt-3 text-sm text-center">
+        <p className="mt-3 text-xs text-center lg:text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/register" className="cursor-pointer text-secondary hover:text-primary hover:underline duration-300">
+          <Link href="/auth/register" className="duration-300 cursor-pointer text-secondary hover:text-primary hover:underline">
             Register now
           </Link>
         </p>
       )}
-    </div>
+    </form>
   );
 };
 
@@ -157,7 +160,7 @@ Login.getLayout = (page: ReactNode) => <AuthLayout title="Sign In">{page}</AuthL
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getServerSession(ctx.req, ctx.res, authOptions)) as any;
-  if (session?.user?.role === USER_ROLES.ADMIN || session?.user?.role === USER_ROLES.SUPER_ADMIN) {
+  if (session?.user?.role === USER_ROLES.STAFF || session?.user?.role === USER_ROLES.SUPER_ADMIN) {
     return {
       redirect: {
         destination: '/admin/products',

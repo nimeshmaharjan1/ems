@@ -42,9 +42,14 @@ export const getProduct = async (id: string) => {
 
 export const deleteCompany = async (id: string) => {
   try {
-    const response = await axios.delete(`/api/admin/companies?id=${id}`);
+    const response = await axios.delete(`/api/admin/companies/${id}`);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while deleting company');
   }
+};
+
+export const getAllProducts = async (params: { limit: number; page: number; searchKeyword: string }) => {
+  const response = await axios.get(`/api/products?page=${params.page}&limit=${params.limit}&title=${params.searchKeyword || '530'}`);
+  return response.data?.products;
 };

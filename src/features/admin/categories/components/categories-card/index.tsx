@@ -65,12 +65,8 @@ const CategoriesCard = () => {
             />
           </FormControl>
           <div className="modal-action">
-            <button
-              className={classNames('btn btn-sm btn-primary !font-medium', {
-                loading: isSubmitting,
-              })}
-              disabled={isSubmitting}
-              onClick={handleSubmit(onSubmit)}>
+            <button className={classNames('btn btn-sm btn-primary !font-medium')} disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+              {isSubmitting && <span className="loading loading-spinner"></span>}
               Submit
             </button>
           </div>

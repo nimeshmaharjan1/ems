@@ -5,7 +5,8 @@ import { ReactSelectReturn } from './../../../../shared/interfaces/common.interf
 const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    await isAuthenticated(req, res);
+    const auth = await isAuthenticated(req, res);
+    if (!auth) return res.status(401).json({ message: 'Unauthorized.' });
     try {
       const { name, products, companies } = req.body;
       const companyIds = companies?.map((company: ReactSelectReturn) => ({ id: company.value })) ?? [];
@@ -45,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(response);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Something went wrong while trying to fetch categories.' });
+      res.status(500).json({ error, message: 'Something went wrong while trying to fetch categories.' });
     } finally {
       await prisma.$disconnect();
     }

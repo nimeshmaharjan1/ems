@@ -11,41 +11,86 @@ import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
-import { Category, Company } from '@prisma/client';
+import { Category, Company, PRODUCT_STATUS } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
+import dynamic from 'next/dynamic';
+// import TextEditor from '@/shared/components/text-editor';
 
-const productSchema = z.object({
-  // categoryId: z.string().min(1, { message: 'Product category is required.' }),
-  title: z.string().min(1, { message: 'Product title is required.' }),
-  company: z.object({
-    label: z.string().min(1, { message: 'Company is required.' }),
-    value: z.string().min(1, { message: 'Company is required.' }),
-  }),
-  category: z.object({
-    label: z.string().min(1, { message: 'Category is required.' }),
-    value: z.string().min(1, { message: 'Category is required.' }),
-  }),
-  images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
-  price: z.string().min(1, { message: 'Price is required.' }),
-  quantity: z.string().min(1, { message: 'Quantity is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
-  slug: z.string().min(1, { message: 'Product slug is required.' }),
-});
+const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
+  ssr: false,
+}) as any;
+
+const productSchema = z
+  .object({
+    // categoryId: z.string().min(1, { message: 'Product category is required.' }),
+    title: z.string().min(1, { message: 'Product title is required.' }),
+
+    modal: z.string().min(1, { message: 'Modal is required.' }),
+    company: z.object({
+      label: z.string().min(1, { message: 'Company is required.' }),
+      value: z.string().min(1, { message: 'Company is required.' }),
+    }),
+    category: z.object({
+      label: z.string().min(1, { message: 'Category is required.' }),
+      value: z.string().min(1, { message: 'Category is required.' }),
+    }),
+    images: z
+      .array(z.string())
+      .min(1, { message: 'Image is required.' })
+      .max(5, { message: 'Images cannot be more than five.' })
+      .optional(),
+    price: z.string().min(1, { message: 'Price is required.' }),
+    sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
+    crossedPrice: z.string().optional(),
+    wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
+    wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
+    quantity: z.string().min(1, { message: 'Quantity is required.' }),
+    description: z.string().min(1, { message: 'Description is required.' }),
+    slug: z.string().min(1, { message: 'Product slug is required.' }),
+    hasOffer: z.boolean(),
+    status: z.enum(['ACTIVE', 'DRAFT']),
+  })
+  .superRefine((values, ctx) => {
+    if (values.hasOffer) {
+      if (!values.crossedPrice) {
+        ctx.addIssue({
+          message: 'Crossed price is required.',
+          code: z.ZodIssueCode.custom,
+          path: ['crossedPrice'],
+        });
+      }
+      // else if (values.discountPercentage && !/^[1-9][0-9]?$/.test(values.discountPercentage)) {
+      //   ctx.addIssue({
+      //     message: 'Discount percentage must be between 1 and 99.',
+      //     code: z.ZodIssueCode.custom,
+      //     path: ['discountPercentage'],
+      //   });
+      // }
+    }
+  });
 export type ProductSchema = z.infer<typeof productSchema>;
 
-const CreateUser: NextPageWithLayout = () => {
+const CreateProduct: NextPageWithLayout = () => {
   const defaultValues: ProductSchema = {
     category: { label: 'Select category', value: '' },
     company: { label: 'Select company', value: '' },
+    modal: '',
     description: '',
     images: [],
     price: '',
+    sellingPrice: '',
+    crossedPrice: '',
+    wholesaleCashPrice: '',
+    wholesaleCreditPrice: '',
     title: '',
     quantity: '',
     slug: '',
+    hasOffer: false,
+    status: PRODUCT_STATUS.ACTIVE,
   };
+
   const {
     register,
     watch,
@@ -60,7 +105,7 @@ const CreateUser: NextPageWithLayout = () => {
   const images = useWatch({
     control,
     name: 'images',
-  });
+  }) as any;
   const upload = async (images: (string | ArrayBuffer | null)[]) => {
     const filteredImages = images.filter((image) => image !== null);
     if (filteredImages.length === 0) return;
@@ -71,13 +116,17 @@ const CreateUser: NextPageWithLayout = () => {
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);
       showToast(Toast.success, 'All images uploaded successfully.');
-    } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+    } catch (e: any) {
+      console.error(e.response);
+      if (typeof e.response?.data === 'string') {
+        showToast(Toast.error, e.response?.data);
+      } else {
+        showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+      }
     } finally {
       setIsUploading(false);
     }
   };
-
   const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);
@@ -92,24 +141,6 @@ const CreateUser: NextPageWithLayout = () => {
       setIsSubmitting(false);
     }
   };
-
-  const {
-    data: categories,
-    isError: isCategoryError,
-    isLoading: isCategoryLoading,
-  } = useQuery<Category[], Error>('fetchCategories', async () => {
-    const response = await axios.get('/api/admin/categories');
-    return response.data.categories;
-  });
-
-  const {
-    data: companies,
-    isError: isCompanyError,
-    isLoading: isCompanyLoading,
-  } = useQuery<Company[], Error>('fetchCompanies', async () => {
-    const response = await axios.get('/api/admin/companies');
-    return response.data.companies;
-  });
 
   const loadCategories = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
@@ -171,9 +202,9 @@ const CreateUser: NextPageWithLayout = () => {
 
   return (
     <div className="min-h-screen">
-      <h2 className="font-semibold text-3xl ">Add Product</h2>
-      <div className="grid gap-x-12 grid-cols-6 my-6">
-        <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
+      <h2 className="text-3xl font-semibold ">Add Product</h2>
+      <div className="grid grid-cols-6 my-6 gap-x-12">
+        <section className="flex flex-col col-span-6 gap-3 lg:col-span-3">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
             <input
               type="text"
@@ -182,25 +213,26 @@ const CreateUser: NextPageWithLayout = () => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-
-          <FormControl label="Description" errorMessage={errors?.description?.message as string}>
-            <textarea
+          <FormControl label="Model" errorMessage={errors?.modal?.message as string}>
+            <input
+              type="text"
               placeholder="Type here"
-              {...register('description', {
-                required: 'Description is required.',
-                minLength: {
-                  value: 2,
-                  message: 'Description must be above 2 characters.',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Description must be below 255 characters.',
-                },
-              })}
-              rows={6}
-              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
+              {...register('modal')}
+              className={`input input-bordered w-full max-w-3xl ${errors?.modal ? 'input-error' : ''}`}
             />
           </FormControl>
+          <Controller
+            rules={{
+              required: 'Description is required.',
+            }}
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
+              <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+                <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
+              </FormControl>
+            )}
+          />
           <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -214,12 +246,10 @@ const CreateUser: NextPageWithLayout = () => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select company'}
-                        loadOptions={loadCompanies}
-                      ></StyledReactSelect>
+                        loadOptions={loadCompanies}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <Controller
@@ -233,23 +263,19 @@ const CreateUser: NextPageWithLayout = () => {
                         {...{ onChange, value, name }}
                         isRequired={err?.value?.message ? true : false}
                         placeholder={'Select category'}
-                        loadOptions={loadCategories}
-                      ></StyledReactSelect>
+                        loadOptions={loadCategories}></StyledReactSelect>
                     </FormControl>
                   );
-                }}
-              ></Controller>
+                }}></Controller>
             </div>
           </div>
-          <div className="grid grid-cols-12 gap-x-2">
+          <div className="grid grid-cols-12 gap-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Price" errorMessage={errors?.price?.message as string}>
+              <FormControl label="Cost per item" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
-                  <span>
-                    <FaRupeeSign />
-                  </span>
+                  <span>रू</span>
                   <input
-                    type="number"
+                    type="text"
                     pattern="[0-9]*"
                     placeholder="Type here"
                     {...register('price', {
@@ -273,12 +299,98 @@ const CreateUser: NextPageWithLayout = () => {
                 />
               </FormControl>
             </div>
+          </div>{' '}
+          <div className="grid items-center grid-cols-6 gap-2 mb-2">
+            <div className="col-span-3 mt-1">
+              <FormControl label="Selling Price" errorMessage={errors?.sellingPrice?.message as string}>
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  placeholder="Type here"
+                  {...register('sellingPrice', {
+                    required: 'Selling price is required.',
+                  })}
+                  className={`input input-bordered w-full ${errors?.sellingPrice ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+            <div className="col-span-3 mt-1">
+              <div className="w-full gap-1 form-control">
+                <div className="flex items-center gap-2">
+                  <label className="line-through label">Crossed Price</label>
+                  <input
+                    type="checkbox"
+                    {...register('hasOffer', {
+                      onChange: () => setValue('crossedPrice', ''),
+                    })}
+                    className="toggle toggle-sm"
+                  />
+                </div>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type crossed price here"
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
+                />
+                {errors?.crossedPrice?.message && (
+                  <label className="label text-sm font-[400] opacity-80 text-error">{errors?.crossedPrice?.message}</label>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-12 gap-2">
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Cash Price" errorMessage={errors?.wholesaleCashPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCashPrice', {
+                      required: 'Wholesale cash price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCashPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Credit Price" errorMessage={errors?.wholesaleCreditPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCreditPrice', {
+                      required: 'Wholesale credit price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+          </div>
+          <div className="hidden col-span-12 mt-4 lg:block">
+            <button
+              className={classNames('btn btn-primary btn-block')}
+              disabled={isSubmitting || isUploading}
+              onClick={handleSubmit(handleCreate)}>
+              {isSubmitting && <span className="loading loading-spinner"></span>}
+              Submit
+            </button>
           </div>
         </section>
-        <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
-          <div className="image-section col-span-6 lg:col-span-6">
-            <FormControl label="Upload Product Image">
-              <ImageUpload {...{ control, resetImages }} initialImage={{ src: images?.[0] as string, alt: '' }} onChangePicture={upload} />
+        <section className="grid grid-cols-6 col-span-6 lg:col-span-3 gap-x-12">
+          <div className="col-span-6 image-section lg:col-span-6">
+            <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
+              <ImageUpload
+                {...{ control, resetImages, setResetImages }}
+                initialImage={{ src: images?.[0] as string, alt: '' }}
+                onChangePicture={upload}
+              />
             </FormControl>
 
             <FormControl label="Product Slug" className="lg:mt-3" errorMessage={errors?.slug?.message as string}>
@@ -289,6 +401,16 @@ const CreateUser: NextPageWithLayout = () => {
                 className={`input input-bordered w-full  ${errors?.slug ? 'input-error' : ''}`}
               />
             </FormControl>
+            <FormControl label="Status" className="lg:mt-3">
+              <select className="select select-bordered" {...register('status')}>
+                <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
+                  ACTIVE
+                </option>
+                <option value={PRODUCT_STATUS.DRAFT} defaultChecked>
+                  DRAFT
+                </option>
+              </select>
+            </FormControl>
           </div>
           {/* <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">
             <CategoriesCard></CategoriesCard>
@@ -297,14 +419,12 @@ const CreateUser: NextPageWithLayout = () => {
           </section> */}
         </section>
       </div>
-      <div>
+      <div className="block lg:hidden">
         <button
-          className={classNames('btn btn-primary btn-block', {
-            loading: isSubmitting,
-          })}
+          className={classNames('btn btn-primary btn-block')}
           disabled={isSubmitting || isUploading}
-          onClick={handleSubmit(handleCreate)}
-        >
+          onClick={handleSubmit(handleCreate)}>
+          {isSubmitting && <span className="loading loading-spinner"></span>}
           Submit
         </button>
       </div>
@@ -312,8 +432,8 @@ const CreateUser: NextPageWithLayout = () => {
   );
 };
 
-export default CreateUser;
+export default CreateProduct;
 
-CreateUser.getLayout = (page: ReactNode) => {
+CreateProduct.getLayout = (page: ReactNode) => {
   return <AdminDashboardLayout>{page}</AdminDashboardLayout>;
 };

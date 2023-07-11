@@ -12,8 +12,7 @@ const MainSharedHeader = () => {
     <header
       className={classNames('wrapper shadow', {
         ['border-b border-b-gray-700']: theme === 'night',
-      })}
-    >
+      })}>
       <div className={`${styles['top-header-wrapper']} border-b ${theme === 'night' ? ' border-b-gray-700' : ''}`}>
         <section className="lg:container lg:mx-auto flex items-center justify-between h-10 px-6 lg:px-28">
           <section className="contact hidden md:flex">
@@ -26,8 +25,7 @@ const MainSharedHeader = () => {
               onClick={() => {
                 resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
               }}
-              className={classNames('!bg-transparent btn-sm !h-0 !min-h-[2px] !p-0')}
-            >
+              className={classNames('!bg-transparent btn-sm !h-0 !min-h-[2px] !p-0')}>
               {resolvedTheme === 'corporate' ? (
                 <BsFillMoonFill className=" text-xs mt-[0.12rem] hover:text-primary duration-300"></BsFillMoonFill>
               ) : (

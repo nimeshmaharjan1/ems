@@ -2,7 +2,7 @@ import { ProductSchema } from '@/pages/admin/products/create';
 import { Product } from '@prisma/client';
 import classNames from 'classnames';
 import Image from 'next/legacy/image';
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { AiOutlineArrowUp } from 'react-icons/ai';
 interface Props {
@@ -11,8 +11,9 @@ interface Props {
   accept?: string;
   sizeLimit?: number;
   onChangePicture: (images: any) => void;
-  control: Control<ProductSchema>;
-  resetImages: boolean;
+  control: any;
+  resetImages: any;
+  setResetImages: any;
 }
 
 const ImageUpload: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const ImageUpload: React.FC<Props> = ({
   onChangePicture,
   control,
   resetImages,
+  setResetImages,
 }) => {
   const imageRef = React.useRef<HTMLInputElement>(null);
   const [images, setImages] = React.useState<any>(!initialImage?.length ? [initialImage] : [...initialImage]);
@@ -39,6 +41,7 @@ const ImageUpload: React.FC<Props> = ({
     const invalidFiles = Array.from(files).filter((file) => file.size > sizeLimit);
     if (invalidFiles.length > 0) {
       setPictureError('Some file sizes are exceeding 10MB.');
+      return;
     }
 
     const readerPromises = filteredFiles.map((file) => {
@@ -85,8 +88,9 @@ const ImageUpload: React.FC<Props> = ({
   useEffect(() => {
     if (resetImages) {
       setImages([{ src: '', alt: '' }]);
+      setResetImages(false);
     }
-  }, [resetImages]);
+  }, [resetImages, setResetImages]);
   return (
     <div className="grid grid-cols-6 gap-x-4">
       {images?.map((image: any) => (
@@ -99,14 +103,13 @@ const ImageUpload: React.FC<Props> = ({
             image?.src
               ? 'hover:opacity-50 disabled:hover:opacity-100 my-3 col-span-3 h-72'
               : 'border-2 border-dashed border-secondary hover:border-primary col-span-6 h-40 disabled:hover:border-gray-200'
-          )}
-        >
+          )}>
           {image?.src ? <Image src={image.src as string} alt={image?.alt ?? ''} layout="fill" objectFit={'cover'} /> : null}
 
           <div className="flex items-center justify-center">
             {!image?.src ? (
               <div className="flex flex-col items-center space-y-2">
-                <div className="shrink-0 rounded-full p-2 bg-gray-200 group-hover:scale-110 group-focus:scale-110 transition">
+                <div className="p-2 transition bg-gray-200 rounded-full shrink-0 group-hover:scale-110 group-focus:scale-110">
                   <AiOutlineArrowUp className="w-4 h-4 text-gray-500 transition" />
                 </div>
                 <span className="text-xs font-semibold text-gray-500 transition">{updatingImage ? 'Uploading...' : 'Upload Image'}</span>
@@ -127,12 +130,11 @@ const ImageUpload: React.FC<Props> = ({
               name="images"
               rules={{
                 required: 'Image is required',
-              }}
-            ></Controller>
+              }}></Controller>
           </div>
         </button>
       ))}
-      {imageError ? <span className="text-red-600 text-sm">{imageError}</span> : null}
+      {imageError ? <span className="text-sm text-red-600">{imageError}</span> : null}
     </div>
   );
 };

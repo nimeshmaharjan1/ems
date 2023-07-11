@@ -11,18 +11,25 @@ import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from 'react-query';
-import { Category, Company, PrismaClient } from '@prisma/client';
+import { Category, Company, PRODUCT_STATUS, PrismaClient } from '@prisma/client';
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+// import TextEditor from '@/shared/components/text-editor';
 
-const prisma = new PrismaClient();
+const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
+  ssr: false,
+}) as any;
 
 /**
  * @author Nimesh Maharjan
  */
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+
   try {
     const id = context?.params?.productId as string;
     const product = await prisma.product.findUnique({ where: { id }, include: { category: true, company: true } });
@@ -35,10 +42,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       value: product?.category.id,
     };
     return {
-      props: { product: JSON.parse(JSON.stringify({ ...product, company: reactSelectCompany, category: reactSelectCategory })) },
+      props: {
+        product: JSON.parse(
+          JSON.stringify({
+            ...product,
+            price: product?.price.toString(),
+            wholesaleCreditPrice: product?.wholesaleCreditPrice?.toString(),
+            wholesaleCashPrice: product?.wholesaleCashPrice?.toString(),
+            sellingPrice: product?.sellingPrice?.toString(),
+            crossedPrice: product?.crossedPrice?.toString(),
+            company: reactSelectCompany,
+            category: reactSelectCategory,
+          })
+        ),
+      },
     };
   } catch (error) {
     console.error('error: ', error);
+  } finally {
+    await prisma.$disconnect();
   }
   return {
     props: {
@@ -47,23 +69,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-const productSchema = z.object({
-  // categoryId: z.string().min(1, { message: 'Product category is required.' }),
-  title: z.string().min(1, { message: 'Product title is required.' }),
-  company: z.object({
-    label: z.string().min(1, { message: 'Company is required.' }),
-    value: z.string().min(1, { message: 'Company is required.' }),
-  }),
-  category: z.object({
-    label: z.string().min(1, { message: 'Category is required.' }),
-    value: z.string().min(1, { message: 'Category is required.' }),
-  }),
-  images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
-  price: z.string().min(1, { message: 'Price is required.' }),
-  quantity: z.string().min(1, { message: 'Quantity is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
-  slug: z.string().min(1, { message: 'Product slug is required.' }),
-});
+const productSchema = z
+  .object({
+    // categoryId: z.string().min(1, { message: 'Product category is required.' }),
+    title: z.string().min(1, { message: 'Product title is required.' }),
+    modal: z.string().min(1, { message: 'Modal is required.' }),
+    company: z.object({
+      label: z.string().min(1, { message: 'Company is required.' }),
+      value: z.string().min(1, { message: 'Company is required.' }),
+    }),
+    category: z.object({
+      label: z.string().min(1, { message: 'Category is required.' }),
+      value: z.string().min(1, { message: 'Category is required.' }),
+    }),
+    images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
+    price: z.string().min(1, { message: 'Price is required.' }),
+    sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
+    crossedPrice: z.string().optional(),
+    wholesaleCashPrice: z.string().min(1, { message: 'Wholesale cash price is required.' }),
+    wholesaleCreditPrice: z.string().min(1, { message: 'Wholesale credit price is required.' }),
+    quantity: z.string().min(1, { message: 'Quantity is required.' }),
+    description: z.string().min(1, { message: 'Description is required.' }),
+    slug: z.string().min(1, { message: 'Product slug is required.' }),
+    hasOffer: z.boolean(),
+    discountPercentage: z.string().optional(),
+
+    status: z.enum(['ACTIVE', 'DRAFT']),
+  })
+  .superRefine((values, ctx) => {
+    if (values.hasOffer) {
+      if (!values.crossedPrice) {
+        ctx.addIssue({
+          message: 'Crossed price is required.',
+          code: z.ZodIssueCode.custom,
+          path: ['crossedPrice'],
+        });
+      }
+    }
+  });
 export type ProductSchema = z.infer<typeof productSchema>;
 
 const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
@@ -82,7 +125,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   const images = useWatch({
     control,
     name: 'images',
-  });
+  }) as any;
   const upload = async (images: (string | ArrayBuffer | null)[]) => {
     const filteredImages = images.filter((image) => image !== null);
     if (filteredImages.length === 0) return;
@@ -93,45 +136,34 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       const urls = responses.map((response) => response.data.url);
       setValue('images', [...(watch().images as string[]), ...urls]);
       showToast(Toast.success, 'All images uploaded successfully.');
-    } catch (e) {
-      showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+    } catch (e: any) {
+      console.error(e.response);
+      if (typeof e.response?.data === 'string') {
+        showToast(Toast.error, e.response?.data);
+      } else {
+        showToast(Toast.error, 'Something went wrong while trying to upload the images please try again.');
+      }
     } finally {
       setIsUploading(false);
     }
   };
-
+  const router = useRouter();
   const [resetImages, setResetImages] = useState(false);
-  const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
+  const handleUpdate: SubmitHandler<ProductSchema> = async (values) => {
     setIsSubmitting(true);
+
     try {
-      await axios.post('/api/admin/products', { ...values });
-      showToast(Toast.success, 'Product has been created.');
+      await axios.put(`/api/admin/products/${product.id}`, { ...values });
+      showToast(Toast.success, 'Product has been updated.');
       reset();
       setResetImages(true);
+      router.push('/admin/products');
     } catch (error) {
-      showToast(Toast.error, 'Something went wrong please try again.');
-    } finally {
       setIsSubmitting(false);
+
+      showToast(Toast.error, 'Something went wrong please try again.');
     }
   };
-
-  const {
-    data: categories,
-    isError: isCategoryError,
-    isLoading: isCategoryLoading,
-  } = useQuery<Category[], Error>('fetchCategories', async () => {
-    const response = await axios.get('/api/admin/categories');
-    return response.data.categories;
-  });
-
-  const {
-    data: companies,
-    isError: isCompanyError,
-    isLoading: isCompanyLoading,
-  } = useQuery<Company[], Error>('fetchCompanies', async () => {
-    const response = await axios.get('/api/admin/companies');
-    return response.data.companies;
-  });
 
   const loadCategories = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
@@ -193,9 +225,9 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
 
   return (
     <div className="min-h-screen">
-      <h2 className="font-semibold text-3xl ">Edit Product</h2>
-      <div className="grid gap-x-12 grid-cols-6 my-6">
-        <section className="col-span-6 lg:col-span-3 flex flex-col gap-1">
+      <h2 className="text-3xl font-semibold ">Edit Product</h2>
+      <div className="grid grid-cols-6 my-6 gap-x-12">
+        <section className="flex flex-col col-span-6 gap-y-2 lg:col-span-3">
           <FormControl label="Product Name" errorMessage={errors?.title?.message as string}>
             <input
               type="text"
@@ -204,8 +236,24 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-
-          <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+            <input
+              type="text"
+              placeholder="Type here"
+              {...register('modal')}
+              className={`input input-bordered w-full max-w-3xl ${errors?.modal ? 'input-error' : ''}`}
+            />
+          </FormControl>
+          <Controller
+            rules={{
+              required: 'Description is required.',
+            }}
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
+              <FormControl label="Description" errorMessage={errors?.description?.message as string}>
+                <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
+                {/* 
             <textarea
               placeholder="Type here"
               {...register('description', {
@@ -220,10 +268,12 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 },
               })}
               rows={6}
-              className={`textarea textarea-bordered  w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            />
-          </FormControl>
-          <div className="grid grid-cols-12 gap-x-2 lg:gap-x-2">
+              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
+            /> */}
+              </FormControl>
+            )}
+          />
+          <div className="grid grid-cols-12 gap-x-2 gap-y-3 lg:gap-x-2">
             <div className="col-span-12 lg:col-span-6">
               <Controller
                 control={control}
@@ -261,13 +311,11 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
           </div>
           <div className="grid grid-cols-12 gap-x-2">
             <div className="col-span-12 lg:col-span-6">
-              <FormControl label="Price" errorMessage={errors?.price?.message as string}>
+              <FormControl label="Cost per item" errorMessage={errors?.price?.message as string}>
                 <label className="input-group">
-                  <span>
-                    <FaRupeeSign />
-                  </span>
+                  <span>रू</span>
                   <input
-                    type="number"
+                    type="text"
                     pattern="[0-9]*"
                     placeholder="Type here"
                     {...register('price', {
@@ -291,25 +339,96 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 />
               </FormControl>
             </div>
+          </div>{' '}
+          <div className="grid items-center grid-cols-6 gap-2 mb-2">
+            <div className="col-span-3 mt-1">
+              <FormControl label="Selling Price" errorMessage={errors?.sellingPrice?.message as string}>
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  placeholder="Type here"
+                  {...register('sellingPrice', {
+                    required: 'Selling price is required.',
+                  })}
+                  className={`input input-bordered w-full ${errors?.sellingPrice ? 'input-error' : ''}`}
+                />
+              </FormControl>
+            </div>
+            <div className="col-span-3 mt-1">
+              <div className="w-full gap-1 form-control">
+                <div className="flex items-center gap-2">
+                  <label className="line-through label">Crossed Price</label>
+                  <input
+                    type="checkbox"
+                    {...register('hasOffer', {
+                      onChange: () => setValue('crossedPrice', ''),
+                    })}
+                    className="toggle toggle-sm"
+                  />
+                </div>
+                <input
+                  type="text"
+                  disabled={!watch('hasOffer')}
+                  placeholder="Type crossed price here"
+                  {...register('crossedPrice')}
+                  className={`input input-bordered w-full  ${errors?.crossedPrice ? 'input-error' : ''}`}
+                />
+                {errors?.crossedPrice?.message && (
+                  <label className="label text-sm font-[400] opacity-80 text-error">{errors?.crossedPrice?.message}</label>
+                )}
+              </div>
+            </div>
           </div>
-
-          <div className="hidden lg:block col-span-12 mt-4">
+          <div className="grid grid-cols-12 gap-2">
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Cash Price" errorMessage={errors?.wholesaleCashPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCashPrice', {
+                      required: 'Wholesale cash price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCashPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+            <div className="col-span-12 lg:col-span-6">
+              <FormControl label="Wholesale Credit Price" errorMessage={errors?.wholesaleCreditPrice?.message as string}>
+                <label className="input-group">
+                  <span>रू</span>
+                  <input
+                    type="text"
+                    pattern="[0-9]*"
+                    placeholder="Type here"
+                    {...register('wholesaleCreditPrice', {
+                      required: 'Wholesale credit price is required.',
+                    })}
+                    className={`input input-bordered w-full ${errors?.wholesaleCreditPrice ? 'input-error' : ''}`}
+                  />
+                </label>
+              </FormControl>
+            </div>
+          </div>
+          <div className="hidden col-span-12 mt-4 lg:block">
             <button
-              className={classNames('btn btn-primary btn-block', {
-                loading: isSubmitting,
-              })}
+              className={classNames('btn btn-primary btn-block')}
               disabled={isSubmitting || isUploading}
-              onClick={handleSubmit(handleCreate)}>
+              onClick={handleSubmit(handleUpdate)}>
+              {isSubmitting && <span className="loading loading-spinner"></span>}
               Submit
             </button>
           </div>
         </section>
-        <section className="col-span-6 lg:col-span-3 grid grid-cols-6 gap-x-12">
-          <div className="image-section col-span-6 lg:col-span-6 mt-4 lg:mt-0">
+        <section className="grid grid-cols-6 col-span-6 lg:col-span-3 gap-x-12">
+          <div className="col-span-6 mt-4 image-section lg:col-span-6 lg:mt-0">
             <FormControl label="Upload Product Image">
               <ImageUpload
-                {...{ control, resetImages }}
-                initialImage={images?.map((image) => ({ src: image as string, alt: '' }))}
+                {...{ control, resetImages, setResetImages }}
+                initialImage={images?.map((image: any) => ({ src: image as string, alt: '' }))}
                 onChangePicture={upload}
               />
             </FormControl>
@@ -322,6 +441,16 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 className={`input input-bordered w-full  ${errors?.slug ? 'input-error' : ''}`}
               />
             </FormControl>
+            <FormControl label="Status" className="lg:mt-3">
+              <select className="select select-bordered" {...register('status')}>
+                <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
+                  ACTIVE
+                </option>
+                <option value={PRODUCT_STATUS.DRAFT} defaultChecked>
+                  DRAFT
+                </option>
+              </select>
+            </FormControl>
           </div>
           {/* <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">
             <CategoriesCard></CategoriesCard>
@@ -332,11 +461,10 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
       </div>
       <div className="block lg:hidden">
         <button
-          className={classNames('btn btn-primary btn-block', {
-            loading: isSubmitting,
-          })}
+          className={classNames('btn btn-primary btn-block')}
           disabled={isSubmitting || isUploading}
-          onClick={handleSubmit(handleCreate)}>
+          onClick={handleSubmit(handleUpdate)}>
+          {isSubmitting && <span className="loading loading-spinner"></span>}
           Submit
         </button>
       </div>

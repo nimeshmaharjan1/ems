@@ -2,47 +2,82 @@
 @tailwind utilities;
 @tailwind components;
 
-body::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #f5f5f5;
-}
-
-body::-webkit-scrollbar {
-  width: 5px;
-  background-color: #f5f5f5;
-}
-
-body::-webkit-scrollbar-thumb {
-  background-color: #f90;
-  background-image: -webkit-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.2) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.2) 75%,
-    transparent 75%,
-    transparent
-  );
-}
-
 // @layer base {
 //   button {
 //     @apply ;
 //   }
 // }
-
+@layer base {
+  th {
+    @apply font-semibold;
+  }
+  td {
+    @apply font-medium;
+  }
+}
 @layer components {
+  body::-webkit-scrollbar-track,
+  .admin-sidebar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  body::-webkit-scrollbar,
+  .admin-sidebar::-webkit-scrollbar {
+    width: 4px;
+    background-color: #f5f5f5;
+  }
+
+  body::-webkit-scrollbar-thumb,
+  .admin-sidebar::-webkit-scrollbar-thumb {
+    @apply bg-primary;
+    background-image: -webkit-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
+    );
+    border-radius: 24px;
+  }
+  .badge {
+    @apply font-semibold uppercase;
+  }
+  .table {
+    :where(thead, tfoot) {
+      @apply text-current text-sm;
+    }
+  }
+  .btn {
+    @apply font-medium normal-case;
+  }
   .active-nav-link {
     @apply text-base-100 bg-secondary;
   }
 
-  // .btn {
-  //   @apply font-normal;
-  // }
-
   .btn-error {
     @apply text-gray-200;
+  }
+  .profile-modal-avatar {
+    @apply transition-all duration-300;
+    .profile-image,
+    .profile-icon {
+      @apply transition-all duration-300;
+    }
+    .profile-icon {
+      @apply opacity-0;
+    }
+    &:hover {
+      .profile-image {
+        @apply opacity-25;
+      }
+      .profile-icon {
+        @apply opacity-100;
+      }
+    }
   }
 }
 
@@ -109,4 +144,12 @@ input[type='number']::-webkit-inner-spin-button {
     -moz-appearance: none;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
   }
+}
+
+.ck-content {
+  height: 200px;
+}
+
+.ck-content-error {
+  border: 1px solid red;
 }

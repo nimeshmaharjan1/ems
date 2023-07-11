@@ -1,15 +1,17 @@
 import ProductCard from '@/features/products/components/product-card';
+import Pagination from '@/shared/components/pagination/index';
+import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
 import MainSharedLayout from '@/shared/layouts/main';
 import ViewAllLayout from '@/shared/layouts/view-all';
 import { useShopByStore } from '@/store/use-shop-by';
-import { Product } from '@prisma/client';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { NextPageWithLayout } from '../_app';
 
 const Home: NextPageWithLayout = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(8);
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -20,11 +22,12 @@ const Home: NextPageWithLayout = () => {
     data: productData,
     isError,
     isLoading,
-  } = useQuery<{ products: Product[] }, Error>(['fetchProducts', shopBySearchParams], async () => {
+  } = useQuery<PaginatedProductsResponse, Error>(['fetchProducts', shopBySearchParams, currentPage, limit], async () => {
     const params = new URLSearchParams(shopBySearchParams);
-    const response = await axios.get(`/api/products?${params}`);
+    const response = await axios.get(`/api/products?${params}&page=${currentPage}&limit=${limit}`);
     return response.data;
   });
+  const totalPages = productData?.totalPages;
 
   if (!isMounted) return null;
 
@@ -32,7 +35,7 @@ const Home: NextPageWithLayout = () => {
     return (
       <>
         <header className="mb-8">
-          <h1 className="text-2xl font-bold text-error relative uppercase pb-1">
+          <h1 className="relative pb-1 text-2xl font-bold uppercase text-error">
             Error
             <span
               className="bg-error"
@@ -59,8 +62,8 @@ const Home: NextPageWithLayout = () => {
             .fill(0)
             .map((_, index) => {
               return (
-                <div key={index} className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center">
-                  <div className="flex flex-col rounded shadow-md w-full sm:w-80 animate-pulse h-96">
+                <div key={index} className="flex justify-center col-span-12 md:col-span-6 lg:col-span-4">
+                  <div className="flex flex-col w-full rounded shadow-md sm:w-80 animate-pulse h-96">
                     <div className="h-48 rounded-t bg-base-200"></div>
                     <div className="flex-1 px-4 py-8 space-y-4 sm:p-8 bg-base-300">
                       <div className="w-full h-6 rounded bg-base-200"></div>
@@ -83,7 +86,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-2xl font-bold relative uppercase pb-1">
+        <h1 className="relative pb-1 text-2xl font-bold uppercase">
           Products
           <span
             className="bg-primary"
@@ -98,15 +101,18 @@ const Home: NextPageWithLayout = () => {
             }}></span>
         </h1>
       </header>
-      <div className="grid grid-cols-12 gap-6">
+      <div className="z-0 grid grid-cols-12 gap-6">
         {productData?.products &&
-          productData.products.map((product, productIndex) => {
+          productData.products.map((product) => {
             return (
-              <div className="col-span-12 md:col-span-6 lg:col-span-4 flex justify-center" key={product.id}>
+              <div className="flex justify-center col-span-12 md:col-span-6 lg:col-span-3" key={product.id}>
                 <ProductCard {...{ product }} key={product.id}></ProductCard>
               </div>
             );
           })}
+      </div>
+      <div className="flex justify-end px-2 mt-6 md:mt-12 md:px-12 lg:px-0 place-self-end">
+        {totalPages !== undefined && <Pagination {...{ currentPage, setCurrentPage, totalPages }}></Pagination>}
       </div>
     </>
   );
@@ -115,7 +121,10 @@ const Home: NextPageWithLayout = () => {
 export default Home;
 Home.getLayout = (page: ReactNode) => {
   return (
-    <MainSharedLayout>
+    <MainSharedLayout
+      metaData={{
+        title: 'Products',
+      }}>
       <ViewAllLayout>{page}</ViewAllLayout>
     </MainSharedLayout>
   );

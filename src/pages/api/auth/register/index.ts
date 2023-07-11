@@ -2,10 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'argon2';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { email, username, password, role, phone_number, name } = req.body;
+  const prisma = new PrismaClient();
+
+  const { email, username, password, role, phone_number, name, applyingAsBusinessClient, taxId, shopAddress } = req.body;
   switch (req.method) {
     case 'POST':
       const userExists = await prisma.user.findFirst({
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const hashedPassword = await hash(password);
         const user = await prisma.user.create({
-          data: { username, email, password: hashedPassword, role, name, phone_number },
+          data: { username, email, password: hashedPassword, role, name, phone_number, applyingAsBusinessClient, shopAddress, taxId },
         });
         return res.status(201).json({ user, message: 'User created successfully.' });
       } catch (error: any) {

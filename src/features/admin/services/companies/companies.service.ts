@@ -7,7 +7,7 @@ export const addCompany = async (data: Company) => {
     const response = await axios.post('/api/admin/companies', data);
     return response.data;
   } catch (error) {
-    showToast(Toast.error, 'Something went wrong while adding the company');
+    throw error;
   }
 };
 
@@ -41,7 +41,7 @@ export const getCompany = async (id: string) => {
 
 export const deleteCompany = async (id: string) => {
   try {
-    const response = await axios.delete(`/api/admin/companies?id=${id}`);
+    const response = await axios.delete(`/api/admin/companies/${id}`);
     return response.data;
   } catch (error) {
     showToast(Toast.error, 'Something went wrong while deleting company');

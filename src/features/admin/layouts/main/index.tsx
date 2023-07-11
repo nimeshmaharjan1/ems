@@ -9,7 +9,7 @@ import Sidebar from './sidebar';
 const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { height, width: innerWidth } = useWindowDimensions();
   useEffect(() => {
     if (innerWidth < 610) {
@@ -23,16 +23,16 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
   return (
     <>
       <Head>
-        <title>{title ? `${title} - EMS` : 'EMS'}</title>
+        <title>{title ? `${title} - EME` : 'EME'}</title>
       </Head>
 
-      <div className={`flex ${inter.className}`}>
+      <div className={`${inter.className}`}>
         <Sidebar {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Sidebar>
-        <section className="flex-1">
+        <section className="ml-[12rem]">
           <div className="h-[70px]">
-            <Header {...{ setIsSidebarCollapsed, isSidebarCollapsed }}></Header>
+            <Header></Header>
           </div>
-          {/* <div className="text-sm breadcrumbs my-2 mt-1 mx-7">
+          {/* <div className="my-2 mt-1 text-sm breadcrumbs mx-7">
             <ul>
               {paths.map((path, index) => {
                 return (
@@ -45,7 +45,7 @@ const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = 
               })}
             </ul>
           </div> */}
-          <main className="p-8 py-6 min-h-[calc(100vh-70px)] bg-base-200">{children}</main>
+          <main className="p-8 py-6">{children}</main>
         </section>
       </div>
     </>

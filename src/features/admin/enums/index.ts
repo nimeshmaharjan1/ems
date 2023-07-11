@@ -1,7 +1,9 @@
-export enum DASHBOARD_LINKS {
-  dashboard = '/admin/dashboard',
-  products = '/admin/products',
-  users = '/admin/users',
-  myProfile = '/admin/my-profile',
-  settings = '/admin/settings',
-}
+export const DASHBOARD_LINKS = {
+  dashboard: '/admin/dashboard',
+  products: '/admin/products',
+  category: '/admin/categories',
+  company: '/admin/companies',
+  users: '/admin/users',
+  settings: '/admin/settings',
+  orders: '/admin/orders',
+};

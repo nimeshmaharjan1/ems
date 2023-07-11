@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export default withAuth(function middleware(req: NextRequest) {}, {
   callbacks: {
     authorized: (params: any) => {
-      return params.token?.role === USER_ROLES.ADMIN || params.token?.role === USER_ROLES.SUPER_ADMIN;
+      return params.token?.role === USER_ROLES.STAFF || params.token?.role === USER_ROLES.SUPER_ADMIN;
     },
   },
 });

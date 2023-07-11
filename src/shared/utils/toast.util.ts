@@ -28,6 +28,9 @@ export const showToast = (type: Toast, message: string) => {
     case Toast.success:
       toast.success(message, defaultValues);
       break;
+    case Toast.warning:
+      toast.warning(message, defaultValues);
+      break;
     default:
       toast(message, defaultValues);
   }

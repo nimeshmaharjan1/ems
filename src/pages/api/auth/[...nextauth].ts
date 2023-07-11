@@ -20,11 +20,12 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         const { username, password } = credentials as { username: string; password: string };
         const user = await prisma.user.findFirst({
-          where: { username },
+          where: { OR: [{ username }, { email: username }] },
+          // where: { username },
         });
 
         if (!user) {
-          throw new Error('User with this username has not been registered.');
+          throw new Error('User with this username/email has not been registered.');
         }
 
         const isValidPassword = await verify(user.password, password as string);
@@ -37,6 +38,10 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           username: user.username,
           role: user.role,
+          phone_number: user?.phone_number || '',
+          taxId: user?.taxId || '',
+          shopAddress: user?.shopAddress || '',
+          name: user?.name || '',
         };
       },
     }),
@@ -68,12 +73,18 @@ export const authOptions: NextAuthOptions = {
           password: user.name as string,
           username: user.name as string,
           role: USER_ROLES.USER,
+          phone_number: user?.phone_number,
+          shopAddress: user?.shopAddress,
+          taxId: user?.taxId,
         },
       });
       // add the userId to the session object
       user.role = dbUser.role;
+      if (dbUser?.phone_number) {
+        user.phone_number = dbUser?.phone_number;
+      }
       user.id = dbUser.id;
-
+      await prisma.$disconnect();
       return true;
     },
 
@@ -82,6 +93,12 @@ export const authOptions: NextAuthOptions = {
         params.token.username = params.user.username;
         params.token.role = params.user?.role;
         params.token.id = params.user?.id;
+        params.token.name = params.user?.name;
+        params.token.shopAddress = params.user?.shopAddress;
+        params.token.taxId = params.user?.taxId;
+      }
+      if (params?.user?.phone_number) {
+        params.token.phone_number = params.user?.phone_number;
       }
       return params.token;
     },
@@ -90,6 +107,10 @@ export const authOptions: NextAuthOptions = {
         params.session.user.username = params.token.username;
         params.session.user.role = params.token?.role;
         params.session.user.id = params.token?.id;
+        params.session.user.phone_number = params.token?.phone_number;
+        params.session.user.name = params.token?.name;
+        params.session.user.shopAddress = params.token?.shopAddress;
+        params.session.user.taxId = params.token?.taxId;
       }
       return params.session;
     },
