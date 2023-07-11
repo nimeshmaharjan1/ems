@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, forwardRef, useEffect, useState } from 'react
 import { useMutation, useQueryClient } from 'react-query';
 import { changeOrderStatus } from '../../services/orders';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import { AxiosError } from 'axios';
 
 type EditOrderStatusModalProps = {
   order: Order;

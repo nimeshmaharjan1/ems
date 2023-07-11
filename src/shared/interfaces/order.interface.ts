@@ -24,6 +24,8 @@ export interface Order {
   additionalPhoneNumber: string;
   user: User;
   items: Item[];
+  amountLeftToPay: number;
+  partiallyPaidAmount: number;
 }
 
 export interface Item {
