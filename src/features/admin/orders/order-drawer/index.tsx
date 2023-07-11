@@ -78,6 +78,11 @@ const OrderDrawer: React.FC<{ order: Order; isDrawerOpen: boolean; setIsDrawerOp
         <p className="mt-4 text-sm">
           <span className="font-semibold">Created By:</span> {order.user.name}
         </p>
+        {order.selectedWholesaleOption && (
+          <p className="mt-4 text-sm">
+            <span className="font-semibold">Selected Wholesale Option:</span> {order.selectedWholesaleOption}
+          </p>
+        )}
         {order.selectedWholesaleOption && order.paymentStatus !== PAYMENT_STATUS.Paid && (
           <section className="mt-2 mb-6 partially-paid-section">
             <PartiallyPaid {...{ order, setIsDrawerOpen }}></PartiallyPaid>
