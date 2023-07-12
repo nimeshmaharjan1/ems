@@ -4,6 +4,7 @@ import { ICategoryResponse } from '@/shared/interfaces/category.interface';
 import { ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { showToast, Toast } from '@/shared/utils/toast.util';
 import { ShopBySearchParams, useShopByStore } from '@/store/use-shop-by';
+import { SELECTED_WHOLESALE_OPTION } from '@prisma/client';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 const ShopByAside = () => {
@@ -26,6 +27,7 @@ const ShopByAside = () => {
   });
 
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedWholesaleOption, setSelectedWholesaleOption] = useState<SELECTED_WHOLESALE_OPTION>(SELECTED_WHOLESALE_OPTION.CASH);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -41,6 +43,9 @@ const ShopByAside = () => {
         setSelectedCompany(e.target.value);
         handleShopBySearchParamsUpdate(name, value);
         break;
+      case 'wholesaleOption':
+        setSelectedWholesaleOption(e.target.value as SELECTED_WHOLESALE_OPTION);
+        handleShopBySearchParamsUpdate(name, value);
       case 'priceGt':
         if (Number(e.target.value) > Number(maxPrice)) {
           setMinPrice('0');
@@ -75,14 +80,41 @@ const ShopByAside = () => {
       <header className="mb-6 text-2xl font-bold md:font-medium  md:text-xl uppercase border-b relative mt-1 pb-[0.65rem] box-border">
         Shop By
       </header>
-      <div className="border-2 p-6">
-        <section className="brand-section mb-6 border-b border-gray-300 pb-4">
-          <h3 className="uppercase mb-2">Company</h3>
+      <div className="p-6 border-2">
+        <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
+          <h3 className="mb-2 uppercase">Wholesale option</h3>
+          <section className="flex gap-3">
+            <label className="label !justify-start gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value={SELECTED_WHOLESALE_OPTION.CASH}
+                checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CASH}
+                onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
+                className="radio radio-sm"
+                name={'wholesale-sorting-checkbox'}
+              />
+              <span className="label-text">{SELECTED_WHOLESALE_OPTION.CASH}</span>
+            </label>
+            <label className="label !justify-start gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value={SELECTED_WHOLESALE_OPTION.CREDIT}
+                checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CREDIT}
+                onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
+                className="radio radio-sm"
+                name={'wholesale-sorting-checkbox'}
+              />
+              <span className="label-text">{SELECTED_WHOLESALE_OPTION.CREDIT}</span>
+            </label>
+          </section>
+        </div>
+        <section className="pb-4 mb-6 border-b border-gray-300 brand-section">
+          <h3 className="mb-2 uppercase">Company</h3>
           {isCompaniesError ? (
-            <h4 className="text-error my-2">Something went wrong while trying to get the companies.</h4>
+            <h4 className="my-2 text-error">Something went wrong while trying to get the companies.</h4>
           ) : isCompaniesLoading ? (
-            <div className="h-60  flex items-center justify-center">
-              <button className="btn btn-ghost  btn-xl">
+            <div className="flex items-center justify-center h-60">
+              <button className="btn btn-ghost btn-xl">
                 <span className="loading loading-spinner"></span>
               </button>
             </div>
@@ -92,7 +124,7 @@ const ShopByAside = () => {
             <>
               {companies &&
                 companies.data.map((company) => (
-                  <div className="form-control my-1" key={company.id}>
+                  <div className="my-1 form-control" key={company.id}>
                     <label className="label !justify-start gap-2 cursor-pointer">
                       <input
                         type="radio"
@@ -110,13 +142,13 @@ const ShopByAside = () => {
           )}
         </section>
 
-        <section className="type-section mb-6 border-b border-gray-300 pb-4">
-          <h3 className="uppercase mb-2">Category</h3>
+        <section className="pb-4 mb-6 border-b border-gray-300 type-section">
+          <h3 className="mb-2 uppercase">Category</h3>
           {isCategoriesError ? (
-            <h4 className="text-error my-2">Something went wrong while trying to get the categories.</h4>
+            <h4 className="my-2 text-error">Something went wrong while trying to get the categories.</h4>
           ) : isCategoriesLoading ? (
-            <div className="h-60  flex items-center justify-center">
-              <button className="btn btn-ghost  btn-xl">
+            <div className="flex items-center justify-center h-60">
+              <button className="btn btn-ghost btn-xl">
                 <span className="loading loading-spinner"></span>
               </button>
             </div>
@@ -126,7 +158,7 @@ const ShopByAside = () => {
             <>
               {categories &&
                 categories.data.map((category) => (
-                  <div className="form-control my-1" key={category.id}>
+                  <div className="my-1 form-control" key={category.id}>
                     <label className="label !justify-start gap-2 cursor-pointer">
                       <input
                         type="radio"
@@ -143,10 +175,10 @@ const ShopByAside = () => {
             </>
           )}
         </section>
-        <h3 className="uppercase mb-4">Price</h3>
+        <h3 className="mb-4 uppercase">Price</h3>
 
-        <div className="price-range-slider mb-4">
-          <div className="price-input flex-col flex gap-4 mb-8">
+        <div className="mb-4 price-range-slider">
+          <div className="flex flex-col gap-4 mb-8 price-input">
             <div className="form-control">
               <label className="input-group input-group-xs xl:input-group-sm">
                 <span className="w-16">Min</span>
@@ -174,7 +206,7 @@ const ShopByAside = () => {
             </div>
           </div>
         </div>
-        <div className="clear-all-filters btn btn-primary btn-sm self-end" onClick={clearAllFilters}>
+        <div className="self-end clear-all-filters btn btn-primary btn-sm" onClick={clearAllFilters}>
           Clear All
         </div>
       </div>

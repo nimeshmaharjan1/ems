@@ -1,23 +1,18 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
+import OrderDrawer from '@/features/admin/orders/order-drawer';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { Order, PaginatedOrders } from '@/shared/interfaces/order.interface';
 import { formatDateWithTime, formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import classNames from 'classnames';
+import { Trash } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { AiOutlineCheck } from 'react-icons/ai';
-import { BsTrash } from 'react-icons/bs';
-import { RxCross1 } from 'react-icons/rx';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import EditOrderStatusModal from '../../../features/admin/orders/edit-status-modal';
-import classNames from 'classnames';
-import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
-import { Trash } from 'lucide-react';
-import Drawer from '@/shared/components/drawer';
-import OrderDrawer from '@/features/admin/orders/order-drawer';
 interface ChangePaidStatus {
   orderId: string;
   hasBeenPaid: boolean;

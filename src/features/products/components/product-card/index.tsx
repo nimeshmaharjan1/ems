@@ -10,10 +10,14 @@ import classNames from 'classnames';
 import { IProduct } from '@/shared/interfaces/product.interface';
 import { getPercentageDifference } from '@/shared/utils/helper.util';
 import { useSession } from 'next-auth/react';
-import { USER_ROLES } from '@prisma/client';
+import { SELECTED_WHOLESALE_OPTION, USER_ROLES } from '@prisma/client';
+import { useShopByStore } from '@/store/use-shop-by';
 
 const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
   const { cartItems, setCartItems, addToCart } = useCartStore();
+  const {
+    shopBySearchParams: { wholesaleOption },
+  } = useShopByStore();
   const { data: session } = useSession();
   const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -57,7 +61,10 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
           {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
             <>
               <p className="font-medium text-red-500">
-                <span className="text-xs">रू</span> {new Intl.NumberFormat('en-IN').format(Number(product.wholesaleCashPrice))}
+                <span className="text-xs">रू</span>{' '}
+                {new Intl.NumberFormat('en-IN').format(
+                  Number(wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? product.wholesaleCashPrice : product.wholesaleCreditPrice)
+                )}
               </p>
             </>
           ) : (

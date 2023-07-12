@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     await isAuthenticated(req, res);
-
     try {
       const { page = 1 } = req.query;
       const limit = parseInt(req.query.limit as string) || 6;

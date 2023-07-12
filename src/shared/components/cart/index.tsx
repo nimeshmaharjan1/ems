@@ -1,7 +1,8 @@
 import { formatPrice, rupees } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import { useShopByStore } from '@/store/use-shop-by';
 import { useCartStore } from '@/store/user-cart';
-import { USER_ROLES } from '@prisma/client';
+import { SELECTED_WHOLESALE_OPTION, USER_ROLES } from '@prisma/client';
 import { Trash2 } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
@@ -11,9 +12,20 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 const Cart = () => {
-  const { cartItems, setCartItems, getTotalPrice, getTotalCrossedPrice, removeFromCart, getTotalWholesaleCashPrice } = useCartStore();
+  const {
+    cartItems,
+    setCartItems,
+    getTotalPrice,
+    getTotalCrossedPrice,
+    removeFromCart,
+    getTotalWholesaleCashPrice,
+    getTotalWholesaleCreditPrice,
+  } = useCartStore();
   const { status, data: session } = useSession();
   const router = useRouter();
+  const {
+    shopBySearchParams: { wholesaleOption },
+  } = useShopByStore();
   const handleRemoveFromCart = (productId: string) => {
     removeFromCart(productId);
   };
@@ -58,7 +70,12 @@ const Cart = () => {
                         </button>
                       </div>
                       {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
-                        <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">रू {formatPrice(item.wholesaleCashPrice!)}</dl>
+                        <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">
+                          रू{' '}
+                          {formatPrice(
+                            wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? item.wholesaleCashPrice! : item.wholesaleCreditPrice!
+                          )}
+                        </dl>
                       ) : (
                         <>
                           {item.hasOffer ? (
@@ -94,7 +111,14 @@ const Cart = () => {
                           {/* //TODO cart wholesaele */}
                           <div className="md:text-right">
                             {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
-                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.wholesaleCashPrice!)}</p>
+                              <p className="text-sm font-medium md:text-[1rem]">
+                                रू
+                                {formatPrice(
+                                  wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH
+                                    ? cartItem.wholesaleCashPrice!
+                                    : cartItem.wholesaleCreditPrice!
+                                )}
+                              </p>
                             ) : cartItem.hasOffer ? (
                               <>
                                 <p className="text-sm line-through font-medium text-gray-400 md:text-[0.8rem]">
@@ -161,7 +185,13 @@ const Cart = () => {
               <div className="hidden space-y-1 text-right md:block">
                 {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
                   <p>
-                    Total amount: <span className="font-semibold">रू{formatPrice(getTotalWholesaleCashPrice())}</span>
+                    Total amount:{' '}
+                    <span className="font-semibold">
+                      रू
+                      {formatPrice(
+                        wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? getTotalWholesaleCashPrice() : getTotalWholesaleCreditPrice()
+                      )}
+                    </span>
                   </p>
                 ) : cartItems.find((item) => item.hasOffer) ? (
                   <>

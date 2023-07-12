@@ -54,9 +54,10 @@ const Users: NextPageWithLayout = () => {
   };
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold">Users</h2>
-      </div>
+      <p className="px-3 mb-6">
+        NOTE: The users applying as a <strong>business client</strong> will have their table row marked with a{' '}
+        <span className="px-2 rounded bg-base-300">dark background</span> please keep this in mind.
+      </p>
       <section className="overflow-x-auto">
         <table className="table w-full table-auto">
           <thead>
@@ -87,7 +88,7 @@ const Users: NextPageWithLayout = () => {
                       <tr
                         key={user.id}
                         className={classNames('', {
-                          'bg-base-300': user.applyingAsBusinessClient,
+                          'bg-base-300 !': user.applyingAsBusinessClient,
                         })}>
                         <td className="">{`${user.name.substring(0, 40)}${user.name.length > 40 ? '...' : ''}`}</td>
                         <td className="">{user.phone_number || '-'}</td>
@@ -108,14 +109,6 @@ const Users: NextPageWithLayout = () => {
                               </option>
                             ))}
                           </select>
-                          {/* <span
-                            className={classNames('badge-sm', {
-                              'badge badge-accent': user.role === USER_ROLES.SUPER_ADMIN,
-                              'badge badge-secondary': user.role === USER_ROLES.STAFF,
-                              'badge badge-primary': user.role === USER_ROLES.USER,
-                            })}>
-                            {user.role}
-                          </span> */}
                         </td>
                         {/* <td className="text-center ">
                     <Link href={`/admin/users/edit/${user.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
