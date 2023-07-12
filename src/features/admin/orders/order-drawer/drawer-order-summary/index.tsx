@@ -1,4 +1,3 @@
-import Logo from '@/shared/components/logo';
 import { Order } from '@/shared/interfaces/order.interface';
 import { formatPrice } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
