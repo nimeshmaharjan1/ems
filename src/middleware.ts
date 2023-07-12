@@ -1,6 +1,6 @@
 import { USER_ROLES } from '@prisma/client';
 import { withAuth } from 'next-auth/middleware';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 export default withAuth(function middleware(req: NextRequest) {}, {
   callbacks: {
     authorized: (params: any) => {

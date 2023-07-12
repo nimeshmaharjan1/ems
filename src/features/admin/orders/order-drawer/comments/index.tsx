@@ -102,7 +102,7 @@ const OrderComments: React.FC<{
                   <span className="font-semibold">{comment.user?.name}</span>
                   <span className="text-xs">{formatDateWithTime(comment.createdAt)}</span>
                 </div>
-                <span className="text-base">{comment.comment}</span>
+                <span>{comment.comment}</span>
               </div>
             </section>
           ))
