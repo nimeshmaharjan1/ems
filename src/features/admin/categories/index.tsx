@@ -22,6 +22,8 @@ import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+//TODO Do this or that
+
 const SettingCategory = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
@@ -199,10 +201,10 @@ const SettingCategory = () => {
                       <div className="flex flex-wrap gap-2 ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                              <span className="badge badge-accent !text-white" key={company.id}>
-                                {company.name}
-                              </span>
-                            ))
+                            <span className="badge badge-accent !text-white" key={company.id}>
+                              {company.name}
+                            </span>
+                          ))
                           : '-'}
                       </div>
                     </td>
