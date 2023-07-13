@@ -5,7 +5,8 @@ const Pagination: React.FC<{
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   totalPages: number;
-}> = ({ currentPage, setCurrentPage, totalPages }) => {
+  size?: 'sm' | 'md';
+}> = ({ currentPage, setCurrentPage, totalPages, size = 'md' }) => {
   const getPageLinks = () => {
     const pageLinks = [];
     const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -13,7 +14,7 @@ const Pagination: React.FC<{
 
     if (startPage > 1) {
       pageLinks.push(
-        <button key="prev" onClick={() => setCurrentPage(currentPage - 1)} className="btn btn-ghost btn-sm btn-outline">
+        <button key="prev" onClick={() => setCurrentPage(currentPage - 1)} className="btn btn-ghost btn-xs btn-outline">
           Previous
         </button>
       );
@@ -29,7 +30,7 @@ const Pagination: React.FC<{
           key={i}
           onClick={() => setCurrentPage(i)}
           aria-current={currentPage === i ? 'page' : undefined}
-          className={`btn ${currentPage === i ? 'btn-primary' : 'btn-ghost btn-outline'} btn-sm`}>
+          className={`btn ${currentPage === i ? 'btn-primary' : 'btn-ghost btn-outline'} btn-xs`}>
           {i}
         </button>
       );
@@ -41,7 +42,7 @@ const Pagination: React.FC<{
 
     if (endPage < totalPages) {
       pageLinks.push(
-        <button key="next" onClick={() => setCurrentPage(currentPage + 1)} className="btn btn-ghost btn-sm btn-outline">
+        <button key="next" onClick={() => setCurrentPage(currentPage + 1)} className="btn btn-ghost btn-xs btn-outline">
           Next
         </button>
       );

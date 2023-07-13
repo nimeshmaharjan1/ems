@@ -7,24 +7,32 @@ import { ShopBySearchParams, useShopByStore } from '@/store/use-shop-by';
 import { SELECTED_WHOLESALE_OPTION } from '@prisma/client';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { USER_ROLES } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import Pagination from '@/shared/components/pagination';
 const ShopByAside = () => {
+  const { data: session } = useSession();
   const { handleShopBySearchParamsUpdate, shopBySearchParams, setShopBySearchParams } = useShopByStore();
+  const [companyPage, setCompanyPage] = useState(1);
+  const [categoryPage, setCategoryPage] = useState(1);
   const {
     data: companies,
     isLoading: isCompaniesLoading,
     isError: isCompaniesError,
   } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
-    const response = await getCompanies({ limit: 50, page: 1 });
+    const response = await getCompanies({ limit: 5, page: 1 });
     return response;
   });
+  const totalCompanyPages = companies?.totalPages;
   const {
     data: categories,
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
   } = useQuery<ICategoryResponse, Error>('getCategories', async () => {
-    const response = await getCategories({ limit: 50, page: 1 });
+    const response = await getCategories({ limit: 5, page: 1 });
     return response;
   });
+  const totalCategoryPages = categories?.totalPages;
 
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedWholesaleOption, setSelectedWholesaleOption] = useState<SELECTED_WHOLESALE_OPTION>(SELECTED_WHOLESALE_OPTION.CASH);
@@ -72,7 +80,13 @@ const ShopByAside = () => {
     setSelectedCategory('');
     setMinPrice('');
     setMaxPrice('');
-    setShopBySearchParams({ title: '', category: '', company: '', priceLt: '', priceGt: '' });
+    setShopBySearchParams({
+      title: '',
+      category: '',
+      company: '',
+      priceLt: '',
+      priceGt: '',
+    });
   };
 
   return (
@@ -81,34 +95,36 @@ const ShopByAside = () => {
         Shop By
       </header>
       <div className="p-6 border-2">
-        <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
-          <h3 className="mb-2 uppercase">Wholesale option</h3>
-          <section className="flex gap-3">
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value={SELECTED_WHOLESALE_OPTION.CASH}
-                checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CASH}
-                onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
-                className="radio radio-sm"
-                name={'wholesale-sorting-checkbox'}
-              />
-              <span className="label-text">{SELECTED_WHOLESALE_OPTION.CASH}</span>
-            </label>
-            <label className="label !justify-start gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value={SELECTED_WHOLESALE_OPTION.CREDIT}
-                checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CREDIT}
-                onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
-                className="radio radio-sm"
-                name={'wholesale-sorting-checkbox'}
-              />
-              <span className="label-text">{SELECTED_WHOLESALE_OPTION.CREDIT}</span>
-            </label>
-          </section>
-        </div>
-        <section className="pb-4 mb-6 border-b border-gray-300 brand-section">
+        {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
+          <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
+            <h3 className="mb-2 uppercase">Wholesale option</h3>
+            <section className="flex gap-3">
+              <label className="label !justify-start gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value={SELECTED_WHOLESALE_OPTION.CASH}
+                  checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CASH}
+                  onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
+                  className="radio radio-sm"
+                  name={'wholesale-sorting-checkbox'}
+                />
+                <span className="label-text">{SELECTED_WHOLESALE_OPTION.CASH}</span>
+              </label>
+              <label className="label !justify-start gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value={SELECTED_WHOLESALE_OPTION.CREDIT}
+                  checked={selectedWholesaleOption === SELECTED_WHOLESALE_OPTION.CREDIT}
+                  onChange={(e) => handleSearchChange(e, 'wholesaleOption')}
+                  className="radio radio-sm"
+                  name={'wholesale-sorting-checkbox'}
+                />
+                <span className="label-text">{SELECTED_WHOLESALE_OPTION.CREDIT}</span>
+              </label>
+            </section>
+          </div>
+        )}
+        <section className="pb-6 mb-6 border-b border-gray-300 brand-section">
           <h3 className="mb-2 uppercase">Company</h3>
           {isCompaniesError ? (
             <h4 className="my-2 text-error">Something went wrong while trying to get the companies.</h4>
@@ -140,9 +156,14 @@ const ShopByAside = () => {
                 ))}
             </>
           )}
+          <div className="flex justify-end mt-3 place-self-end">
+            {totalCompanyPages !== undefined && (
+              <Pagination currentPage={companyPage} setCurrentPage={setCompanyPage} totalPages={totalCompanyPages}></Pagination>
+            )}
+          </div>
         </section>
 
-        <section className="pb-4 mb-6 border-b border-gray-300 type-section">
+        <section className="pb-6 mb-6 border-b border-gray-300 type-section">
           <h3 className="mb-2 uppercase">Category</h3>
           {isCategoriesError ? (
             <h4 className="my-2 text-error">Something went wrong while trying to get the categories.</h4>
@@ -174,6 +195,11 @@ const ShopByAside = () => {
                 ))}
             </>
           )}
+          <div className="flex justify-end mt-3 place-self-end">
+            {totalCategoryPages !== undefined && (
+              <Pagination currentPage={categoryPage} setCurrentPage={setCategoryPage} totalPages={totalCategoryPages}></Pagination>
+            )}
+          </div>
         </section>
         <h3 className="mb-4 uppercase">Price</h3>
 

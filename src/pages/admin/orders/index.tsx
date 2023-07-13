@@ -21,12 +21,13 @@ const Orders: NextPageWithLayout = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
+  const [selectedFilter, setSelectedFilter] = useState<'b2b' | 'b2c'>('b2b');
   const {
     data: ordersData,
     isError,
     isLoading,
-  } = useQuery<PaginatedOrders, Error>(['fetchOrders', currentPage, limit], async () => {
-    const response = await axios.get(`/api/admin/orders?page=${currentPage}&limit=${limit}`);
+  } = useQuery<PaginatedOrders, Error>(['fetchOrders', currentPage, limit, selectedFilter], async () => {
+    const response = await axios.get(`/api/admin/orders?page=${currentPage}&limit=${limit}&customer_type=${selectedFilter}`);
     return response.data;
   });
   const totalPages = ordersData?.totalPages;
@@ -84,8 +85,27 @@ const Orders: NextPageWithLayout = () => {
         <h2 className="text-error">Something went wrong while trying to get the orders.</h2>
       ) : (
         <>
-          <section className="flex justify-end mb-4">
+          <section className="flex justify-between mb-5">
+            <h2 className="text-2xl font-semibold">Orders</h2>
             <button className="btn btn-primary btn-sm">Create Order</button>
+          </section>
+          <section className="flex gap-3 mb-5">
+            <button
+              className={classNames('btn btn-sm', {
+                'btn-primary': selectedFilter === 'b2b',
+                'btn-outline': selectedFilter !== 'b2b',
+              })}
+              onClick={() => setSelectedFilter('b2b')}>
+              B2B
+            </button>
+            <button
+              className={classNames('btn btn-sm', {
+                'btn-primary': selectedFilter === 'b2c',
+                'btn-outline': selectedFilter === 'b2c',
+              })}
+              onClick={() => setSelectedFilter('b2c')}>
+              B2C
+            </button>
           </section>
           <section className="overflow-x-auto">
             {isLoading ? (

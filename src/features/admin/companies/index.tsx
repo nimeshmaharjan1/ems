@@ -2,6 +2,7 @@ import { getCategories } from '@/features/admin/services/categories/categories.s
 import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
+import Pagination from '@/shared/components/pagination';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICompany, ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { getDateWithWeekDay } from '@/shared/utils/helper.util';
@@ -41,7 +42,7 @@ const SettingCompany = () => {
     isError: isCompanyError,
     isFetching: isCategoryFetching,
   } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
-    const data = await getCompanies({ limit: 25, page: 1 });
+    const data = await getCompanies({ limit: 5, page: 1 });
     return data;
   });
 
@@ -153,10 +154,13 @@ const SettingCompany = () => {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+
   return (
     <div className="grid grid-cols-6 gap-6">
       <section className="col-span-6 overflow-x-auto lg:col-span-4 ">
-        <table className="table w-full">
+        <table className="table w-full table-sm">
           <thead>
             <tr className="bg-base-200">
               <th>SN</th>
@@ -199,7 +203,7 @@ const SettingCompany = () => {
                       <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                              <span className="badge badge-accent !text-white" key={category.id}>
+                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
                                 {category.name}
                               </span>
                             ))
@@ -210,7 +214,7 @@ const SettingCompany = () => {
                     <td className="flex justify-center h-">
                       <div className="gap-2 join">
                         <button
-                          className="btn btn-sm btn-outline btn-primary gap-1 items-center !font-medium"
+                          className="btn btn-xs btn-outline btn-primary gap-1 items-center !font-medium"
                           onClick={() => {
                             setSelectedAction(SELECTED_ACTION.EDIT);
                             setValue('id', company.id);
@@ -220,7 +224,7 @@ const SettingCompany = () => {
                           <FiSettings></FiSettings>
                         </button>
                         <button
-                          className={classNames('btn btn-sm btn-outline btn-error gap-1 items-center !font-medium', {
+                          className={classNames('btn btn-xs btn-outline btn-error gap-1 items-center !font-medium', {
                             loading: isSubmitting,
                           })}
                           disabled={isSubmitting}
@@ -238,6 +242,11 @@ const SettingCompany = () => {
             </tbody>
           )}
         </table>
+        <div className="flex justify-end mt-4 place-self-end">
+          {companyData?.totalPages !== undefined && (
+            <Pagination {...{ currentPage, setCurrentPage }} totalPages={companyData.totalPages}></Pagination>
+          )}
+        </div>
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCompanyLoading ? (
@@ -289,7 +298,7 @@ const SettingCompany = () => {
                 )}></Controller>
               <div className="card-actions ">
                 <button
-                  className={classNames('btn btn-primary btn-block')}
+                  className={classNames('btn btn-primary btn-sm btn-block')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
                   {(addCompanyMutation.isLoading || updateCompanyMutation.isLoading) && <span className="loading loading-spinner"></span>}

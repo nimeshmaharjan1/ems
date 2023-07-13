@@ -51,7 +51,8 @@ const Products: NextPageWithLayout = () => {
   if (!isMounted) return null;
   return (
     <>
-      <div className="flex items-center justify-end mb-6">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-semibold">Products</h2>
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {

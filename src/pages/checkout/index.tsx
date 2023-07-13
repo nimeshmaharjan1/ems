@@ -1,24 +1,24 @@
+import OrderSummary from '@/features/checkout/components/order-summary';
 import MainSharedLayout from '@/shared/layouts/main';
 import { formatPrice } from '@/shared/utils/helper.util';
-import { Toast, showToast } from '@/shared/utils/toast.util';
+import { showToast, Toast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
+import { PAYMENT_METHOD, PrismaClient, SELECTED_WHOLESALE_OPTION, Settings, USER_ROLES } from '@prisma/client';
 import axios from 'axios';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Trash2 } from 'lucide-react';
+import { GetServerSideProps, NextPage } from 'next';
+import { getServerSession, Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import ContactInformation from '../../features/checkout/components/contact-information';
 import { useForm } from 'react-hook-form';
-import { Session, getServerSession } from 'next-auth';
+import ContactInformation from '../../features/checkout/components/contact-information';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { GetServerSideProps, NextPage } from 'next';
 import { NextPageWithLayout } from '../_app';
-import OrderSummary from '@/features/checkout/components/order-summary';
-import { PAYMENT_METHOD, PrismaClient, SELECTED_WHOLESALE_OPTION, Settings, USER_ROLES } from '@prisma/client';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const prisma = new PrismaClient();
@@ -91,8 +91,8 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
             ? checkoutDetails.wholesaleOption === 'CASH'
               ? item.wholesaleCashPrice
               : checkoutDetails.wholesaleOption === 'CREDIT'
-              ? item.wholesaleCreditPrice
-              : item.sellingPrice
+                ? item.wholesaleCreditPrice
+                : item.sellingPrice
             : item.sellingPrice,
       })),
       customerAddress: checkoutDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : checkoutDetails.deliveryAddress,
