@@ -51,7 +51,8 @@ const Products: NextPageWithLayout = () => {
   if (!isMounted) return null;
   return (
     <>
-      <div className="flex items-center justify-end mb-6">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-semibold">Products</h2>
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {
@@ -60,9 +61,6 @@ const Products: NextPageWithLayout = () => {
           Add Product
         </button>
       </div>
-      <section className="flex gap-3 mb-3">
-        <button className="btn btn-sm btn-outline">B2B</button><button className="btn btn-primary btn-sm">B2C</button>
-      </section>
       <section className="overflow-x-auto">
         {isError ? (
           <h2 className="p-2 font-medium text-error">Something went wrong while trying to fetch the products.</h2>

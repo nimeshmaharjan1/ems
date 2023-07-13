@@ -90,7 +90,7 @@ const OrderDrawer: React.FC<{ order: Order; isDrawerOpen: boolean; setIsDrawerOp
         )}
         <section className="grid grid-cols-6 gap-3 mt-4">
           <div className="col-span-4 card bg-base-200">
-            <DrawerOrderSummary order={order}></DrawerOrderSummary>
+            <DrawerOrderSummary setIsOpen={setIsDrawerOpen} order={order}></DrawerOrderSummary>
           </div>
           <div className="col-span-2 card bg-base-200">
             <OrderCustomerDetails order={order}></OrderCustomerDetails>

@@ -6,11 +6,11 @@ import axios from 'axios';
 import classNames from 'classnames';
 import { ArrowRight, Settings } from 'lucide-react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQueryClient } from 'react-query';
 
-const DrawerOrderSummary: React.FC<{ order: Order }> = ({ order }) => {
+const DrawerOrderSummary: React.FC<{ order: Order; setIsOpen: Dispatch<SetStateAction<boolean>> }> = ({ order, setIsOpen }) => {
   const [partiallyPaidAmount, setPartiallyPaidAmount] = useState(order.partiallyPaidAmount);
   const [amountLeftToPay, setAmountLeftToPay] = useState(order.amountLeftToPay);
   const queryClient = useQueryClient();
@@ -40,6 +40,7 @@ const DrawerOrderSummary: React.FC<{ order: Order }> = ({ order }) => {
       });
       showToast(Toast.success, 'Delivery charge updated.');
       queryClient.invalidateQueries('fetchOrders');
+      setIsOpen(false);
     } catch (error) {
       console.error(error);
       showToast(Toast.error, 'Something went wrong while trying to update the delivery charge updated.');

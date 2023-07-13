@@ -8,6 +8,7 @@ import {
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import { SELECTED_ACTION } from '@/features/admin/settings/types';
 import FormControl from '@/shared/components/form-control';
+import Pagination from '@/shared/components/pagination';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICategory, ICategoryResponse } from '@/shared/interfaces/category.interface';
 
@@ -49,7 +50,7 @@ const SettingCategory = () => {
     isLoading: isCategoryLoading,
     isError: isCategoryError,
     isFetching: isCategoryFetching,
-  } = useQuery<ICategoryResponse, Error>('getCategories', async () => await getCategories({ page: 1, limit: 10 }));
+  } = useQuery<ICategoryResponse, Error>('getCategories', async () => await getCategories({ page: 1, limit: 5 }));
 
   const addCategoryMutation = useMutation(addCategory, {
     onSuccess: () => {
@@ -154,10 +155,13 @@ const SettingCategory = () => {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+
   return (
     <div className="grid grid-cols-6 gap-6">
       <section className="col-span-6 overflow-x-auto lg:col-span-4">
-        <table className="table w-full">
+        <table className="table w-full table-sm">
           <thead>
             <tr className="bg-base-200">
               <th>SN</th>
@@ -201,10 +205,10 @@ const SettingCategory = () => {
                       <div className="flex flex-wrap gap-2 ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                            <span className="badge badge-accent !text-white" key={company.id}>
-                              {company.name}
-                            </span>
-                          ))
+                              <span className="badge badge-sm badge-accent !text-white" key={company.id}>
+                                {company.name}
+                              </span>
+                            ))
                           : '-'}
                       </div>
                     </td>
@@ -212,7 +216,7 @@ const SettingCategory = () => {
                     <td className="flex justify-center h-">
                       <div className="gap-2 join">
                         <button
-                          className="btn btn-sm  btn-outline btn-primary gap-1 items-center !font-medium"
+                          className="btn btn-xs  btn-outline btn-primary gap-1 items-center !font-medium"
                           onClick={() => {
                             setSelectedAction(SELECTED_ACTION.EDIT);
                             setValue('id', category.id);
@@ -222,7 +226,7 @@ const SettingCategory = () => {
                           <FiSettings></FiSettings>
                         </button>
                         <button
-                          className={classNames('btn  group btn-sm btn-outline btn-error gap-1 items-center !font-medium', {
+                          className={classNames('btn  group btn-xs btn-outline btn-error gap-1 items-center !font-medium', {
                             loading: isSubmitting,
                           })}
                           disabled={isSubmitting}
@@ -240,6 +244,11 @@ const SettingCategory = () => {
             </tbody>
           )}
         </table>
+        <div className="flex justify-end mt-4 place-self-end">
+          {categoryData?.totalPages !== undefined && (
+            <Pagination {...{ currentPage, setCurrentPage }} totalPages={categoryData.totalPages}></Pagination>
+          )}
+        </div>
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCategoryLoading ? (
@@ -298,7 +307,7 @@ const SettingCategory = () => {
                 )}></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-block ')}
+                  className={classNames('btn btn-primary btn-sm btn-block ')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
                   {(addCategoryMutation.isLoading || updateCategoryMutation.isLoading) && <span className="loading loading-spinner"></span>}

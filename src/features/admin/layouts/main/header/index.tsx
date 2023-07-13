@@ -13,8 +13,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const session = useSession();
   return (
-    <header className="z-50 flex items-center justify-between w-full h-[4.5rem] px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
-      <h3 className="text-2xl font-semibold capitalize">{getRoute(router.pathname)}</h3>
+    <header className="z-50 flex items-center justify-end w-full h-[4.5rem] px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
+      {/* <h3 className="text-2xl font-semibold capitalize">{router.pathname.split('/')}</h3> */}
       <section className="flex items-center gap-4">
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-sm btn-circle avatar">
