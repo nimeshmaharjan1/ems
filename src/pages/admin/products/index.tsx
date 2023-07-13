@@ -60,6 +60,9 @@ const Products: NextPageWithLayout = () => {
           Add Product
         </button>
       </div>
+      <section className="flex gap-3 mb-3">
+        <button className="btn btn-sm btn-outline">B2B</button><button className="btn btn-primary btn-sm">B2C</button>
+      </section>
       <section className="overflow-x-auto">
         {isError ? (
           <h2 className="p-2 font-medium text-error">Something went wrong while trying to fetch the products.</h2>
