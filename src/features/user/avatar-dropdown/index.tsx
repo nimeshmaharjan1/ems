@@ -13,7 +13,7 @@ const NavAvatarDropdown: React.FC<{
 }> = ({ profileModalRef }) => {
   const { data: session } = useSession();
   return (
-    <div className="dropdown dropdown-end !mr-3">
+    <div className="dropdown dropdown-end ">
       <label tabIndex={0} className="btn btn-sm btn-ghost btn-circle avatar">
         {session?.user?.image ? (
           <div className="avatar online">

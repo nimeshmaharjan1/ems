@@ -19,8 +19,8 @@ const ShopByAside = () => {
     data: companies,
     isLoading: isCompaniesLoading,
     isError: isCompaniesError,
-  } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
-    const response = await getCompanies({ limit: 5, page: 1 });
+  } = useQuery<ICompanyResponse, Error>(['getCompanies', companyPage], async () => {
+    const response = await getCompanies({ limit: 5, page: companyPage });
     return response;
   });
   const totalCompanyPages = companies?.totalPages;
@@ -28,8 +28,8 @@ const ShopByAside = () => {
     data: categories,
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
-  } = useQuery<ICategoryResponse, Error>('getCategories', async () => {
-    const response = await getCategories({ limit: 5, page: 1 });
+  } = useQuery<ICategoryResponse, Error>(['getCategories', categoryPage], async () => {
+    const response = await getCategories({ limit: 5, page: categoryPage });
     return response;
   });
   const totalCategoryPages = categories?.totalPages;

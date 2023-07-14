@@ -42,7 +42,7 @@ const SettingCompany = () => {
     isError: isCompanyError,
     isFetching: isCategoryFetching,
   } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
-    const data = await getCompanies({ limit: 5, page: 1 });
+    const data = await getCompanies({ limit: 5, page: currentPage });
     return data;
   });
 
@@ -203,10 +203,10 @@ const SettingCompany = () => {
                       <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
-                                {category.name}
-                              </span>
-                            ))
+                            <span className="badge badge-accent badge-sm !text-white" key={category.id}>
+                              {category.name}
+                            </span>
+                          ))
                           : '-'}
                       </div>
                     </td>

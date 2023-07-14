@@ -2,6 +2,7 @@ import ThemeToggler from '@/shared/components/theme-toggler';
 import { User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -13,8 +14,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const session = useSession();
   return (
-    <header className="z-50 flex items-center justify-end w-full h-[4.5rem] px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
-      {/* <h3 className="text-2xl font-semibold capitalize">{router.pathname.split('/')}</h3> */}
+    <header className="z-50 flex items-center justify-between w-full h-[4.5rem] px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
+      <Link href='/' passHref> <h3 className="text-2xl font-semibold text-primary capitalize">EME</h3> </Link>
       <section className="flex items-center gap-4">
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-sm btn-circle avatar">

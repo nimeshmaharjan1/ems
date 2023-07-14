@@ -18,13 +18,14 @@ module.exports = {
           accent: '#facc13',
         },
       },
-      {
-        night: {
-          ...require('daisyui/src/theming/themes')['[data-theme=night]'],
-          'base-200': '#0E1627',
-          'base-300': '#0D1423',
-        },
-      },
+      'dark'
+      // {
+      //   night: {
+      //     ...require('daisyui/src/theming/themes')['[data-theme=night]'],
+      //     'base-200': '#0E1627',
+      //     'base-300': '#0D1423',
+      //   },
+      // },
     ],
   },
 };
