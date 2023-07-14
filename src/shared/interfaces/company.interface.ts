@@ -9,4 +9,5 @@ export interface ICompanyResponse {
   page: number;
   totalPages: number;
   totalRecords: number;
+  position: number;
 }

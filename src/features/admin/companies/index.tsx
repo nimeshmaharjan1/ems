@@ -35,13 +35,14 @@ const SettingCompany = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedAction, setSelectedAction] = useState<SELECTED_ACTION>(SELECTED_ACTION.ADD);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: companyData,
     isLoading: isCompanyLoading,
     isError: isCompanyError,
     isFetching: isCategoryFetching,
-  } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
+  } = useQuery<ICompanyResponse, Error>(['getCompanies', currentPage], async () => {
     const data = await getCompanies({ limit: 5, page: currentPage });
     return data;
   });
@@ -154,7 +155,8 @@ const SettingCompany = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
+  console.log({ companyData });
+
   const limit = 10;
 
   return (
@@ -197,16 +199,16 @@ const SettingCompany = () => {
               {companyData?.data?.map((company, companyIndex) => {
                 return (
                   <tr key={company.id}>
-                    <td>{companyIndex + 1}</td>
+                    <td>{company.position}</td>
                     <td>{company.name}</td>
                     <td>
                       <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                            <span className="badge badge-accent badge-sm !text-white" key={category.id}>
-                              {category.name}
-                            </span>
-                          ))
+                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
+                                {category.name}
+                              </span>
+                            ))
                           : '-'}
                       </div>
                     </td>
@@ -250,13 +252,13 @@ const SettingCompany = () => {
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCompanyLoading ? (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
+          <div className="card w-96 lg:w-full bg-base-200 shadow !rounded-lg h-72">
             <div className="flex items-center justify-center card-body">
               <button className="btn btn-ghost loading"></button>
             </div>
           </div>
         ) : (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
+          <div className="card w-96 lg:w-full bg-base-200 shadow !rounded-lg">
             <div className="card-body !gap-4">
               <div className="items-center justify-between card-title">
                 {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}

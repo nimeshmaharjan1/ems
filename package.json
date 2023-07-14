@@ -8,12 +8,14 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "type": "module",
   "dependencies": {
     "@babel/core": ">=7.0.0 <8.0.0",
     "@ckeditor/ckeditor5-build-classic": "^38.0.1",
     "@ckeditor/ckeditor5-engine": ">=37.0.0",
     "@ckeditor/ckeditor5-react": "^6.0.0",
     "@ckeditor/ckeditor5-watchdog": ">=37.0.0",
+    "@headlessui/react": "^1.7.15",
     "@hookform/resolvers": "^2.9.10",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@next/font": "13.1.4",

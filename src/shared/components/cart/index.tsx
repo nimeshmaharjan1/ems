@@ -54,14 +54,14 @@ const Cart = () => {
               <ul className="block space-y-1 divide-y divide-gray-700 md:hidden">
                 {cartItems.map((item) => (
                   <li key={item.productId} className="flex items-center gap-4 py-3">
-                    <div className="relative object-cover w-32 h-16 rounded">
+                    <div className="relative object-cover w-20 h-16 rounded">
                       <Image src={item.image} alt={item.slug} fill />
                     </div>
 
                     <div>
                       <h3 className="text-sm font-medium">{item.slug.length > 30 ? `${item.slug.slice(0, 30)}...` : item.slug}</h3>
                       <div className="flex justify-between mt-1.5">
-                        <dl className="text-[13px] text-neutral-content"> x{item.quantity}</dl>
+                        <dl className="text-[13px] "> x{item.quantity}</dl>
                         <button
                           type="button"
                           onClick={() => handleRemoveFromCart(item.productId)}
@@ -70,7 +70,7 @@ const Cart = () => {
                         </button>
                       </div>
                       {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
-                        <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">
+                        <dl className="mt-1.5  text-[13px] font-medium ">
                           रू{' '}
                           {formatPrice(
                             wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? item.wholesaleCashPrice! : item.wholesaleCreditPrice!
@@ -80,11 +80,11 @@ const Cart = () => {
                         <>
                           {item.hasOffer ? (
                             <>
-                              <dl className="mt-1.5 line-through text-[11px] text-gray-300">रू {formatPrice(item.crossedPrice!)}</dl>
-                              <dl className="mt-1.5 text-[13px] font-medium text-gray-700">रू {formatPrice(item.sellingPrice!)}</dl>
+                              <dl className="mt-1.5 line-through text-[11px] ">रू {formatPrice(item.crossedPrice!)}</dl>
+                              <dl className="mt-1.5 text-[13px] font-medium ">रू {formatPrice(item.sellingPrice!)}</dl>
                             </>
                           ) : (
-                            <dl className="mt-1.5  text-[13px] font-medium text-neutral-content">रू {formatPrice(item.sellingPrice)}</dl>
+                            <dl className="mt-1.5  text-[13px] font-medium ">रू {formatPrice(item.sellingPrice)}</dl>
                           )}
                         </>
                       )}

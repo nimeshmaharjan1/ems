@@ -32,6 +32,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const totalPages = Math.ceil(totalRecords / (limit as number));
 
       const companies = await prisma.company.findMany({
+        orderBy: {
+          position: { sort: 'asc' },
+        },
         skip: (Number(page) - 1) * (limit as number) || 0,
         include: {
           products: true,
