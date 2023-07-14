@@ -7,7 +7,7 @@ import Cart from '@/shared/components/cart';
 import ThemeToggler from '@/shared/components/theme-toggler';
 import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
-import { User } from 'lucide-react';
+import { BadgeInfo, User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -129,7 +129,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           ref={profileModalRef}></UserProfileModal>
       )}
       <div className="drawer">
-        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <input aria-label='toggle drawer' id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">
           <div className="shadow nav-wrapper bg-base-100">
             <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
@@ -138,20 +138,25 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                   <GiHamburgerMenu></GiHamburgerMenu>
                 </label>
               </div>
-              <div className="">
-                <Link href="/products" className="relative w-[5.5rem] mb-1 h-14 md:w-[7.5rem] md:h-20">
-                  <Image src="/logo.png" fill alt="logo"></Image>
+              <h2 className="text-xl font-semibold text-primary inline lg:hidden">EME</h2>
+              <div className="items-center gap-x-6 hidden lg:flex">
+                {/* <Link href="/products" className="relative w-[5.5rem] mb-1 h-14 md:w-[7.5rem] md:h-20"> */}
+                {/*   <Image src="/logo.png" fill alt="logo"></Image> */}
+                {/* </Link> */}
+                <h2 className="text-2xl font-semibold text-primary">EME</h2>
+                <Link href="/products" className="btn btn-sm btn-ghost">
+                  Products
+                </Link>
+                <Link href="/about" className="btn btn-sm btn-ghost">
+                  About
                 </Link>
               </div>
               <div className="flex items-center gap-2 lg:hidden theme">
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                {/* <ThemeToggler></ThemeToggler> */}
+                <ThemeToggler></ThemeToggler>
               </div>
               <div className="items-center flex-none hidden gap-4 lg:flex">
-                <Link href="/products" className="btn btn-sm btn-ghost">
-                  Products
-                </Link>
                 {/* {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
                   <Link href="/admin/products" className="btn btn-sm btn-ghost ">
                     Dashboard
@@ -173,7 +178,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 )}
                 <ThemeToggler></ThemeToggler>
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
-                <div className="-ml-1">{/* <ThemeToggler></ThemeToggler> */}</div>
               </div>
             </div>
           </div>
@@ -207,17 +211,23 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             <li>
               <Link
                 href="/products"
-                className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                 <FaBox></FaBox>
                 Products
               </Link>
             </li>
+            <li> <Link
+              href="/about"
+              className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+              <BadgeInfo />
+              About
+            </Link></li>
             {status === 'unauthenticated' && (
               <>
                 <li className="-ml-[0.3rem]">
                   <Link
                     href="/api/auth/signin"
-                    className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                    className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                     <MdLogin className="text-lg" />
                     Sign In
                   </Link>
@@ -225,7 +235,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 <li>
                   <Link
                     href="/auth/register"
-                    className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                    className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                     <FiUserPlus />
                     Sign Up
                   </Link>

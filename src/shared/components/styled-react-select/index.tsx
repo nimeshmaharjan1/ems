@@ -32,7 +32,7 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
       }}
       classNames={{
         control: () => {
-          return `block ${theme === 'night' ? 'border-neutral-focus' : 'border'} ${
+          return `block ${theme === 'dark' ? 'border-neutral-focus' : 'border'} ${
             isRequired ? 'border-error' : ''
           } border rounded-lg py-1`;
         },

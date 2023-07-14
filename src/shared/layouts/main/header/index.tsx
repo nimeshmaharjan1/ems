@@ -11,9 +11,9 @@ const MainSharedHeader = () => {
   return (
     <header
       className={classNames('wrapper shadow', {
-        ['border-b border-b-gray-700']: theme === 'night',
+        ['border-b border-b-gray-700']: theme === 'dark',
       })}>
-      <div className={`${styles['top-header-wrapper']} border-b ${theme === 'night' ? ' border-b-gray-700' : ''}`}>
+      <div className={`${styles['top-header-wrapper']} border-b ${theme === 'dark' ? ' border-b-gray-700' : ''}`}>
         <section className="lg:container lg:mx-auto flex items-center justify-between h-10 px-6 lg:px-28">
           <section className="contact hidden md:flex">
             <p>Need Help ? 01-5203362</p>
@@ -23,7 +23,7 @@ const MainSharedHeader = () => {
           <section className="account flex">
             <button
               onClick={() => {
-                resolvedTheme === 'corporate' ? setTheme('night') : setTheme('corporate');
+                resolvedTheme === 'corporate' ? setTheme('dark') : setTheme('corporate');
               }}
               className={classNames('!bg-transparent btn-sm !h-0 !min-h-[2px] !p-0')}>
               {resolvedTheme === 'corporate' ? (

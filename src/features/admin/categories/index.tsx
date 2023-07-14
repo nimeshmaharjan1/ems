@@ -50,7 +50,7 @@ const SettingCategory = () => {
     isLoading: isCategoryLoading,
     isError: isCategoryError,
     isFetching: isCategoryFetching,
-  } = useQuery<ICategoryResponse, Error>('getCategories', async () => await getCategories({ page: 1, limit: 5 }));
+  } = useQuery<ICategoryResponse, Error>('getCategories', async () => await getCategories({ page: currentPage, limit: 5 }));
 
   const addCategoryMutation = useMutation(addCategory, {
     onSuccess: () => {
@@ -205,10 +205,10 @@ const SettingCategory = () => {
                       <div className="flex flex-wrap gap-2 ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                              <span className="badge badge-sm badge-accent !text-white" key={company.id}>
-                                {company.name}
-                              </span>
-                            ))
+                            <span className="badge badge-sm badge-accent !text-white" key={company.id}>
+                              {company.name}
+                            </span>
+                          ))
                           : '-'}
                       </div>
                     </td>

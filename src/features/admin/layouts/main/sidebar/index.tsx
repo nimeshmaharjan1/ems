@@ -27,10 +27,10 @@ export default function Sidebar({
   if (!isMounted) return null;
   return (
     <aside className="admin-sidebar fixed flex flex-col w-[12rem] min-h-screen px-6 pt-3 pb-8 border-r border-r-base-300 max-h-[100vh] overflow-auto">
-      <Link passHref href="/products">
-        <Image src="/logo.png" alt="logo" width={120} height={120}></Image>
-      </Link>
-      <nav className="mt-6 -mx-3 space-y-6">
+      {/* <Link passHref href="/products"> */}
+      {/*   <Image src="/logo.png" alt="logo" width={120} height={120}></Image> */}
+      {/* </Link> */}
+      <nav className="-mx-3 space-y-6">
         <div className="space-y-3 ">
           <label className="px-3 text-xs text-gray-500 uppercase">analytics</label>
           <SidebarItem
