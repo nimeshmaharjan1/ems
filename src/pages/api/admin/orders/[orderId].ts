@@ -52,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.order.delete({ where: { id: orderId } });
       res.status(201).json({ message: 'Order deleted successfully' });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error, message: 'Something went wrong while trying to delete order.' });
     } finally {
       await prisma.$disconnect();

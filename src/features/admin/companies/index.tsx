@@ -194,10 +194,10 @@ const SettingCompany = () => {
             </tbody>
           ) : (
             <tbody>
-              {companyData?.data?.map((company, categoryIndex) => {
+              {companyData?.data?.map((company, companyIndex) => {
                 return (
                   <tr key={company.id}>
-                    <td>{categoryIndex + 1}</td>
+                    <td>{companyIndex + 1}</td>
                     <td>{company.name}</td>
                     <td>
                       <div className="flex flex-wrap gap-2">
