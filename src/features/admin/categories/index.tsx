@@ -29,6 +29,7 @@ const SettingCategory = () => {
   const queryClient = useQueryClient();
   const defaultValues = {
     name: '',
+    position: null,
   };
 
   const {
@@ -113,7 +114,7 @@ const SettingCategory = () => {
     }
   }, [selectedCategory?.category.companies]);
 
-  const onSubmit: SubmitHandler<Category> = async (values) => {
+  const onSubmit: SubmitHandler<any> = async (values) => {
     switch (selectedAction) {
       case SELECTED_ACTION.ADD:
         addCategoryMutation.mutate(values);
@@ -205,10 +206,10 @@ const SettingCategory = () => {
                       <div className="flex flex-wrap gap-2 ">
                         {category.companies?.length
                           ? category.companies.map((company) => (
-                            <span className="badge badge-sm badge-accent !text-white" key={company.id}>
-                              {company.name}
-                            </span>
-                          ))
+                              <span className="badge badge-sm badge-accent !text-white" key={company.id}>
+                                {company.name}
+                              </span>
+                            ))
                           : '-'}
                       </div>
                     </td>
@@ -307,7 +308,7 @@ const SettingCategory = () => {
                 )}></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-sm btn-block ')}
+                  className={classNames('btn btn-primary btn-block ')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
                   {(addCategoryMutation.isLoading || updateCategoryMutation.isLoading) && <span className="loading loading-spinner"></span>}

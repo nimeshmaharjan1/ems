@@ -101,7 +101,7 @@ const Orders: NextPageWithLayout = () => {
             <button
               className={classNames('btn btn-sm', {
                 'btn-primary': selectedFilter === 'b2c',
-                'btn-outline': selectedFilter === 'b2c',
+                'btn-outline': selectedFilter !== 'b2c',
               })}
               onClick={() => setSelectedFilter('b2c')}>
               B2C

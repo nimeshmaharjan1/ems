@@ -1,4 +1,5 @@
 import '@/styles/globals.scss';
+import '@/styles/modal.scss';
 import { NextPage } from 'next';
 import { ThemeProvider } from 'next-themes';
 import type { AppProps } from 'next/app';

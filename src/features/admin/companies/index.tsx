@@ -10,17 +10,25 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
 import { Trash } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Controller, SubmitHandler, UseFormReturn, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import ChangeCompanyPosition from './change-company-position-modal';
 
 const SettingCompany = () => {
+  const [isChangePositionModalOpen, setIsChangePositionModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const defaultValues = {
     name: '',
   };
+
+  const useChangePositionForm = useForm({
+    defaultValues: {
+      position: 0,
+    },
+  });
 
   const {
     register,
@@ -35,13 +43,14 @@ const SettingCompany = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedAction, setSelectedAction] = useState<SELECTED_ACTION>(SELECTED_ACTION.ADD);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: companyData,
     isLoading: isCompanyLoading,
     isError: isCompanyError,
     isFetching: isCategoryFetching,
-  } = useQuery<ICompanyResponse, Error>('getCompanies', async () => {
+  } = useQuery<ICompanyResponse, Error>(['getCompanies', currentPage], async () => {
     const data = await getCompanies({ limit: 5, page: currentPage });
     return data;
   });
@@ -154,8 +163,11 @@ const SettingCompany = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
+  const [companyPosition, setCompanyPosition] = useState({
+    companyId: '',
+    position: 0,
+  });
 
   return (
     <div className="grid grid-cols-6 gap-6">
@@ -197,16 +209,26 @@ const SettingCompany = () => {
               {companyData?.data?.map((company, companyIndex) => {
                 return (
                   <tr key={company.id}>
-                    <td>{companyIndex + 1}</td>
+                    <td
+                      onClick={() => {
+                        setIsChangePositionModalOpen(true);
+                        setCompanyPosition((prev) => ({
+                          ...prev,
+                          companyId: company.id,
+                          position: company.position as number,
+                        }));
+                      }}>
+                      {company.position}
+                    </td>
                     <td>{company.name}</td>
                     <td>
                       <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                            <span className="badge badge-accent badge-sm !text-white" key={category.id}>
-                              {category.name}
-                            </span>
-                          ))
+                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
+                                {category.name}
+                              </span>
+                            ))
                           : '-'}
                       </div>
                     </td>
@@ -250,13 +272,13 @@ const SettingCompany = () => {
       </section>
       <section className="col-span-6 lg:col-span-2">
         {isSelectedCompanyLoading ? (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
+          <div className="card w-96 lg:w-full bg-base-200 shadow !rounded-lg h-72">
             <div className="flex items-center justify-center card-body">
               <button className="btn btn-ghost loading"></button>
             </div>
           </div>
         ) : (
-          <div className="card w-96 lg:w-full bg-base-100 shadow !rounded-lg">
+          <div className="card w-96 lg:w-full bg-base-200 shadow !rounded-lg">
             <div className="card-body !gap-4">
               <div className="items-center justify-between card-title">
                 {selectedAction === SELECTED_ACTION.ADD ? 'Add Company' : 'Edit Company'}
@@ -298,7 +320,7 @@ const SettingCompany = () => {
                 )}></Controller>
               <div className="card-actions ">
                 <button
-                  className={classNames('btn btn-primary btn-sm btn-block')}
+                  className={classNames('btn btn-primary btn-block')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
                   {(addCompanyMutation.isLoading || updateCompanyMutation.isLoading) && <span className="loading loading-spinner"></span>}
@@ -309,6 +331,13 @@ const SettingCompany = () => {
           </div>
         )}
       </section>
+      {isChangePositionModalOpen && (
+        <ChangeCompanyPosition
+          useChangePositionForm={useChangePositionForm}
+          companyId={companyPosition.companyId}
+          position={companyPosition.position}
+          {...{ setIsChangePositionModalOpen, isChangePositionModalOpen }}></ChangeCompanyPosition>
+      )}
     </div>
   );
 };

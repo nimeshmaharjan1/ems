@@ -54,6 +54,7 @@ const ShopByAside = () => {
       case 'wholesaleOption':
         setSelectedWholesaleOption(e.target.value as SELECTED_WHOLESALE_OPTION);
         handleShopBySearchParamsUpdate(name, value);
+        break;
       case 'priceGt':
         if (Number(e.target.value) > Number(maxPrice)) {
           setMinPrice('0');
