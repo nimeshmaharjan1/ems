@@ -10,49 +10,25 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
 import { Trash } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Controller, SubmitHandler, UseFormReturn, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
-
-const ChangeCompanyPosition: React.FC<{ position: number; companyId: string; newPosition: number }> = ({
-  companyId,
-  newPosition,
-  position,
-}) => {
-  return (
-    <AlertDialog.Root>
-      <AlertDialog.Trigger asChild>
-        <span>{position}</span>
-      </AlertDialog.Trigger>
-      <AlertDialog.Portal>
-        <AlertDialog.Overlay className="AlertDialogOverlay" />
-        <AlertDialog.Content className="AlertDialogContent">
-          <AlertDialog.Title className="AlertDialogTitle">Are you absolutely sure?</AlertDialog.Title>
-          <AlertDialog.Description className="AlertDialogDescription">
-            This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-          </AlertDialog.Description>
-          <div style={{ display: 'flex', gap: 25, justifyContent: 'flex-end' }}>
-            <AlertDialog.Cancel asChild>
-              <button className="btn btn-ghost">Cancel</button>
-            </AlertDialog.Cancel>
-            <AlertDialog.Action asChild>
-              <button className="btn btn-primary">Yes, delete account</button>
-            </AlertDialog.Action>
-          </div>
-        </AlertDialog.Content>
-      </AlertDialog.Portal>
-    </AlertDialog.Root>
-  );
-};
+import ChangeCompanyPosition from './change-company-position-modal';
 
 const SettingCompany = () => {
+  const [isChangePositionModalOpen, setIsChangePositionModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const defaultValues = {
     name: '',
   };
+
+  const useChangePositionForm = useForm({
+    defaultValues: {
+      position: 0,
+    },
+  });
 
   const {
     register,
@@ -187,9 +163,11 @@ const SettingCompany = () => {
     }
   };
 
-  console.log({ companyData });
-
   const limit = 10;
+  const [companyPosition, setCompanyPosition] = useState({
+    companyId: '',
+    position: 0,
+  });
 
   return (
     <div className="grid grid-cols-6 gap-6">
@@ -231,8 +209,16 @@ const SettingCompany = () => {
               {companyData?.data?.map((company, companyIndex) => {
                 return (
                   <tr key={company.id}>
-                    <td>
-                      <ChangeCompanyPosition position={company.position}></ChangeCompanyPosition>
+                    <td
+                      onClick={() => {
+                        setIsChangePositionModalOpen(true);
+                        setCompanyPosition((prev) => ({
+                          ...prev,
+                          companyId: company.id,
+                          position: company.position as number,
+                        }));
+                      }}>
+                      {company.position}
                     </td>
                     <td>{company.name}</td>
                     <td>
@@ -334,7 +320,7 @@ const SettingCompany = () => {
                 )}></Controller>
               <div className="card-actions ">
                 <button
-                  className={classNames('btn btn-primary btn-sm btn-block')}
+                  className={classNames('btn btn-primary btn-block')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCompanyMutation.isLoading || updateCompanyMutation.isLoading}>
                   {(addCompanyMutation.isLoading || updateCompanyMutation.isLoading) && <span className="loading loading-spinner"></span>}
@@ -345,6 +331,13 @@ const SettingCompany = () => {
           </div>
         )}
       </section>
+      {isChangePositionModalOpen && (
+        <ChangeCompanyPosition
+          useChangePositionForm={useChangePositionForm}
+          companyId={companyPosition.companyId}
+          position={companyPosition.position}
+          {...{ setIsChangePositionModalOpen, isChangePositionModalOpen }}></ChangeCompanyPosition>
+      )}
     </div>
   );
 };

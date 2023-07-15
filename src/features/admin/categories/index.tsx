@@ -308,7 +308,7 @@ const SettingCategory = () => {
                 )}></Controller>
               <div className="card-actions">
                 <button
-                  className={classNames('btn btn-primary btn-sm btn-block ')}
+                  className={classNames('btn btn-primary btn-block ')}
                   onClick={handleSubmit(onSubmit)}
                   disabled={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}>
                   {(addCategoryMutation.isLoading || updateCategoryMutation.isLoading) && <span className="loading loading-spinner"></span>}
