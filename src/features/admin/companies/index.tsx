@@ -15,6 +15,38 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsTrash } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
+
+const ChangeCompanyPosition: React.FC<{ position: number; companyId: string; newPosition: number }> = ({
+  companyId,
+  newPosition,
+  position,
+}) => {
+  return (
+    <AlertDialog.Root>
+      <AlertDialog.Trigger asChild>
+        <span>{position}</span>
+      </AlertDialog.Trigger>
+      <AlertDialog.Portal>
+        <AlertDialog.Overlay className="AlertDialogOverlay" />
+        <AlertDialog.Content className="AlertDialogContent">
+          <AlertDialog.Title className="AlertDialogTitle">Are you absolutely sure?</AlertDialog.Title>
+          <AlertDialog.Description className="AlertDialogDescription">
+            This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+          </AlertDialog.Description>
+          <div style={{ display: 'flex', gap: 25, justifyContent: 'flex-end' }}>
+            <AlertDialog.Cancel asChild>
+              <button className="btn btn-ghost">Cancel</button>
+            </AlertDialog.Cancel>
+            <AlertDialog.Action asChild>
+              <button className="btn btn-primary">Yes, delete account</button>
+            </AlertDialog.Action>
+          </div>
+        </AlertDialog.Content>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
+  );
+};
 
 const SettingCompany = () => {
   const queryClient = useQueryClient();
@@ -199,7 +231,9 @@ const SettingCompany = () => {
               {companyData?.data?.map((company, companyIndex) => {
                 return (
                   <tr key={company.id}>
-                    <td>{company.position}</td>
+                    <td>
+                      <ChangeCompanyPosition position={company.position}></ChangeCompanyPosition>
+                    </td>
                     <td>{company.name}</td>
                     <td>
                       <div className="flex flex-wrap gap-2">
