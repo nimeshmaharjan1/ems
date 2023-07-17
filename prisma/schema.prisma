@@ -109,7 +109,7 @@ model Comment {
 
 model Order {
   id                      String                     @id @default(cuid())
-  orderNumber             Int                        @default(autoincrement())
+  orderNumber             Int                        @unique @default(autoincrement())
   items                   OrderItem[]
   totalPrice              Float
   user                    User                       @relation(fields: [userId], references: [id])
@@ -143,17 +143,6 @@ model OrderItem {
   faultyItems FaultItem[]
 }
 
-model FaultItem {
-  id          String     @id @default(cuid())
-  description String
-  orderItem   OrderItem  @relation(fields: [orderItemId], references: [id])
-  orderItemId String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  complaint   Complaint? @relation(fields: [complaintId], references: [id])
-  complaintId String?
-}
-
 model Company {
   id         String     @id @default(cuid())
   name       String     @unique
@@ -181,6 +170,7 @@ enum SELECTED_WHOLESALE_OPTION {
 enum PRODUCT_STATUS {
   ACTIVE
   DRAFT
+  OUT_OF_STOCK
 }
 
 model Product {
@@ -220,28 +210,37 @@ model Review {
   updatedAt DateTime @updatedAt
 }
 
-model Complaint {
-  id          String           @id @default(cuid())
-  title       String
+model FaultItem {
+  id          String     @id @default(cuid())
   description String
-  user        User             @relation(name: "complaintCreatedUserRelation", fields: [userId], references: [id])
-  userId      String
-  order       Order?           @relation(fields: [orderId], references: [id])
-  orderId     String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  faultyItems FaultItem[]
-  status      COMPLAINT_STATUS @default(Pending)
-  comments    Comment[]
-  resolvedBy  User?            @relation(name: "resolvedByUserRelation", fields: [resolvedById], references: [id])
-
-  resolvedById String?
+  orderItem   OrderItem  @relation(fields: [orderItemId], references: [id])
+  orderItemId String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  complaint   Complaint? @relation(fields: [complaintId], references: [id])
+  complaintId String?
 }
 
 enum COMPLAINT_STATUS {
   Pending
   InProgress
   Resolved
+}
+
+model Complaint {
+  id           String           @id @default(cuid())
+  description  String
+  user         User             @relation(name: "complaintCreatedUserRelation", fields: [userId], references: [id])
+  userId       String
+  order        Order?           @relation(fields: [orderId], references: [id])
+  orderId      String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  faultyItems  FaultItem[]
+  status       COMPLAINT_STATUS @default(Pending)
+  comments     Comment[]
+  resolvedBy   User?            @relation(name: "resolvedByUserRelation", fields: [resolvedById], references: [id])
+  resolvedById String?
 }
 
 model Settings {

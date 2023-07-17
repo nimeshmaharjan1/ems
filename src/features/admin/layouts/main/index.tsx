@@ -1,12 +1,14 @@
 import useWindowDimensions from '@/shared/hooks/use-dimensions.hook';
-import { Inter } from '@next/font/google';
+import { Inter, Work_Sans } from '@next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Header from './header';
 import Sidebar from './sidebar';
 
-const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
+// const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
+
+const inter = Work_Sans({ subsets: ['latin'] });
 
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Order, OrderItem, SELECTED_WHOLESALE_OPTION, PAYMENT_METHOD } from '@prisma/client';
+import { PrismaClient, Order, OrderItem, SELECTED_WHOLESALE_OPTION, PAYMENT_METHOD, USER_ROLES } from '@prisma/client';
 import isAuthenticated from '@/features/admin/hof/is-authenticated';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]';
 
 const prisma = new PrismaClient();
 
@@ -27,6 +29,7 @@ interface CreateOrderResponse {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     await isAuthenticated(req, res);
+    const session = await getServerSession(req, res, authOptions);
     try {
       const { items, userId, customerAddress, additionalPhoneNumber, selectedWholesaleOption, paymentMethod }: CreateOrderRequest =
         req.body;
@@ -36,11 +39,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return sum + item.quantity * item.price;
       }, 0);
       let deliveryCharge: number;
-      try {
-        const product = await prisma.settings.findFirst();
-        deliveryCharge = product?.deliveryCharge!;
-      } catch (error) {
-        return res.status(500).json({ error, message: 'Something went wrong while trying to get the delivery charge.' });
+      if (session?.user?.role === USER_ROLES.BUSINESS_CLIENT) {
+        deliveryCharge = 0;
+      } else {
+        try {
+          const settings = await prisma.settings.findFirst();
+          deliveryCharge = settings?.deliveryCharge!;
+        } catch (error) {
+          return res.status(500).json({ error, message: 'Something went wrong while trying to get the delivery charge.' });
+        }
       }
 
       const vat = totalPrice + deliveryCharge + 0.13;
@@ -60,11 +67,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             userId,
             customerAddress,
             deliveryCharge,
-            totalPrice: Math.round(totalPrice + deliveryCharge + vat),
+            totalPrice:
+              session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? Math.round(totalPrice) : Math.round(totalPrice + deliveryCharge),
             additionalPhoneNumber,
             selectedWholesaleOption,
             paymentMethod,
-            amountLeftToPay: Math.round(totalPrice + deliveryCharge + vat),
+            amountLeftToPay:
+              session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? Math.round(totalPrice) : Math.round(totalPrice + deliveryCharge),
             partiallyPaidAmount: 0,
           },
           include: {

@@ -91,8 +91,8 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
             ? checkoutDetails.wholesaleOption === 'CASH'
               ? item.wholesaleCashPrice
               : checkoutDetails.wholesaleOption === 'CREDIT'
-                ? item.wholesaleCreditPrice
-                : item.sellingPrice
+              ? item.wholesaleCreditPrice
+              : item.sellingPrice
             : item.sellingPrice,
       })),
       customerAddress: checkoutDetails.chosenAddress === 'shop-address' ? session?.user?.shopAddress : checkoutDetails.deliveryAddress,
@@ -109,7 +109,7 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
       } else {
         localStorage.removeItem('cartItems');
         setCartItems([]);
-        router.replace('/products');
+        router.push('/products');
       }
     } catch (error) {
       setIsLoading(false);
@@ -180,7 +180,7 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
                 </>
               ) : (
                 <>
-                  <ul className="flex flex-col divide-y divide-gray-300">
+                  <ul className="flex flex-col divide-y divide-neutral-focus">
                     {cartItems.map((item) => (
                       <li key={item.productId} className="py-6">
                         <div className="grid items-center grid-cols-6 md:items-stretch gap-x-8">

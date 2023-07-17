@@ -446,9 +446,8 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
                 <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
                   ACTIVE
                 </option>
-                <option value={PRODUCT_STATUS.DRAFT} defaultChecked>
-                  DRAFT
-                </option>
+                <option value={PRODUCT_STATUS.DRAFT}>DRAFT</option>
+                <option value={PRODUCT_STATUS.OUT_OF_STOCK}>OUT OF STOCK</option>
               </select>
             </FormControl>
           </div>

@@ -24,6 +24,11 @@ const Login: NextPageWithLayout = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogin: SubmitHandler<ILoginWithPassword> = async (values) => {
     setIsSubmitting(true);
@@ -63,6 +68,7 @@ const Login: NextPageWithLayout = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<ILoginWithPassword>({ defaultValues: { username: '', password: '' }, mode: 'onChange' });
+  if (!isClient) return null;
   return (
     <form onSubmit={handleSubmit(handleLogin)} className="card-body">
       <h2 className="text-center text-lg lg:text-xl font-[800] tracking-wide mb-2 lg:mb-3">Login</h2>

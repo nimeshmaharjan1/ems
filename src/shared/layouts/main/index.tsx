@@ -8,7 +8,7 @@ import ThemeToggler from '@/shared/components/theme-toggler';
 import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
 import { BadgeInfo, User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
@@ -29,14 +29,14 @@ import { getAllProducts } from '@/features/admin/services/products/products.serv
 import { useInView } from 'react-intersection-observer';
 import Drawer from '@/shared/components/drawer';
 
-const inter = Inter({
-  preload: false,
-  fallback: ['system-ui'],
-  subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600', '700', '800'],
-});
+// const inter = Inter({
+//   preload: false,
+//   fallback: ['system-ui'],
+//   subsets: ['latin'],
+//   weight: ['200', '300', '400', '500', '600', '700', '800'],
+// });
 
-// const inter = Work_Sans({ preload: true, subsets: ['latin'] });
+const inter = Work_Sans({ subsets: ['latin'] });
 // const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
@@ -129,7 +129,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           ref={profileModalRef}></UserProfileModal>
       )}
       <div className="drawer">
-        <input aria-label='toggle drawer' id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <input aria-label="toggle drawer" id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">
           <div className="shadow nav-wrapper bg-base-100">
             <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
@@ -162,7 +162,21 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     Dashboard
                   </Link>
                 )} */}
-
+                {router.pathname !== '/raise-issue' && (
+                  <div className="mr-3">
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => {
+                        if (!session) {
+                          return signIn();
+                        } else {
+                          router.push('/raise-issue');
+                        }
+                      }}>
+                      Raise Issue
+                    </button>
+                  </div>
+                )}
                 {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
@@ -182,7 +196,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             </div>
           </div>
 
-          <main className="flex-1 ">
+          <main className="flex-1">
             <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">
               {/* <div className="mb-6">
                 <Combobox
@@ -209,19 +223,20 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
           <ul className="w-64 h-full p-2 bg-base-100">
             <li>
-              <Link
-                href="/products"
-                className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+              <Link href="/products" className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                 <FaBox></FaBox>
                 Products
               </Link>
             </li>
-            <li> <Link
-              href="/about"
-              className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
-              <BadgeInfo />
-              About
-            </Link></li>
+            <li>
+              {' '}
+              <Link
+                href="/about"
+                className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                <BadgeInfo />
+                About
+              </Link>
+            </li>
             {status === 'unauthenticated' && (
               <>
                 <li className="-ml-[0.3rem]">

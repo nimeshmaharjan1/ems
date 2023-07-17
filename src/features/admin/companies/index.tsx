@@ -5,7 +5,7 @@ import FormControl from '@/shared/components/form-control';
 import Pagination from '@/shared/components/pagination';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICompany, ICompanyResponse } from '@/shared/interfaces/company.interface';
-import { getDateWithWeekDay } from '@/shared/utils/helper.util';
+import { getDateWithWeekDay, getSlashDate } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
@@ -232,7 +232,7 @@ const SettingCompany = () => {
                           : '-'}
                       </div>
                     </td>
-                    <td>{company.createdAt ? getDateWithWeekDay(company.createdAt) : '-'}</td>
+                    <td>{company.createdAt ? getSlashDate(company.createdAt) : '-'}</td>
                     <td className="flex justify-center h-">
                       <div className="gap-2 join">
                         <button

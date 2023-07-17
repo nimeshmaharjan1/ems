@@ -33,20 +33,14 @@ const OrderSummary = ({
         {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
           <>
             <div className="flex justify-between mt-3">
-              <p className="font-medium">Total</p>
+              <p className="font-medium">Sub Total</p>
               <div className="flex items-end">
                 <p className="font-medium">
                   रू{' '}
                   {checkoutDetails.wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH
-                    ? formatPrice(getTotalWholesaleCashPrice())
-                    : formatPrice(getTotalWholesaleCreditPrice())}
+                    ? formatPrice(getTotalWholesaleCashPrice() - 0.13 * getTotalWholesaleCashPrice())
+                    : formatPrice(getTotalWholesaleCreditPrice() - 0.13 * getTotalWholesaleCreditPrice())}
                 </p>
-              </div>
-            </div>
-            <div className="flex justify-between mt-3">
-              <p className="font-medium ">Delivery Charge</p>
-              <div className="flex items-end">
-                <p className="font-medium">रू {formatPrice(deliveryCharge)}</p>
               </div>
             </div>
             <div className="flex justify-between mt-3">
@@ -55,19 +49,21 @@ const OrderSummary = ({
                 <p className="font-medium">13%</p>
               </div>
             </div>
+            {/* <div className="flex justify-between mt-3">
+              <p className="font-medium ">Delivery Charge</p>
+              <div className="flex items-end">
+                <p className="font-medium">रू {formatPrice(deliveryCharge)}</p>
+              </div>
+            </div> */}
             <div className="flex justify-between mt-3">
               <p className="font-medium">To Pay</p>
               <div className="flex items-end">
                 {checkoutDetails.wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? (
-                  <p className="font-medium">
-                    रू{formatPrice((getTotalWholesaleCashPrice() + deliveryCharge) * 0.13 + getTotalWholesaleCashPrice() + deliveryCharge)}
-                  </p>
+                  <p className="font-medium">रू{formatPrice(getTotalWholesaleCashPrice())}</p>
                 ) : (
                   <p className="font-medium">
                     रू
-                    {formatPrice(
-                      (getTotalWholesaleCreditPrice() + deliveryCharge) * 0.13 + getTotalWholesaleCreditPrice() + deliveryCharge
-                    )}
+                    {formatPrice(getTotalWholesaleCreditPrice())}
                   </p>
                 )}
               </div>
@@ -97,9 +93,7 @@ const OrderSummary = ({
                 </div>
                 <div className="flex justify-between mt-3">
                   <p className="max-w-[9rem] font-medium">To Pay</p>
-                  <p className="font-medium">
-                    रू{formatPrice((getTotalPrice() + deliveryCharge) * 0.13 + getTotalPrice() + deliveryCharge)}
-                  </p>
+                  <p className="font-medium">रू{formatPrice(getTotalPrice() + deliveryCharge)}</p>
                 </div>
               </div>
             ) : (
