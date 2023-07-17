@@ -181,6 +181,7 @@ enum SELECTED_WHOLESALE_OPTION {
 enum PRODUCT_STATUS {
   ACTIVE
   DRAFT
+  OUT_OF_STOCK
 }
 
 model Product {
