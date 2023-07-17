@@ -173,7 +173,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                           router.push('/raise-issue');
                         }
                       }}>
-                      Raise Issue
+                      Issue Assistance
                     </button>
                   </div>
                 )}
