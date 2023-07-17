@@ -83,11 +83,7 @@ const OrderDrawer: React.FC<{ order: Order; isDrawerOpen: boolean; setIsDrawerOp
             <span className="font-semibold">Selected Wholesale Option:</span> {order.selectedWholesaleOption}
           </p>
         )}
-        {order.selectedWholesaleOption && order.paymentStatus !== PAYMENT_STATUS.Paid && (
-          <section className="mt-2 mb-6 partially-paid-section">
-            <PartiallyPaid {...{ order, setIsDrawerOpen }}></PartiallyPaid>
-          </section>
-        )}
+
         <section className="grid grid-cols-6 gap-3 mt-4">
           <div className="col-span-4 card bg-base-200">
             <DrawerOrderSummary setIsOpen={setIsDrawerOpen} order={order}></DrawerOrderSummary>
@@ -96,7 +92,11 @@ const OrderDrawer: React.FC<{ order: Order; isDrawerOpen: boolean; setIsDrawerOp
             <OrderCustomerDetails order={order}></OrderCustomerDetails>
           </div>
         </section>
-
+        {order.selectedWholesaleOption && order.paymentStatus !== PAYMENT_STATUS.Paid && (
+          <section className="mt-2 mb-6 partially-paid-section">
+            <PartiallyPaid {...{ order, setIsDrawerOpen }}></PartiallyPaid>
+          </section>
+        )}
         <section className="mt-6 comment-section">
           <OrderComments {...{ useFormMethods, order }}></OrderComments>
         </section>

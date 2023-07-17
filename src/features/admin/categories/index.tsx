@@ -12,7 +12,7 @@ import Pagination from '@/shared/components/pagination';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICategory, ICategoryResponse } from '@/shared/interfaces/category.interface';
 
-import { getDateWithWeekDay } from '@/shared/utils/helper.util';
+import { getDateWithWeekDay, getSlashDate } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Category } from '@prisma/client';
 import classNames from 'classnames';
@@ -213,7 +213,7 @@ const SettingCategory = () => {
                           : '-'}
                       </div>
                     </td>
-                    <td>{category.createdAt ? getDateWithWeekDay(category.createdAt) : '-'}</td>
+                    <td>{category.createdAt ? getSlashDate(category.createdAt) : '-'}</td>
                     <td className="flex justify-center h-">
                       <div className="gap-2 join">
                         <button

@@ -57,19 +57,23 @@ const DrawerOrderSummary: React.FC<{ order: Order; setIsOpen: Dispatch<SetStateA
         <p className="mt-1">Cart Items</p>
         <section className="flex flex-col w-full py-6 mt-2 border-t border-b gap-y-6 cart-item-section">
           {order.items.map((item) => (
-            <div className="flex items-center justify-between w-full gap-x-6" key={item.id}>
-              <div className="relative">
+            <div key={item.id}>
+              <div className="flex items-center justify-between w-full gap-x-6" key={item.id}>
+                <p className="font-medium">{item.product.title}</p>
+                {/* <div className="relative">
                 <Image className="rounded" height={80} width={80} src={item.product.images[0]} alt={item.product.title}></Image>
                 <span className="absolute !text-white badge badge-secondary badge-sm -top-1 -right-2">{item.quantity}</span>
+              </div> */}
+                <div>
+                  <p className="text-sm font-medium">
+                    रू {formatPrice(item.price)} x {item.quantity}
+                  </p>
+                </div>
+                <div>
+                  <p>रू {formatPrice(item.price * item.quantity)}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium">
-                  रू {formatPrice(item.price)} x {item.quantity}
-                </p>
-              </div>
-              <div>
-                <p>रू {formatPrice(item.price * item.quantity)}</p>
-              </div>
+              <p className="opacity-60 text-sm mt-1">{item.product.modal}</p>
             </div>
           ))}
         </section>

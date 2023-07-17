@@ -30,6 +30,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     setIsMounted(true);
   }, []);
   if (!isMounted) return null;
+
   return (
     <ThemeProvider>
       <QueryClientProvider client={new QueryClient()}>

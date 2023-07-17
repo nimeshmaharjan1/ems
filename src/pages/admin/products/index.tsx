@@ -1,6 +1,7 @@
 import AdminDashboardLayout from '@/features/admin/layouts/main';
 import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
+import { useDebounce } from '@/shared/hooks/use-debounce';
 import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
 import { formatDateWithTime, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
@@ -16,6 +17,8 @@ import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const Products: NextPageWithLayout = () => {
+  const [keyword, setKeyword] = useState('');
+  const debouncedKeyword = useDebounce(keyword);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
@@ -23,8 +26,8 @@ const Products: NextPageWithLayout = () => {
     data: productData,
     isError,
     isLoading,
-  } = useQuery<PaginatedProductsResponse, Error>(['fetchProducts', currentPage, limit], async () => {
-    const response = await axios.get(`/api/products?page=${currentPage}&limit=${limit}`);
+  } = useQuery<PaginatedProductsResponse, Error>(['fetchProducts', currentPage, limit, debouncedKeyword], async () => {
+    const response = await axios.get(`/api/products?page=${currentPage}&limit=${limit}&title=${debouncedKeyword}`);
     return response.data;
   });
   const totalPages = productData?.totalPages;
@@ -53,13 +56,32 @@ const Products: NextPageWithLayout = () => {
     <>
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-semibold">Products</h2>
-        <button
-          className="btn btn-sm btn-primary"
-          onClick={() => {
-            router.push('/admin/products/create');
-          }}>
-          Add Product
-        </button>
+        <section className="flex items-center gap-x-6">
+          <div className="join">
+            <div>
+              <div>
+                <input
+                  className="input input-bordered join-item"
+                  onChange={(e) => {
+                    setKeyword(e.target.value);
+                  }}
+                  value={keyword}
+                  placeholder="Search products..."
+                />
+              </div>
+            </div>
+            {/* <div className="indicator">
+              <button className="btn join-item">Search</button>
+            </div> */}
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              router.push('/admin/products/create');
+            }}>
+            Add Product
+          </button>
+        </section>
       </div>
       <section className="overflow-x-auto">
         {isError ? (
@@ -70,6 +92,10 @@ const Products: NextPageWithLayout = () => {
               <span className="loading loading-spinner"></span>
             </button>
           </table>
+        ) : debouncedKeyword.length > 0 && productData?.products.length === 0 ? (
+          <h2 className="p-2 text-warning">
+            No products found with the title <span className="font-medium">&quot;{debouncedKeyword}&quot;</span>.
+          </h2>
         ) : productData?.products.length === 0 ? (
           <h2 className="p-2 font-medium text-warning">No products have been added.</h2>
         ) : (

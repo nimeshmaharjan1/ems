@@ -208,7 +208,7 @@ const Cart = () => {
                     Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                   </p>
                 )}
-                <p className="text-sm dark:text-gray-400">Not including taxes and delivery charges.</p>
+                {/* <p className="text-sm dark:text-gray-400">Not including taxes and delivery charges.</p> */}
               </div>
               {/* <div className="flex justify-end space-x-4"> */}
               {/* <Link href="/checkout"> */}

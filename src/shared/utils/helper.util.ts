@@ -14,6 +14,11 @@ export const getDateWithWeekDay = (date: Date) => {
   return DateTime.fromJSDate(newDate).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
 };
 
+export const getSlashDate = (date: Date) => {
+  const newDate = new Date(date);
+  return DateTime.fromJSDate(newDate).toLocaleString(DateTime.DATE_SHORT);
+};
+
 export const formatPrice = (price: number) => {
   return new Intl.NumberFormat('en-IN').format(price);
 };

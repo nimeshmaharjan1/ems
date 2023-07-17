@@ -72,7 +72,7 @@ const OrderComments: React.FC<{
           placeholder="Write comment here..."
         />
         {errors?.comment?.message && <p className="mt-2 text-xs text-error">{errors?.comment?.message}</p>}
-        <div className="mt-3">
+        <div className="mt-4">
           <button disabled={isPostingComment} className="btn btn-sm btn-secondary" onClick={handleSubmit(addComment)}>
             {isPostingComment && <span className="loading loading-sm"></span>}
             Post Comment

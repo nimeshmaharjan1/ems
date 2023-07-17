@@ -99,11 +99,6 @@ const ShopByAside = () => {
         {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
           <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
             <h3 className="mb-2 uppercase">Wholesale option</h3>
-            <label className="cursor-pointer label">
-              <span className="label-text">CREDIT</span>
-              <input type="checkbox" className="toggle toggle-primary" checked />
-              <span className="label-text">CASH</span>
-            </label>
             <section className="flex gap-3">
               <label className="label !justify-start gap-2 cursor-pointer">
                 <input

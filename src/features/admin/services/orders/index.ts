@@ -17,3 +17,18 @@ export const addPartialPayment = async (data: { orderId: string; partiallyPaidAm
   });
   return response.data;
 };
+
+export const getUserOrders = async (params: { page: number; user_id: string }) => {
+  try {
+    const response = await axios.get(`/api/admin/orders?page=${params.page}&user_id=${params.user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    showToast(Toast.error, 'Something went wrong while getting the categories.');
+  }
+};
+
+export const getOrderItems = async (params: { page: number; orderNumber: string }) => {
+  const response = await axios.get(`/api/orders/items?page=${params.page}&orderNumber=${params.orderNumber}`);
+  return response.data;
+};
