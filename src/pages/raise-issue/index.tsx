@@ -1,24 +1,29 @@
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { NextPageWithLayout } from '../_app';
 import MainSharedLayout from '@/shared/layouts/main';
 import FormControl from '@/shared/components/form-control';
 import { PrismaClient } from '@prisma/client';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getAllProducts } from '@/features/admin/services/products/products.service';
 import { getOrderItems, getUserOrders } from '@/features/admin/services/orders';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import classNames from 'classnames';
+import { Toast, showToast } from '@/shared/utils/toast.util';
+import axios from 'axios';
 
 interface IDefaultValues {
   description: string;
-  order: {
-    label: string;
-    value: string;
-  };
+  order:
+    | {
+        label: string;
+        value: string;
+      }
+    | undefined;
   faultyItems: {
     label: string;
     value: string;
@@ -32,17 +37,37 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
     formState: { errors },
     watch,
     setValue,
+    handleSubmit,
+    reset,
   } = useForm<IDefaultValues>({
     defaultValues: {
       description: '',
-      order: {
-        label: '',
-        value: '',
-      },
+      order: undefined,
       faultyItems: [],
     },
   });
-  console.log(watch());
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const onSubmit: SubmitHandler<IDefaultValues> = async (values) => {
+    setIsSubmitting(true);
+    const payload = {
+      description: values.description,
+      orderId: values.order?.value,
+      faultyItems: values.faultyItems.map((item) => ({ orderItemId: item.value })),
+      userId: user_id,
+    };
+    try {
+      const res = await axios.post('/api/raise-issue', payload);
+      showToast(Toast.success, res.data?.message);
+      reset();
+    } catch (error: any) {
+      console.error(error);
+      showToast(Toast.error, error?.response?.data?.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const loadOrders = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
       const response = await getUserOrders({ page, user_id });
@@ -74,7 +99,7 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
 
   const loadOrderItems = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
-      const response = await getOrderItems({ page, orderNumber: watch('order').label });
+      const response = await getOrderItems({ page, orderNumber: watch('order')!.label });
       console.log({ response });
       let filteredItems: any;
       if (!searchValue) {
@@ -104,74 +129,96 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
   };
 
   return (
-    <>
+    <div className="lg:mt-12">
       <h2 className="font-bold text-2xl mb-3">Raise Issue</h2>
       <section>
-        <label htmlFor="Orders" className="label">
-          Select the order that you wish to raise the issue for
-        </label>
-        <Controller
-          control={control}
-          name="order"
-          render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
-            <>
-              <StyledReactSelect
-                onChange={onChange}
-                onMenuOpen={() => {
-                  setValue('order', {
-                    label: '',
-                    value: '',
-                  });
-                }}
-                name={name}
-                value={value}
-                loadOptions={loadOrders}
-                isMulti={false}
-                placeholder="Select order number..."
-                isClearable></StyledReactSelect>
-            </>
-          )}></Controller>
-      </section>
-      {watch('order').label && (
-        <section className="mt-4">
-          <label htmlFor="Products" className="label">
-            Select the faulty products associated to the order
-          </label>
+        <FormControl
+          label="Select the order that you wish to raise the issue for
+        "
+          errorMessage={errors?.order?.message}>
           <Controller
             control={control}
-            name="faultyItems"
+            name="order"
+            rules={{
+              required: 'Order is required.',
+            }}
             render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
               <>
                 <StyledReactSelect
+                  isDisabled={isSubmitting}
                   onChange={onChange}
+                  onMenuOpen={() => {
+                    setValue('order', {
+                      label: '',
+                      value: '',
+                    });
+                  }}
                   name={name}
+                  isRequired={error ? true : false}
                   value={value}
-                  defaultValue={[]}
-                  loadOptions={loadOrderItems}
-                  isMulti
-                  placeholder="Select product/s..."
+                  loadOptions={loadOrders}
+                  isMulti={false}
+                  placeholder="Select order number..."
                   isClearable></StyledReactSelect>
               </>
             )}></Controller>
+        </FormControl>
+      </section>
+      {watch('order') && watch('order')?.label && (
+        <section className="mt-4">
+          <FormControl
+            label="  Select the faulty products associated to the order
+         "
+            errorMessage={errors?.faultyItems?.message}>
+            <Controller
+              control={control}
+              name="faultyItems"
+              rules={{
+                required: 'Faulty item is required.',
+              }}
+              render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
+                <>
+                  <StyledReactSelect
+                    isDisabled={isSubmitting}
+                    isRequired={error ? true : false}
+                    onChange={onChange}
+                    name={name}
+                    value={value}
+                    defaultValue={[]}
+                    loadOptions={loadOrderItems}
+                    isMulti
+                    placeholder="Select product/s..."
+                    isClearable></StyledReactSelect>
+                </>
+              )}></Controller>
+          </FormControl>
         </section>
       )}
       <section className="mt-4">
-        <FormControl label="Please explain us your issue briefly">
+        <FormControl errorMessage={errors?.description?.message} label="Please explain us your issue briefly">
           <textarea
+            disabled={isSubmitting}
             {...register('description', {
               required: 'Description is required.',
             })}
-            className="textarea textarea-bordered"
+            className={classNames('textarea textarea-bordered', {
+              'textarea-error': errors?.description,
+            })}
             placeholder="Type here..."></textarea>
         </FormControl>
       </section>
       <section className="mt-8 flex gap-x-4">
         <Link href="/products" passHref>
-          <button className="btn-ghost btn">Cancel</button>
+          <button disabled={isSubmitting} className="btn-ghost btn">
+            Cancel
+          </button>
         </Link>
-        <button className="btn-primary btn">Submit your issue</button>
+        <button disabled={isSubmitting} className="btn-primary btn" onClick={handleSubmit(onSubmit)}>
+          {isSubmitting && <span className="loading loading-spinner"></span>}
+          Submit your issue
+        </button>
       </section>
-    </>
+    </div>
   );
 };
 
