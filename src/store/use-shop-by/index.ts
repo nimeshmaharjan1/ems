@@ -19,7 +19,6 @@ type Store = {
 
 export const useShopByStore = create<Store>((set) => ({
   shopBySearchParams: {
-    title: '',
     category: '',
     company: '',
     priceLt: '',

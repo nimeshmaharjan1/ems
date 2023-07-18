@@ -34,7 +34,7 @@ const StyledReactSelect: React.FC<Props & SelectProps> = ({ placeholder, loadOpt
         control: () => {
           return `block ${theme === 'dark' ? 'border-neutral-focus' : 'border'} ${
             isRequired ? 'border-error' : ''
-          } border rounded-lg py-1`;
+          } border rounded-lg py-1 px-2`;
         },
 
         menuList: () => {

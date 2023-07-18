@@ -210,9 +210,11 @@ model Review {
   updatedAt DateTime @updatedAt
 }
 
+//TODO remove optional description fault item
+
 model FaultItem {
   id          String     @id @default(cuid())
-  description String
+  description String?
   orderItem   OrderItem  @relation(fields: [orderItemId], references: [id])
   orderItemId String
   createdAt   DateTime   @default(now())

@@ -168,6 +168,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                       className="btn btn-secondary btn-sm"
                       onClick={() => {
                         if (!session) {
+                          showToast(Toast.warning, 'Please login first.');
                           return signIn();
                         } else {
                           router.push('/raise-issue');
@@ -197,25 +198,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           </div>
 
           <main className="flex-1">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">
-              {/* <div className="mb-6">
-                <Combobox
-                  value={searchKeyword}
-                  onChange={(e) => {
-                    setSearchKeyword(e.target.value);
-                  }}
-                  ref={ref}
-                  results={data}
-                  isSuccess={isSuccess}></Combobox>
-              </div> */}
-              {/* <button className="btn" onClick={() => setIsOpen(!isOpen)}>
-                Hello
-              </button> */}
-              {/* <Drawer setIsOpen={setIsOpen} isOpen={isOpen}>
-                <div>Hello</div>
-              </Drawer> */}
-              {children}
-            </div>
+            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>
