@@ -1,4 +1,4 @@
-import { BaggageClaim, Cog, Hotel, LayoutDashboard, LayoutGrid, Package, Repeat2, Users } from 'lucide-react';
+import { BaggageClaim, Bug, Cog, Hotel, LayoutDashboard, LayoutGrid, Package, Repeat2, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -66,6 +66,11 @@ export default function Sidebar({
             href={DASHBOARD_LINKS.orders}
             Icon={BaggageClaim}
             title="Orders"></SidebarItem>
+          <SidebarItem
+            isActive={router.pathname === DASHBOARD_LINKS.orders}
+            href={DASHBOARD_LINKS.complaints}
+            Icon={Bug}
+            title="Complaints"></SidebarItem>
         </div>
 
         <div className="space-y-3 ">

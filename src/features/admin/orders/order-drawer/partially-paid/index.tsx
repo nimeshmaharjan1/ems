@@ -17,7 +17,6 @@ const PartiallyPaid: React.FC<{ order: Order; setIsDrawerOpen: Dispatch<SetState
     },
     onError: (error: any) => {
       if (error?.response?.data?.isInputError) {
-        console.log(error?.response?.data?.message);
         setError('partiallyPaidAmount', { type: 'required', message: error?.response?.data?.message });
       }
       showToast(Toast.error, error?.response?.data?.message);

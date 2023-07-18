@@ -94,7 +94,7 @@ const productSchema = z
     hasOffer: z.boolean(),
     discountPercentage: z.string().optional(),
 
-    status: z.enum(['ACTIVE', 'DRAFT']),
+    status: z.enum(['ACTIVE', 'DRAFT', 'OUT_OF_STOCK']),
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {

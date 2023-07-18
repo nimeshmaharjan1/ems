@@ -1,20 +1,17 @@
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import React, { useState } from 'react';
-import { authOptions } from '../api/auth/[...nextauth]';
-import { NextPageWithLayout } from '../_app';
-import MainSharedLayout from '@/shared/layouts/main';
-import FormControl from '@/shared/components/form-control';
-import { PrismaClient } from '@prisma/client';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import StyledReactSelect from '@/shared/components/styled-react-select';
-import { getAllProducts } from '@/features/admin/services/products/products.service';
 import { getOrderItems, getUserOrders } from '@/features/admin/services/orders';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import classNames from 'classnames';
+import FormControl from '@/shared/components/form-control';
+import StyledReactSelect from '@/shared/components/styled-react-select';
+import MainSharedLayout from '@/shared/layouts/main';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
+import classNames from 'classnames';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { NextPageWithLayout } from '../_app';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IDefaultValues {
   description: string;
@@ -100,11 +97,9 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
   const loadOrderItems = async (searchValue: string, loadedData: any, { page }: any) => {
     try {
       const response = await getOrderItems({ page, orderNumber: watch('order')!.label });
-      console.log({ response });
       let filteredItems: any;
       if (!searchValue) {
         filteredItems = response.data[0].items;
-        console.log({ filteredItems });
       } else {
         filteredItems = response.data[0].items.filter((option: any) => option.title.toLowerCase().includes(searchValue.toLowerCase()));
       }
@@ -166,10 +161,7 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
       </section>
       {watch('order') && watch('order')?.label && (
         <section className="mt-4">
-          <FormControl
-            label="  Select the faulty products associated to the order
-         "
-            errorMessage={errors?.faultyItems?.message}>
+          <FormControl label="Select the faulty products associated to the order" errorMessage={errors?.faultyItems?.message}>
             <Controller
               control={control}
               name="faultyItems"

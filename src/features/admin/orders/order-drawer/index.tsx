@@ -28,7 +28,6 @@ const OrderDrawer: React.FC<{ order: Order; isDrawerOpen: boolean; setIsDrawerOp
       comment: '',
     },
   });
-  console.log({ order });
 
   return (
     <>
