@@ -6,7 +6,7 @@ import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
 import classNames from 'classnames';
 import React, { ReactNode, useState } from 'react';
-import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { Controller, SubmitHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { FaRupeeSign } from 'react-icons/fa';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +16,11 @@ import { getCompanies } from '@/features/admin/services/companies/companies.serv
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { getCategories } from '@/features/admin/services/categories/categories.service';
 import dynamic from 'next/dynamic';
+import { UploadButton } from '@/shared/utils/uploadthing.util';
 // import TextEditor from '@/shared/components/text-editor';
+import '@uploadthing/react/styles.css';
+import Image from 'next/image';
+import { Cross, X } from 'lucide-react';
 
 const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
   ssr: false,
@@ -78,7 +82,7 @@ const CreateProduct: NextPageWithLayout = () => {
     company: { label: 'Select company', value: '' },
     modal: '',
     description: '',
-    images: [],
+    images: ['/images/empty-cart.png', '/images/esewa.png'],
     price: '',
     sellingPrice: '',
     crossedPrice: '',
@@ -100,12 +104,13 @@ const CreateProduct: NextPageWithLayout = () => {
     reset,
     handleSubmit,
   } = useForm<ProductSchema>({ mode: 'onChange', resolver: zodResolver(productSchema), defaultValues });
+
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const images = useWatch({
     control,
     name: 'images',
-  }) as any;
+  }) as string[];
   const upload = async (images: (string | ArrayBuffer | null)[]) => {
     const filteredImages = images.filter((image) => image !== null);
     if (filteredImages.length === 0) return;
@@ -129,6 +134,8 @@ const CreateProduct: NextPageWithLayout = () => {
   };
   const [resetImages, setResetImages] = useState(false);
   const handleCreate: SubmitHandler<ProductSchema> = async (values) => {
+    // console.log(values);
+    // return;
     setIsSubmitting(true);
     try {
       await axios.post('/api/admin/products', { ...values });
@@ -385,13 +392,13 @@ const CreateProduct: NextPageWithLayout = () => {
         </section>
         <section className="grid grid-cols-6 col-span-6 lg:col-span-3 gap-x-12">
           <div className="col-span-6 image-section lg:col-span-6">
-            <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
+            {/* <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
               <ImageUpload
                 {...{ control, resetImages, setResetImages }}
                 initialImage={{ src: images?.[0] as string, alt: '' }}
                 onChangePicture={upload}
               />
-            </FormControl>
+            </FormControl> */}
 
             <FormControl label="Product Slug" className="lg:mt-3" errorMessage={errors?.slug?.message as string}>
               <input
@@ -403,15 +410,50 @@ const CreateProduct: NextPageWithLayout = () => {
             </FormControl>
             <FormControl label="Status" className="lg:mt-3">
               <select className="select select-bordered" {...register('status')}>
-                <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
-                  ACTIVE
-                </option>
-                <option value={PRODUCT_STATUS.DRAFT} defaultChecked>
-                  DRAFT
-                </option>
+                <option value={PRODUCT_STATUS.ACTIVE}>ACTIVE</option>
+                <option value={PRODUCT_STATUS.DRAFT}>DRAFT</option>
+                <option value={PRODUCT_STATUS.OUT_OF_STOCK}>OUT OF STOCK</option>
               </select>
             </FormControl>
+            <section className="mt-3">
+              <label htmlFor="Image upload" className="label">
+                Upload Product Images
+              </label>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  if (res) {
+                    setValue('images', [...images, ...res.map((image) => image.fileUrl)]);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  showToast(Toast.error, error.message);
+                }}
+              />
+              <div className="grid grid-cols-6 gap-6 mt-8">
+                {images.map((image, index) => {
+                  return (
+                    <div key={index} className="col-span-6 group md:col-span-2 relative">
+                      <div
+                        onClick={() => {
+                          setValue(
+                            'images',
+                            images.filter((img) => img !== image)
+                          );
+                        }}
+                        className="h-6 w-6 group-hover:block hidden cursor-pointer rounded-full bg-transparent absolute -top-0 -right-0">
+                        <X className="text-neutral-content"></X>
+                      </div>
+                      <Image src={image} className="shadow" width={1200} height={1200} key={index} alt={'Product Image'}></Image>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           </div>
+
           {/* <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">
             <CategoriesCard></CategoriesCard>
             <div className="divider"></div>

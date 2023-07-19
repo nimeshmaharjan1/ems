@@ -29,14 +29,14 @@ import { getAllProducts } from '@/features/admin/services/products/products.serv
 import { useInView } from 'react-intersection-observer';
 import Drawer from '@/shared/components/drawer';
 
-// const inter = Inter({
-//   preload: false,
-//   fallback: ['system-ui'],
-//   subsets: ['latin'],
-//   weight: ['200', '300', '400', '500', '600', '700', '800'],
-// });
+const inter = Inter({
+  preload: false,
+  fallback: ['system-ui'],
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700', '800'],
+});
 
-const inter = Work_Sans({ preload: true, subsets: ['latin'], fallback: ['system-ui'] });
+// const inter = Work_Sans({ preload: true, subsets: ['latin'], fallback: ['system-ui'] });
 // const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
