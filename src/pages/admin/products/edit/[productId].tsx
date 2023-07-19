@@ -18,7 +18,11 @@ import { getCategories } from '@/features/admin/services/categories/categories.s
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import { UploadButton } from '@/shared/utils/uploadthing.util';
 // import TextEditor from '@/shared/components/text-editor';
+import '@uploadthing/react/styles.css';
+import Image from 'next/image';
+import { Cross, X } from 'lucide-react';
 
 const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
   ssr: false,
@@ -82,7 +86,11 @@ const productSchema = z
       label: z.string().min(1, { message: 'Category is required.' }),
       value: z.string().min(1, { message: 'Category is required.' }),
     }),
-    images: z.array(z.string()).max(5, { message: 'Images cannot be more than five.' }).optional(),
+    images: z
+      .array(z.string())
+      .min(1, { message: 'Image is required.' })
+      .max(5, { message: 'Images cannot be more than five.' })
+      .optional(),
     price: z.string().min(1, { message: 'Price is required.' }),
     sellingPrice: z.string().min(1, { message: 'Selling price is required.' }),
     crossedPrice: z.string().optional(),
@@ -92,9 +100,7 @@ const productSchema = z
     description: z.string().min(1, { message: 'Description is required.' }),
     slug: z.string().min(1, { message: 'Product slug is required.' }),
     hasOffer: z.boolean(),
-    discountPercentage: z.string().optional(),
-
-    status: z.enum(['ACTIVE', 'DRAFT', 'OUT_OF_STOCK']),
+    status: z.enum(['ACTIVE', 'DRAFT']),
   })
   .superRefine((values, ctx) => {
     if (values.hasOffer) {
@@ -125,7 +131,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
   const images = useWatch({
     control,
     name: 'images',
-  }) as any;
+  }) as string[];
   const upload = async (images: (string | ArrayBuffer | null)[]) => {
     const filteredImages = images.filter((image) => image !== null);
     if (filteredImages.length === 0) return;
@@ -236,7 +242,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
               className={`input input-bordered w-full max-w-3xl ${errors?.title ? 'input-error' : ''}`}
             />
           </FormControl>
-          <FormControl label="Modal" errorMessage={errors?.modal?.message as string}>
+          <FormControl label="Model" errorMessage={errors?.modal?.message as string}>
             <input
               type="text"
               placeholder="Type here"
@@ -408,13 +414,13 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
         </section>
         <section className="grid grid-cols-6 col-span-6 lg:col-span-3 gap-x-12">
           <div className="col-span-6 mt-4 image-section lg:col-span-6 lg:mt-0">
-            <FormControl label="Upload Product Image">
+            {/* <FormControl label="Upload Product Image" errorMessage={errors?.images?.message as string}>
               <ImageUpload
-                {...{ control, resetImages, setResetImages, setValue, watch }}
-                initialImage={images?.map((image: any) => ({ src: image as string, alt: '' }))}
+                {...{ control, resetImages, setResetImages }}
+                initialImage={{ src: images?.[0] as string, alt: '' }}
                 onChangePicture={upload}
               />
-            </FormControl>
+            </FormControl> */}
 
             <FormControl label="Product Slug" className="lg:mt-3" errorMessage={errors?.slug?.message as string}>
               <input
@@ -426,13 +432,48 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             </FormControl>
             <FormControl label="Status" className="lg:mt-3">
               <select className="select select-bordered" {...register('status')}>
-                <option value={PRODUCT_STATUS.ACTIVE} defaultChecked>
-                  ACTIVE
-                </option>
+                <option value={PRODUCT_STATUS.ACTIVE}>ACTIVE</option>
                 <option value={PRODUCT_STATUS.DRAFT}>DRAFT</option>
                 <option value={PRODUCT_STATUS.OUT_OF_STOCK}>OUT OF STOCK</option>
               </select>
             </FormControl>
+            <section className="mt-3">
+              <label htmlFor="Image upload" className="label">
+                Upload Product Images
+              </label>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  if (res) {
+                    setValue('images', [...images, ...res.map((image) => image.fileUrl)]);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  showToast(Toast.error, error.message);
+                }}
+              />
+              <div className="grid grid-cols-6 gap-6 mt-8">
+                {images.map((image, index) => {
+                  return (
+                    <div key={index} className="col-span-6 group md:col-span-2 relative">
+                      <div
+                        onClick={() => {
+                          setValue(
+                            'images',
+                            images.filter((img) => img !== image)
+                          );
+                        }}
+                        className="h-6 w-6 group-hover:block hidden cursor-pointer rounded-full bg-transparent absolute -top-0 -right-0">
+                        <X className="text-neutral-content"></X>
+                      </div>
+                      <Image src={image} className="shadow" width={1200} height={1200} key={index} alt={'Product Image'}></Image>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           </div>
           {/* <section className="labels-section col-span-6 lg:col-span-3 flex flex-col lg:mt-3.5">
             <CategoriesCard></CategoriesCard>
