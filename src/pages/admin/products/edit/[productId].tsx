@@ -253,23 +253,6 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
             render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { invalid, isTouched, isDirty, error }, formState }) => (
               <FormControl label="Description" errorMessage={errors?.description?.message as string}>
                 <TextEditor onChange={onChange} isInvalid={invalid} ref={ref} value={value}></TextEditor>
-                {/* 
-            <textarea
-              placeholder="Type here"
-              {...register('description', {
-                required: 'Description is required.',
-                minLength: {
-                  value: 2,
-                  message: 'Description must be above 2 characters.',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Description must be below 255 characters.',
-                },
-              })}
-              rows={6}
-              className={`textarea textarea-bordered w-full max-w-3xl ${errors?.description ? 'textarea-error' : ''}`}
-            /> */}
               </FormControl>
             )}
           />
@@ -427,7 +410,7 @@ const EditProduct: NextPageWithLayout<{ product: any }> = ({ product }) => {
           <div className="col-span-6 mt-4 image-section lg:col-span-6 lg:mt-0">
             <FormControl label="Upload Product Image">
               <ImageUpload
-                {...{ control, resetImages, setResetImages }}
+                {...{ control, resetImages, setResetImages, setValue, watch }}
                 initialImage={images?.map((image: any) => ({ src: image as string, alt: '' }))}
                 onChangePicture={upload}
               />

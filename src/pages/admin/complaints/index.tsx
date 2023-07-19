@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import { Trash } from 'lucide-react';
 import React, { ReactNode, useState } from 'react';
 import { useQuery } from 'react-query';
-import ComplaintDrawer from './complaint-drawer';
+import ComplaintDrawer from '../../../features/admin/complaints/complaint-drawer';
 
 const Complaints: NextPageWithLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);

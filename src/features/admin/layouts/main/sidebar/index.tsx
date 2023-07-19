@@ -67,7 +67,7 @@ export default function Sidebar({
             Icon={BaggageClaim}
             title="Orders"></SidebarItem>
           <SidebarItem
-            isActive={router.pathname === DASHBOARD_LINKS.orders}
+            isActive={router.pathname === DASHBOARD_LINKS.complaints}
             href={DASHBOARD_LINKS.complaints}
             Icon={Bug}
             title="Complaints"></SidebarItem>

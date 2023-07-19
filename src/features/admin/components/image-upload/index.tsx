@@ -1,6 +1,7 @@
 import { ProductSchema } from '@/pages/admin/products/create';
 import { Product } from '@prisma/client';
 import classNames from 'classnames';
+import { X } from 'lucide-react';
 import Image from 'next/legacy/image';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Control, Controller } from 'react-hook-form';
@@ -14,6 +15,8 @@ interface Props {
   control: any;
   resetImages: any;
   setResetImages: any;
+  setValue?: any;
+  watch?: any;
 }
 
 const ImageUpload: React.FC<Props> = ({
@@ -25,15 +28,26 @@ const ImageUpload: React.FC<Props> = ({
   control,
   resetImages,
   setResetImages,
+  setValue,
+  watch,
 }) => {
   const imageRef = React.useRef<HTMLInputElement>(null);
   const [images, setImages] = React.useState<any>(!initialImage?.length ? [initialImage] : [...initialImage]);
   const [updatingImage, setUpdatingImage] = React.useState(false);
   const [imageError, setPictureError] = React.useState('');
+
+  // const removeImage = (src: string) => {
+  //   console.log('here');
+  //   setImages((prev: string[]) => prev.filter((item) => item !== src));
+  //   setValue(
+  //     'images',
+  //     watch('images').filter((item: string) => item !== src)
+  //   );
+  // };
+
   const handleOnChangePicture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
-
     setUpdatingImage(true);
     setPictureError('');
 
@@ -93,18 +107,30 @@ const ImageUpload: React.FC<Props> = ({
   }, [resetImages, setResetImages]);
   return (
     <div className="grid grid-cols-6 gap-x-4">
-      {images?.map((image: any) => (
+      {images?.map((image: any, index: number) => (
         <button
-          key={image?.src}
+          key={index}
           disabled={updatingImage}
           onClick={handleOnClickPicture}
           className={classNames(
-            'relative w-full aspect-w-16 aspect-h-9 overflow-hidden rounded-md disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition group focus:outline-none py-4 h-40 ',
+            'relative w-full aspect-w-16 group aspect-h-9 overflow-hidden rounded-md disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition group focus:outline-none py-4 h-40 ',
             image?.src
               ? 'hover:opacity-50 disabled:hover:opacity-100 my-3 col-span-3 h-72'
               : 'border-2 border-dashed border-secondary hover:border-primary col-span-6 h-40 disabled:hover:border-gray-200'
           )}>
-          {image?.src ? <Image src={image.src as string} alt={image?.alt ?? ''} layout="fill" objectFit={'cover'} /> : null}
+          {image?.src ? (
+            <>
+              {/* <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeImage(image?.src);
+                }}
+                className="w-6 h-6 rounded-full group-hover:flex hidden z-20 bg-white text-white shadow absolute top-0 right-2 items-center justify-center">
+                <X strokeWidth={1.5} size={16} className="text-black" />
+              </div> */}
+              <Image src={image.src as string} alt={image?.alt ?? ''} className="z-10" layout="fill" objectFit={'cover'} />
+            </>
+          ) : null}
 
           <div className="flex items-center justify-center">
             {!image?.src ? (

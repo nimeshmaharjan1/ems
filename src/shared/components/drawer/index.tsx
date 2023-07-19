@@ -19,7 +19,7 @@ export default function Drawer({ children, isOpen, setIsOpen }: IProps) {
           ' w-screen max-w-4xl right-0 absolute bg-base-300 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
           (isOpen ? ' translate-x-0 max-h-[100vh] overflow-auto' : ' translate-x-full ')
         }>
-        <article className="relative w-screen h-full max-h-[100vh] overflow-auto max-w-4xl p-6">{children}</article>
+        <article className="relative w-screen h-full max-h-[100vh] overflow-auto max-w-4xl p-8">{children}</article>
       </section>
       <section
         className="w-screen h-full cursor-pointer "

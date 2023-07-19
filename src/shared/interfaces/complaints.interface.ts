@@ -23,6 +23,22 @@ export interface IComplaint {
   faultyItems: any[];
   user: User;
   order: Order;
+  resolvedBy?: IResolvedBy;
+}
+
+export interface IResolvedBy {
+  id: string;
+  username: string;
+  password: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  emailVerified: null;
+  role: string;
+  applyingAsBusinessClient: boolean;
+  image: string;
+  shopAddress: null;
+  taxId: null;
 }
 
 export interface FaultyItem {

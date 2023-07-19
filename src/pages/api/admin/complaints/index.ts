@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
           user: true,
           order: true,
+          resolvedBy: true,
         },
         take: limit as number,
       });

@@ -210,6 +210,9 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
           Submit your issue
         </button>
       </section>
+      <section className="mt-8">
+        <p className="text-lg">Or you can contact our support on +977-9843XXXXXXX</p>
+      </section>
     </div>
   );
 };

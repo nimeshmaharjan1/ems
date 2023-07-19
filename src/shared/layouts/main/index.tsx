@@ -36,7 +36,7 @@ import Drawer from '@/shared/components/drawer';
 //   weight: ['200', '300', '400', '500', '600', '700', '800'],
 // });
 
-const inter = Work_Sans({ subsets: ['latin'] });
+const inter = Work_Sans({ preload: true, subsets: ['latin'], fallback: ['system-ui'] });
 // const work = Nunito({ subsets: ['latin'] });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
