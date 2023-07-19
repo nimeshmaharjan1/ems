@@ -6,4 +6,5 @@ export const DASHBOARD_LINKS = {
   users: '/admin/users',
   settings: '/admin/settings',
   orders: '/admin/orders',
+  complaints: '/admin/complaints',
 };

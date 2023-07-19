@@ -1,6 +1,6 @@
 import Pagination from '@/shared/components/pagination';
 import { ICommentsData } from '@/shared/interfaces/comments.interface';
-import { Order } from '@/shared/interfaces/order.interface';
+import { IComplaint } from '@/shared/interfaces/complaints.interface';
 import { formatDateWithTime } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
@@ -11,12 +11,12 @@ import React, { useState } from 'react';
 import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { useQueryClient, useQuery } from 'react-query';
 
-const OrderComments: React.FC<{
+const ComplaintComments: React.FC<{
   useFormMethods: UseFormReturn<{
     comment: string;
   }>;
-  order: Order;
-}> = ({ useFormMethods, order }) => {
+  complaint: IComplaint;
+}> = ({ useFormMethods, complaint }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const {
@@ -29,13 +29,14 @@ const OrderComments: React.FC<{
   const addComment: SubmitHandler<{ comment: string }> = async ({ comment }) => {
     setIsPostingComment(true);
     try {
-      const response = await axios.post('/api/admin/orders/comments', {
+      const response = await axios.post('/api/admin/complaints/comments', {
         comment,
-        orderId: order.id,
+        orderId: complaint.order.id,
         userId: session?.user?.id,
+        complaintId: complaint.id,
       });
       useFormMethods.reset();
-      queryClient.invalidateQueries('fetchOrderComments');
+      queryClient.invalidateQueries('fetchComplaintComments');
       showToast(Toast.success, response.data?.message);
     } catch (error) {
       console.error(error);
@@ -52,8 +53,14 @@ const OrderComments: React.FC<{
     data: comments,
     isLoading: isCommentsLoading,
     isError: isCommentsError,
-  } = useQuery<ICommentsData, Error>(['fetchOrderComments', currentPage, limit, order.id], async () => {
-    const response = await axios.get(`/api/admin/orders/comments/${order.id}?page=${currentPage}&limit=${limit}`);
+  } = useQuery<ICommentsData, Error>(['fetchComplaintComments', currentPage, limit, complaint.id], async () => {
+    const response = await axios.get(`/api/admin/complaints/comments/`, {
+      params: {
+        complaintId: complaint.id,
+        page: currentPage,
+        limit,
+      },
+    });
     return response.data;
   });
   return (
@@ -87,6 +94,8 @@ const OrderComments: React.FC<{
             <span className="loading loading-spinner"></span>
             <span>Loading comments...</span>
           </div>
+        ) : comments && comments.data.length === 0 ? (
+          <p>No comments have been posted yet.</p>
         ) : (
           comments &&
           comments.data.map((comment) => (
@@ -117,4 +126,4 @@ const OrderComments: React.FC<{
   );
 };
 
-export default OrderComments;
+export default ComplaintComments;

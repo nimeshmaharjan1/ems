@@ -8,7 +8,7 @@ import Sidebar from './sidebar';
 
 // const inter = Inter({ preload: false, fallback: ['system-ui'], subsets: ['latin'], weight: ['200', '300', '400', '500', '600', '800'] });
 
-const inter = Work_Sans({ subsets: ['latin'] });
+const inter = Work_Sans({ preload: true, subsets: ['latin'] });
 
 const AdminDashboardLayout: React.FC<{ children: ReactNode; title?: string }> = ({ children, title }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

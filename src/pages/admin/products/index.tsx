@@ -5,6 +5,7 @@ import { useDebounce } from '@/shared/hooks/use-debounce';
 import { PaginatedProductsResponse } from '@/shared/interfaces/product.interface';
 import { formatDateWithTime, formatPrice, getDateWithWeekDay } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import { PRODUCT_STATUS } from '@prisma/client';
 import axios from 'axios';
 import { Settings, Trash } from 'lucide-react';
 import Image from 'next/image';
@@ -133,9 +134,19 @@ const Products: NextPageWithLayout = () => {
                       </span>
                     </td>
                     <td>
-                      <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md ring-1 ring-inset ring-green-600/20">
-                        {product.status}
-                      </span>
+                      {product.status === PRODUCT_STATUS.OUT_OF_STOCK ? (
+                        <span className="inline-flex items-center px-2 py-1 text-[0.6rem] font-medium text-red-700 bg-red-100 rounded-md ring-1 ring-inset ring-green-600/20">
+                          OUT OF STOCK
+                        </span>
+                      ) : product.status === PRODUCT_STATUS.DRAFT ? (
+                        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-amber-700 bg-amber-100 rounded-md ring-1 ring-inset ring-green-600/20">
+                          DRAFT
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md ring-1 ring-inset ring-green-600/20">
+                          {product.status}
+                        </span>
+                      )}
                     </td>
                     <td>{formatDateWithTime(product.createdAt)}</td>
                     <td className="text-center ">

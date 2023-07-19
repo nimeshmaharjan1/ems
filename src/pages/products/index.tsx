@@ -45,7 +45,6 @@ const Home: NextPageWithLayout = () => {
     try {
       const res = await axios.get(`/api/products?page=${page}&limit=${5}`);
       const response = res.data;
-      console.log({ response });
       let filteredOptions: any;
       if (!searchValue) {
         filteredOptions = response.products;

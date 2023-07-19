@@ -10,7 +10,7 @@ import { useQuery } from 'react-query';
 
 type UserProfileModalProps = {
   isFromNoPhoneNumber: boolean;
-  setIsFromNoPhoneNumber: Dispatch<SetStateAction<boolean>>;
+  setIsFromNoPhoneNumber?: Dispatch<SetStateAction<boolean>>;
 };
 
 interface IForm {
@@ -113,7 +113,7 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
       const response = await axios.patch(`/api/users/${session?.user?.id}`, values);
       update();
       showToast(Toast.success, response.data.message);
-      props.setIsFromNoPhoneNumber(false);
+      props.setIsFromNoPhoneNumber && props.setIsFromNoPhoneNumber(false);
       (ref as any).current.close();
     } catch (error: any) {
       if (error?.response?.data?.error?.meta?.target[0] === 'phone_number') {
