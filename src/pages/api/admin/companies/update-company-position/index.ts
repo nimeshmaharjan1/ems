@@ -24,7 +24,7 @@ const updateCompanyPosition = async (companyId: string, newPosition: number): Pr
   const company = await prisma.company.findUnique({ where: { id: companyId } });
 
   if (!company) {
-    throw new Error(`Company with ID ${companyId} not found.`);
+    return console.error(`Company with ID ${companyId} not found.`);
   }
 
   //TODO remove optional position
@@ -36,7 +36,7 @@ const updateCompanyPosition = async (companyId: string, newPosition: number): Pr
   }
 
   if (newPosition < 1) {
-    throw new Error('position must be a positive integer.');
+    return console.error('position must be a positive integer.');
   }
 
   const existingCompanyWithSerialNumber = await prisma.company.findFirst({

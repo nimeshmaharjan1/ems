@@ -7,7 +7,7 @@ export const addCompany = async (data: Company) => {
     const response = await axios.post('/api/admin/companies', data);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error(error);
   }
 };
 

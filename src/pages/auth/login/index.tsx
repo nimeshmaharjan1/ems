@@ -129,7 +129,7 @@ const Login: NextPageWithLayout = () => {
       <div className="card-actions justify-center !gap-3">
         <button
           type="button"
-          className="gap-2 btn btn-xs lg:btn-md btn-outline"
+          className="gap-2 btn btn-sm lg:btn-md btn-outline"
           disabled={isSubmitting}
           onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
@@ -137,7 +137,7 @@ const Login: NextPageWithLayout = () => {
         </button>
         <button
           type="button"
-          className="gap-2 btn btn-xs lg:btn-md btn-outline"
+          className="gap-2 btn btn-sm lg:btn-md btn-outline"
           disabled={isSubmitting}
           onClick={() => handleLoginWithProviders('github')}>
           <FaGithub className="text-lg" />

@@ -207,3 +207,48 @@ input[type='number']::-webkit-inner-spin-button {
 .ck-content-error {
   border: 1px solid red;
 }
+
+//Home auto scroll
+#auto-scroll-container {
+  /* Add your styles for the container */
+  overflow: hidden;
+}
+
+#auto-scroll-text {
+  display: inline-flex; /* Make the content scroll horizontally */
+  animation: auto-scroll-animation 10s linear infinite;
+  white-space: nowrap; /* Prevent wrapping of the images */
+}
+
+/* for Firefox */
+@-moz-keyframes auto-scroll-animation {
+  from {
+    -moz-transform: translateX(-100%);
+  }
+  to {
+    -moz-transform: translateX(100%);
+  }
+}
+
+/* for Chrome */
+@-webkit-keyframes auto-scroll-animation {
+  from {
+    -webkit-transform: translateX(-100%);
+  }
+  to {
+    -webkit-transform: translateX(100%);
+  }
+}
+
+@keyframes auto-scroll-animation {
+  from {
+    -moz-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  to {
+    -moz-transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+}
