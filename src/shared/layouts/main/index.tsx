@@ -143,7 +143,9 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 {/* <Link href="/products" className="relative w-[5.5rem] mb-1 h-14 md:w-[7.5rem] md:h-20"> */}
                 {/*   <Image src="/logo.png" fill alt="logo"></Image> */}
                 {/* </Link> */}
-                <h2 className="text-2xl font-semibold text-primary">EME</h2>
+                <Link href="/" className="text-2xl font-semibold text-primary">
+                  EME
+                </Link>
                 <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
