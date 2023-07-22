@@ -208,47 +208,34 @@ input[type='number']::-webkit-inner-spin-button {
   border: 1px solid red;
 }
 
-//Home auto scroll
-#auto-scroll-container {
-  /* Add your styles for the container */
-  overflow: hidden;
-}
+//Home Slider
 
-#auto-scroll-text {
-  display: inline-flex; /* Make the content scroll horizontally */
-  animation: auto-scroll-animation 10s linear infinite;
-  white-space: nowrap; /* Prevent wrapping of the images */
-}
-
-/* for Firefox */
-@-moz-keyframes auto-scroll-animation {
+@keyframes infiniteScroll {
   from {
-    -moz-transform: translateX(-100%);
+    transform: translateX(0);
   }
   to {
-    -moz-transform: translateX(100%);
+    transform: translateX(-50%);
   }
 }
+@layer components {
+  .slider {
+    // width: 100%;
+    overflow: hidden;
+  }
 
-/* for Chrome */
-@-webkit-keyframes auto-scroll-animation {
-  from {
-    -webkit-transform: translateX(-100%);
+  .slide-track {
+    display: flex;
+    @apply gap-x-12 max-w-sm md:max-w-md lg:max-w-4xl;
+    animation-name: infiniteScroll;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
-  to {
-    -webkit-transform: translateX(100%);
-  }
-}
-
-@keyframes auto-scroll-animation {
-  from {
-    -moz-transform: translateX(-100%);
-    -webkit-transform: translateX(-100%);
-    transform: translateX(-100%);
-  }
-  to {
-    -moz-transform: translateX(100%);
-    -webkit-transform: translateX(100%);
-    transform: translateX(100%);
+  .slide {
+    img {
+      @apply h-24 w-24 md:h-64 md:w-64 max-w-none;
+    }
+    white-space: nowrap;
   }
 }

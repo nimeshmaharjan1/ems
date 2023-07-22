@@ -8,7 +8,7 @@ import Image from 'next/image';
 const Home: NextPageWithLayout = () => {
   return (
     <>
-      <section className="flex items-center justify-center relative mx-auto w-full max-w-[64rem] flex-col  gap-4 pb-8 pt-6 text-center md:pb-12 md:pt-10 lg:py-28">
+      <section className="flex items-center justify-center relative mx-auto w-full min-h-[calc(100vh-10rem)] max-w-[64rem] flex-col  gap-4 text-center">
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,22 +36,85 @@ const Home: NextPageWithLayout = () => {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 2 }}
-          className="bg-primary h-8 w-8 rounded-full absolute bottom-0 right-0 animate-bounce flex items-center justify-center">
+          className="bg-primary h-8 w-8 rounded-full absolute bottom-0 lg:bottom-0 right-0 animate-bounce flex items-center justify-center">
           <ArrowDown className="text-neutral-content"></ArrowDown>
         </motion.div>
       </section>
-      <section className="mt-12">
-        <div id="auto-scroll-container">
-          <div id="auto-scroll-text" className="flex gap-x-6 items-center">
-            <Image src="/images/brands/cg.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/black.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/godrej.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/lg.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/kent.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/midea.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/tck.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/sensei.png" width={200} height={200} alt="brand"></Image>
-            <Image src="/images/brands/pigeon.png" width={200} height={200} alt="brand"></Image>
+      <section className="mt-16 lg:mt-20">
+        <div className="slider container">
+          <div className="slide-track">
+            <div className="slide">
+              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
+            </div>{' '}
+            <div className="slide">
+              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
+            </div>{' '}
+            <div className="slide">
+              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
+            </div>
+            <div className="slide">
+              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
+            </div>
           </div>
         </div>
       </section>

@@ -5,16 +5,22 @@ const HeaderCard: React.FC<{
   Icon: LucideIcon;
   title: string;
   data: any;
-}> = ({ Icon, title, data }) => {
+  isLoading: boolean;
+}> = ({ Icon, title, data, isLoading }) => {
   return (
     <div className="card bg-base-200">
       <div className="card-body">
-        <Icon size={42} className="text-success"></Icon>
-        <p className="font-semibold text-lg">{title}</p>
-        <p className="font-bold text-xl">
-          {title === 'Revenue' && <span>रू </span>}
-          {data}
-        </p>
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[115px]">
+            <span className="loading loading-spinner"></span>
+          </div>
+        ) : (
+          <>
+            <Icon size={42} className="text-primary"></Icon>
+            <p className="font-semibold text-lg">{title}</p>
+            <p className="font-bold text-xl">{data}</p>
+          </>
+        )}
       </div>
     </div>
   );
