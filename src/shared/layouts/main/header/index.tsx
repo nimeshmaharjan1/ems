@@ -14,7 +14,7 @@ const MainSharedHeader = () => {
         ['border-b border-b-gray-700']: theme === 'dark',
       })}>
       <div className={`${styles['top-header-wrapper']} border-b ${theme === 'dark' ? ' border-b-gray-700' : ''}`}>
-        <section className="lg:container lg:mx-auto flex items-center justify-between h-10 px-6 lg:px-28">
+        <section className="lg:container lg:mx-auto flex items-center justify-between h-10 px-6 xl:px-28">
           <section className="contact hidden md:flex">
             <p>Need Help ? 01-5203362</p>
             <div className="divider divider-horizontal"></div>

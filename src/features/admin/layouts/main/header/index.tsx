@@ -19,7 +19,7 @@ const Header: React.FC = () => {
     <header className="z-50 flex items-center justify-between w-full h-[4.5rem] px-8 border-b border-b-base-300 bg-base-100 gap-x-3">
       <Link href="/" passHref>
         {' '}
-        <h3 className="text-2xl font-semibold text-primary capitalize">EME</h3>{' '}
+        <h3 className="text-2xl font-semibold text-primary capitalize">EME</h3>
       </Link>
       <section className="flex items-center gap-4">
         <div className="dropdown dropdown-end">

@@ -207,3 +207,35 @@ input[type='number']::-webkit-inner-spin-button {
 .ck-content-error {
   border: 1px solid red;
 }
+
+//Home Slider
+
+@keyframes infiniteScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@layer components {
+  .slider {
+    // width: 100%;
+    overflow: hidden;
+  }
+
+  .slide-track {
+    display: flex;
+    @apply gap-x-12 max-w-sm md:max-w-md lg:max-w-4xl;
+    animation-name: infiniteScroll;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+  .slide {
+    img {
+      @apply h-24 w-24 md:h-64 md:w-64 max-w-none;
+    }
+    white-space: nowrap;
+  }
+}

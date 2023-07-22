@@ -92,6 +92,7 @@ const Home: NextPageWithLayout = () => {
               left: '0',
             }}></span>
         </h1>
+
         <div className="flex-1">
           {' '}
           <StyledReactSelect

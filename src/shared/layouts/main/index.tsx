@@ -7,7 +7,7 @@ import Cart from '@/shared/components/cart';
 import ThemeToggler from '@/shared/components/theme-toggler';
 import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
-import { BadgeInfo, User } from 'lucide-react';
+import { BadgeInfo, Bug, LayoutGrid, User } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,6 +28,7 @@ import { getAllProducts } from '@/features/admin/services/products/products.serv
 
 import { useInView } from 'react-intersection-observer';
 import Drawer from '@/shared/components/drawer';
+import { LogOut } from 'lucide-react';
 
 const inter = Inter({
   preload: false,
@@ -36,8 +37,12 @@ const inter = Inter({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
 
-// const inter = Work_Sans({ preload: true, subsets: ['latin'], fallback: ['system-ui'] });
-// const work = Nunito({ subsets: ['latin'] });
+// const inter = Work_Sans({
+//   preload: false,
+//   subsets: ['latin'],
+//   fallback: ['system-ui'],
+//   weight: ['200', '300', '400', '500', '600', '700'],
+// });
 
 const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
   children,
@@ -132,7 +137,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         <input aria-label="toggle drawer" id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">
           <div className="shadow nav-wrapper bg-base-100">
-            <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 lg:px-28">
+            <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 xl:px-28">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
@@ -143,7 +148,9 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 {/* <Link href="/products" className="relative w-[5.5rem] mb-1 h-14 md:w-[7.5rem] md:h-20"> */}
                 {/*   <Image src="/logo.png" fill alt="logo"></Image> */}
                 {/* </Link> */}
-                <h2 className="text-2xl font-semibold text-primary">EME</h2>
+                <Link href="/" className="text-2xl font-semibold text-primary">
+                  EME
+                </Link>
                 <Link href="/products" className="btn btn-sm btn-ghost">
                   Products
                 </Link>
@@ -198,7 +205,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           </div>
 
           <main className="flex-1">
-            <div className="lg:container lg:mx-auto px-6 lg:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">{children}</div>
+            <div className="lg:container lg:mx-auto px-6 xl:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">{children}</div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>
@@ -209,15 +216,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
               <Link href="/products" className="flex items-center gap-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
                 <FaBox></FaBox>
                 Products
-              </Link>
-            </li>
-            <li>
-              {' '}
-              <Link
-                href="/about"
-                className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
-                <BadgeInfo />
-                About
               </Link>
             </li>
             {status === 'unauthenticated' && (
@@ -243,22 +241,39 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
             {isAdmin && (
               <li>
                 <Link
-                  href="/admin/products"
-                  className="flex items-center gap-2 p-2 text-sm transition-all rounded-lg hover:bg-base-200 hover:text-primary">
-                  <RxDashboard></RxDashboard>
+                  href="/admin/dashboard"
+                  className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                  <LayoutGrid />
                   Dashboard
                 </Link>
               </li>
             )}
+            <li>
+              <Link
+                href="/raise-issue"
+                className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                <Bug />
+                Issue Assistance
+              </Link>
+            </li>
+            <li>
+              {' '}
+              <Link
+                href="/about"
+                className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                <BadgeInfo />
+                About
+              </Link>
+            </li>
             {status === 'authenticated' && (
-              <>
-                <li className="text-sm cursor-pointer" onClick={() => signOut()}>
-                  <a className="flex items-center gap-2 p-2 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
-                    <MdLogout className="text-lg " />
-                    Logout
-                  </a>
-                </li>
-              </>
+              <li>
+                <Link
+                  href="/admin/dashboard"
+                  className="flex items-center gap-2 pl-2 p-3 transition-all rounded-lg hover:bg-base-200 hover:text-primary">
+                  <LogOut />
+                  Logout
+                </Link>
+              </li>
             )}
           </ul>
         </div>
