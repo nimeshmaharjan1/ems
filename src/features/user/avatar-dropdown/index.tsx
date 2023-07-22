@@ -36,7 +36,7 @@ const NavAvatarDropdown: React.FC<{
           <li>
             <Link
               className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
-              href="/admin/products">
+              href="/admin/dashboard">
               <RxDashboard></RxDashboard>
               Dashboard
             </Link>
