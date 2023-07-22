@@ -4,8 +4,19 @@ import MainSharedLayout from '@/shared/layouts/main';
 import { ArrowDown } from 'lucide-react';
 import { NextPageWithLayout } from './_app';
 import Image from 'next/image';
+import BrandsScrolling from '@/shared/components/brands-scrolling';
+import { useQuery } from 'react-query';
+import { ITopSellingProduct } from '@/shared/interfaces/dashboard.interface';
+import axios from 'axios';
+import ProductCard from '@/features/products/components/product-card';
+import { IProduct } from '@/shared/interfaces/product.interface';
 
 const Home: NextPageWithLayout = () => {
+  const { data: featuredProducts, isLoading: isTopSellingProductLoading } = useQuery<IProduct[]>('fetchFeaturedProducts', async () => {
+    const res = await axios.get('/api/products?page=1');
+    return res.data.products;
+  });
+  console.log(featuredProducts);
   return (
     <>
       <section className="flex items-center justify-center relative mx-auto w-full min-h-[calc(100vh-10rem)] max-w-[64rem] flex-col  gap-4 text-center">
@@ -40,82 +51,17 @@ const Home: NextPageWithLayout = () => {
           <ArrowDown className="text-neutral-content"></ArrowDown>
         </motion.div>
       </section>
-      <section className="mt-16 lg:mt-20">
-        <div className="slider container">
-          <div className="slide-track">
-            <div className="slide">
-              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
+      <section className="mt-24 lg:mt-32">
+        <BrandsScrolling></BrandsScrolling>
+      </section>
+      <section className="mt-24 lg:mt-32">
+        <h2 className="brands font-bold text-2xl md:text-3xl mb-8">Featured Products</h2>
+        <div className="grid grid-cols-6 gap-6 md:gap-12">
+          {featuredProducts?.map((product) => (
+            <div className="col-span-6" key={product.id}>
+              <ProductCard product={product}></ProductCard>
             </div>
-            <div className="slide">
-              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
-            </div>{' '}
-            <div className="slide">
-              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
-            </div>{' '}
-            <div className="slide">
-              <Image src="/images/brands/cg.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/black.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/godrej.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/lg.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/kent.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/midea.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/tck.png" height="250" width="250" alt="" />
-            </div>
-            <div className="slide">
-              <Image src="/images/brands/sensei.png" height="250" width="250" alt="" />
-            </div>
-          </div>
+          ))}
         </div>
       </section>
     </>
