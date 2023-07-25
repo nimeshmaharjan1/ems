@@ -99,7 +99,7 @@ const ShopByAside = () => {
         {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
           <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
             <h3 className="mb-2 uppercase">Wholesale option</h3>
-            <section className="flex gap-3">
+            <section className="flex flex-col gap-1">
               <label className="label !justify-start gap-2 cursor-pointer">
                 <input
                   type="radio"

@@ -1,22 +1,18 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import MainSharedLayout from '@/shared/layouts/main';
-import { ArrowDown } from 'lucide-react';
-import { NextPageWithLayout } from './_app';
-import Image from 'next/image';
-import BrandsScrolling from '@/shared/components/brands-scrolling';
-import { useQuery } from 'react-query';
-import { ITopSellingProduct } from '@/shared/interfaces/dashboard.interface';
-import axios from 'axios';
 import ProductCard from '@/features/products/components/product-card';
+import BrandsScrolling from '@/shared/components/brands-scrolling';
 import { IProduct } from '@/shared/interfaces/product.interface';
+import MainSharedLayout from '@/shared/layouts/main';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { ArrowDown } from 'lucide-react';
+import { useQuery } from 'react-query';
+import { NextPageWithLayout } from './_app';
 
 const Home: NextPageWithLayout = () => {
   const { data: featuredProducts, isLoading: isTopSellingProductLoading } = useQuery<IProduct[]>('fetchFeaturedProducts', async () => {
     const res = await axios.get('/api/products?page=1');
     return res.data.products;
   });
-  console.log(featuredProducts);
   return (
     <>
       <section className="flex items-center justify-center relative mx-auto w-full min-h-[calc(100vh-10rem)] max-w-[64rem] flex-col  gap-4 text-center">

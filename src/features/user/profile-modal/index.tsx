@@ -194,12 +194,16 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
                     })}
                   />
                 </div>
-                <div className="col-span-6 md:col-span-3">
-                  <label className="label text-error text-sm -mt-3">{errors?.name?.message}</label>
-                </div>
-                <div className="col-span-6 md:col-span-3">
-                  <label className="label text-error text-sm -mt-3">{errors?.username?.message}</label>
-                </div>
+                {errors?.name && (
+                  <div className="col-span-6 md:col-span-3">
+                    <label className="label text-error text-sm -mt-3">{errors?.name?.message}</label>
+                  </div>
+                )}
+                {errors?.username && (
+                  <div className="col-span-6 md:col-span-3">
+                    <label className="label text-error text-sm -mt-3">{errors?.username?.message}</label>
+                  </div>
+                )}
                 <div className="form-control w-full  col-span-6 md:col-span-3">
                   <label className="label">
                     <span className="label-text">E-mail</span>
