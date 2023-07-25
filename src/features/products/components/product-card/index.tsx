@@ -41,7 +41,7 @@ const ProductCard: React.FC<{ product: IProduct }> = ({ product }) => {
       whileHover={{
         scale: 1.02,
       }}
-      className="z-0 card !rounded-none w-full md:w-52 sm:w-[20rem] bg-base-100 border-2 relative">
+      className="z-0 card !rounded-none w-full lg:w-52 sm:w-[20rem] bg-base-100 border-2 relative">
       <figure className="relative z-20 w-full cursor-pointer h-44" onClick={() => router.push(`/products/${product.id}`)}>
         <Image quality={100} src={product.images?.[0] as string} className="z-10 object-cover border-b-2" fill alt="Shoes" />
       </figure>

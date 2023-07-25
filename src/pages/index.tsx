@@ -58,7 +58,7 @@ const Home: NextPageWithLayout = () => {
         <h2 className="brands font-bold text-2xl md:text-3xl mb-8">Featured Products</h2>
         <div className="grid grid-cols-6 gap-6 md:gap-12">
           {featuredProducts?.map((product) => (
-            <div className="col-span-6" key={product.id}>
+            <div className="col-span-6 md:col-span-2 lg:col-span-1" key={product.id}>
               <ProductCard product={product}></ProductCard>
             </div>
           ))}
