@@ -9,10 +9,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = req.query.userId as string;
   const { role } = req.body;
   if (req.method === 'PATCH') {
-    if (role === USER_ROLES.SUPER_ADMIN) {
-      if (!(await isSuperAdmin(req, res))) {
-        return res.status(401).json({ message: 'This action needs a super admin role authority.' });
-      }
+    if (!(await isSuperAdmin(req, res))) {
+      return res.status(401).json({ message: 'This action needs a super admin role authority.' });
     }
     const auth = await isAuthenticated(req, res);
     if (!auth) {
