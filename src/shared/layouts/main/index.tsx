@@ -175,7 +175,7 @@ const MainSharedLayout: React.FC<{
                 )}
                 <ThemeToggler></ThemeToggler>
               </div>
-              <div className="items-center flex-none hidden gap-4 lg:flex">
+              <div className="items-center flex-none hidden lg:gap-x-6 gap-4 lg:flex">
                 {/* {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
                   <Link href="/admin/products" className="btn btn-sm btn-ghost ">
                     Dashboard
@@ -198,7 +198,6 @@ const MainSharedLayout: React.FC<{
                     </button>
                   </div>
                 )}
-                {router.pathname !== "/checkout" && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === "unauthenticated" && (
@@ -217,6 +216,8 @@ const MainSharedLayout: React.FC<{
                     </Link>
                   </>
                 )}
+
+                {router.pathname !== "/checkout" && <Cart></Cart>}
                 <ThemeToggler></ThemeToggler>
                 {status === "authenticated" && (
                   <NavAvatarDropdown {...{ profileModalRef }} />

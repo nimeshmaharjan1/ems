@@ -95,24 +95,24 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Image
-        className="h-96 object-cover w-full"
+        className="h-[28rem] object-cover w-full"
         height={800}
         width={1920}
-        src={"/home/landing.jpg"}
+        src={"/home/hero-three.jpg"}
         quality={100}
         alt="Shop Image"
       ></Image>
       <section
-        className="container grid grid-cols-6"
-        style={{ padding: "80px 64px" }}
+        className="container grid grid-cols-6 gap-x-12"
+        style={{ padding: "130px 64px 80px 64px" }}
       >
-        <div className="col-span-3">
-          <h2 className="text-4xl font-bold leading-normal">
+        <div className="col-span-3 prose-lg prose-h2:font-bold prose-h2:text-4xl prose-h2:leading-[1.4]">
+          <h2>
             Welcome to <br /> Eeshan Mahadev Enterprises
           </h2>
         </div>
-        <div className="col-span-3">
-          <p className="prose">
+        <div className="col-span-3 prose">
+          <p>
             At Eeshan Mahadev Enterprises Pvt. Ltd., we take pride in being one
             of the leading distribution companies in Kathmandu, Nepal. With over
             a decade of experience, we have established ourselves as a reliable
@@ -120,11 +120,46 @@ const Home: NextPageWithLayout = () => {
             and kitchenware industry.
           </p>
           <Link href="/products" passHref>
-            <button className="btn btn-primary mt-6">Shop Now</button>
+            <button className="btn btn-primary mt-4">Shop Now</button>
           </Link>
+          {/* <Image
+            className="h-96 rounded shadow"
+            height={800}
+            width={1920}
+            src={"/home/landing.jpg"}
+            quality={100}
+            alt="Shop Image"
+          ></Image> */}
         </div>
       </section>
       <WhyChooseUs></WhyChooseUs>
+      <section className="py-28 px-16 tell-the-visitor-section container grid grid-cols-6 items-center gap-x-12">
+        <div className="col-span-3 prose prose-h2:font-bold prose-h2:text-3xl prose-h2:leading-[1.4]">
+          <h2>We believe in delivering the best products.</h2>
+          <p>
+            We have established long-term partnerships with a range of esteemed
+            companies, allowing us to cater to diverse customer needs with
+            products that adhere to the highest industry standards.
+          </p>
+        </div>
+        <div className="col-span-3">
+          <Image
+            className="h-96 rounded shadow"
+            height={800}
+            width={1920}
+            src={"/home/hero-one.jpg"}
+            quality={100}
+            alt="Shop Image"
+          ></Image>
+        </div>
+      </section>
+      <section className="testimonials-section py-28 px-16 grid max-w-md grid-flow-dense grid-cols-1 grid-rows-[masonry] gap-8 text-sm leading-6  sm:mt-20 sm:max-w-2xl sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-cols-4">
+        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
+        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
+        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
+        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
+        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
+      </section>
     </>
   );
 };
@@ -135,6 +170,7 @@ Home.getLayout = (page) => (
   <MainSharedLayout
     metaData={{
       title: "Home",
+      isHome: true,
       description:
         "Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal",
     }}

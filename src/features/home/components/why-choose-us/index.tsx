@@ -5,7 +5,7 @@ const WhyChooseUs = () => {
   return (
     <section
       className="container why-choose-us grid grid-cols-8 gap-12"
-      style={{ padding: "80px 0" }}
+      style={{ padding: "90px 0" }}
     >
       <div className="col-span-2 flex gap-x-4">
         <div>
