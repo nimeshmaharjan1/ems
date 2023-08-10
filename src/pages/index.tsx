@@ -1,18 +1,12 @@
-import ProductCard from "@/features/products/components/product-card";
-import BrandsScrolling from "@/shared/components/brands-scrolling";
-import { IProduct } from "@/shared/interfaces/product.interface";
-import MainSharedLayout from "@/shared/layouts/main";
-import axios from "axios";
-import { motion } from "framer-motion";
-import {
-  ArrowDown,
-  BadgeCheck,
-  Boxes,
-  CalendarHeart,
-  Sparkles,
-} from "lucide-react";
-import { useQuery } from "react-query";
-import { NextPageWithLayout } from "./_app";
+import ProductCard from '@/features/products/components/product-card';
+import BrandsScrolling from '@/shared/components/brands-scrolling';
+import { IProduct } from '@/shared/interfaces/product.interface';
+import MainSharedLayout from '@/shared/layouts/main';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { ArrowDown, BadgeCheck, Boxes, CalendarHeart, Sparkles } from 'lucide-react';
+import { useQuery } from 'react-query';
+import { NextPageWithLayout } from './_app';
 
 // const Home: NextPageWithLayout = () => {
 //   const { data: featuredProducts, isLoading: isTopSellingProductLoading } =
@@ -86,10 +80,13 @@ import { NextPageWithLayout } from "./_app";
 
 // export default Home;
 
-import React from "react";
-import Image from "next/image";
-import WhyChooseUs from "@/features/home/components/why-choose-us";
-import Link from "next/link";
+import React from 'react';
+import Image from 'next/image';
+import WhyChooseUs from '@/features/home/components/why-choose-us';
+import Link from 'next/link';
+import Testimonials from '@/features/home/components/testimonials';
+import TellTheVisitor from '@/features/home/components/tell-the-visitor';
+import HeroSection from '@/features/home/components/hero-section';
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -98,68 +95,13 @@ const Home: NextPageWithLayout = () => {
         className="h-[28rem] object-cover w-full"
         height={800}
         width={1920}
-        src={"/home/hero-three.jpg"}
+        src={'/home/hero-three.jpg'}
         quality={100}
-        alt="Shop Image"
-      ></Image>
-      <section
-        className="container grid grid-cols-6 gap-x-12"
-        style={{ padding: "130px 64px 80px 64px" }}
-      >
-        <div className="col-span-3 prose-lg prose-h2:font-bold prose-h2:text-4xl prose-h2:leading-[1.4]">
-          <h2>
-            Welcome to <br /> Eeshan Mahadev Enterprises
-          </h2>
-        </div>
-        <div className="col-span-3 prose">
-          <p>
-            At Eeshan Mahadev Enterprises Pvt. Ltd., we take pride in being one
-            of the leading distribution companies in Kathmandu, Nepal. With over
-            a decade of experience, we have established ourselves as a reliable
-            partner for more than 10 prominent companies in the home appliances
-            and kitchenware industry.
-          </p>
-          <Link href="/products" passHref>
-            <button className="btn btn-primary mt-4">Shop Now</button>
-          </Link>
-          {/* <Image
-            className="h-96 rounded shadow"
-            height={800}
-            width={1920}
-            src={"/home/landing.jpg"}
-            quality={100}
-            alt="Shop Image"
-          ></Image> */}
-        </div>
-      </section>
+        alt="Shop Image"></Image>
+      <HeroSection></HeroSection>
       <WhyChooseUs></WhyChooseUs>
-      <section className="py-28 px-16 tell-the-visitor-section container grid grid-cols-6 items-center gap-x-12">
-        <div className="col-span-3 prose prose-h2:font-bold prose-h2:text-3xl prose-h2:leading-[1.4]">
-          <h2>We believe in delivering the best products.</h2>
-          <p>
-            We have established long-term partnerships with a range of esteemed
-            companies, allowing us to cater to diverse customer needs with
-            products that adhere to the highest industry standards.
-          </p>
-        </div>
-        <div className="col-span-3">
-          <Image
-            className="h-96 rounded shadow"
-            height={800}
-            width={1920}
-            src={"/home/hero-one.jpg"}
-            quality={100}
-            alt="Shop Image"
-          ></Image>
-        </div>
-      </section>
-      <section className="testimonials-section py-28 px-16 grid max-w-md grid-flow-dense grid-cols-1 grid-rows-[masonry] gap-8 text-sm leading-6  sm:mt-20 sm:max-w-2xl sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-cols-4">
-        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
-        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
-        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
-        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
-        <div className="first:sm:col-span-2 first:xl:col-start-2">Hello</div>
-      </section>
+      <TellTheVisitor></TellTheVisitor>
+      <Testimonials></Testimonials>
     </>
   );
 };
@@ -169,12 +111,10 @@ export default Home;
 Home.getLayout = (page) => (
   <MainSharedLayout
     metaData={{
-      title: "Home",
+      title: 'Home',
       isHome: true,
-      description:
-        "Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal",
-    }}
-  >
+      description: 'Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal',
+    }}>
     {page}
   </MainSharedLayout>
 );
