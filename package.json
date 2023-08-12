@@ -61,6 +61,7 @@
     "react-toastify": "^9.1.1",
     "recharts": "^2.7.2",
     "sharp": "^0.32.2",
+    "swiper": "^10.1.0",
     "uploadthing": "^5.2.1",
     "zod": "^3.20.2",
     "zustand": "^4.3.8"

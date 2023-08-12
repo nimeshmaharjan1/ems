@@ -1,11 +1,11 @@
-import React from 'react';
-import RatingSection from './rating-section';
-import QuoteSection from './quote-section';
-import UserSection from './user-section';
+import React from "react";
+import RatingSection from "./rating-section";
+import QuoteSection from "./quote-section";
+import UserSection from "./user-section";
 
 const Testimonial = () => {
   return (
-    <div className="first:sm:col-span-2 first:xl:col-start-2">
+    <div className="z-0">
       <div className="card bg-base-200">
         <div className="card-body !gap-y-4">
           <RatingSection></RatingSection>
