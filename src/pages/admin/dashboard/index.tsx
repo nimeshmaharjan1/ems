@@ -28,7 +28,6 @@ const AdminDashboard: NextPageWithLayout = () => {
     const res = await axios.get('/api/admin/analytics/average-order-value');
     return res.data;
   });
-  console.log('🚀 ~ file: index.tsx:25 ~ averageOrderValue:', orderData);
 
   const totalRevenue = (revenueData && revenueData.revenueData.reduce((acc, data) => acc + data.revenue, 0)) || 0;
 

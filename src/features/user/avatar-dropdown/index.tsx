@@ -24,10 +24,6 @@ const NavAvatarDropdown: React.FC<{
         ) : (
           <>
             <User />
-            {/* <Image src="/icons/default-user.png" height={500} width={500} alt="user" /> */}
-            {/* <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
-                            <span className="text-xs">{session?.user?.username.charAt(0).toUpperCase()}</span>
-                          </div> */}
           </>
         )}
       </label>

@@ -1,34 +1,28 @@
-import { Inter, Poppins, Work_Sans } from '@next/font/google';
+import { Inter } from '@next/font/google';
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
 
+import NavAvatarDropdown from '@/features/user/avatar-dropdown';
+import UserProfileModal from '@/features/user/profile-modal';
 import Cart from '@/shared/components/cart';
 import ThemeToggler from '@/shared/components/theme-toggler';
+import { Toast, showToast } from '@/shared/utils/toast.util';
 import { useCartStore } from '@/store/user-cart';
 import { USER_ROLES } from '@prisma/client';
-import { BadgeInfo, Bug, LayoutGrid, User } from 'lucide-react';
+import axios from 'axios';
+import { BadgeInfo, Bug, LayoutGrid } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { useRouter } from 'next/router';
 import { FaBox } from 'react-icons/fa';
 import { FiUserPlus } from 'react-icons/fi';
-import { GiHamburgerMenu, GiSettingsKnobs } from 'react-icons/gi';
-import { MdLogin, MdLogout } from 'react-icons/md';
-import { RxDashboard } from 'react-icons/rx';
-import { useRouter } from 'next/router';
-import UserProfileModal from '@/features/user/profile-modal';
-import NavAvatarDropdown from '@/features/user/avatar-dropdown';
-import { Toast, showToast } from '@/shared/utils/toast.util';
-import axios from 'axios';
-import Combobox from '@/shared/components/combobox';
-import { useInfiniteQuery } from 'react-query';
-import { getAllProducts } from '@/features/admin/services/products/products.service';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { MdLogin } from 'react-icons/md';
 
-import { useInView } from 'react-intersection-observer';
-import Drawer from '@/shared/components/drawer';
+import classNames from 'classnames';
 import { LogOut } from 'lucide-react';
+import { useInView } from 'react-intersection-observer';
 
 const inter = Inter({
   preload: false,
@@ -37,17 +31,10 @@ const inter = Inter({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
 });
 
-// const inter = Work_Sans({
-//   preload: false,
-//   subsets: ['latin'],
-//   fallback: ['system-ui'],
-//   weight: ['200', '300', '400', '500', '600', '700'],
-// });
-
-const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: string; description?: string } }> = ({
-  children,
-  metaData: { title, description },
-}) => {
+const MainSharedLayout: React.FC<{
+  children: ReactNode;
+  metaData: { title?: string; description?: string; isHome?: boolean };
+}> = ({ children, metaData: { title, description, isHome } }) => {
   const { data: session, status } = useSession();
   const [isAdmin, setIsAdmin] = useState(session?.user?.role === USER_ROLES.SUPER_ADMIN || session?.user?.role === USER_ROLES.STAFF);
   const [isMounted, setMounted] = useState(false);
@@ -137,7 +124,7 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
         <input aria-label="toggle drawer" id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="flex flex-col drawer-content">
           <div className="shadow nav-wrapper bg-base-100">
-            <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 xl:px-28">
+            <div className="justify-between w-full gap-3 h-26 navbar lg:container lg:mx-auto md:px-8 xl:px-24">
               <div className="flex-none lg:hidden">
                 <label htmlFor="my-drawer-3" className="btn btn-sm btn-square btn-ghost">
                   <GiHamburgerMenu></GiHamburgerMenu>
@@ -163,16 +150,16 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <ThemeToggler></ThemeToggler>
               </div>
-              <div className="items-center flex-none hidden gap-4 lg:flex">
+              <div className="items-center flex-none hidden lg:gap-x-6 gap-4 lg:flex">
                 {/* {session?.user?.role === USER_ROLES.SUPER_ADMIN && (
                   <Link href="/admin/products" className="btn btn-sm btn-ghost ">
                     Dashboard
                   </Link>
                 )} */}
                 {router.pathname !== '/raise-issue' && (
-                  <div className="mr-3">
+                  <div className="mr-0">
                     <button
-                      className="btn btn-secondary btn-sm"
+                      className="btn btn-ghost btn-sm"
                       onClick={() => {
                         if (!session) {
                           showToast(Toast.warning, 'Please login first.');
@@ -185,7 +172,6 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </button>
                   </div>
                 )}
-                {router.pathname !== '/checkout' && <Cart></Cart>}
                 {/* <button className="btn btn-sm btn-ghost ">Contact</button> */}
 
                 {status === 'unauthenticated' && (
@@ -198,6 +184,8 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
                     </Link>
                   </>
                 )}
+
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 <ThemeToggler></ThemeToggler>
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
               </div>
@@ -205,7 +193,12 @@ const MainSharedLayout: React.FC<{ children: ReactNode; metaData: { title?: stri
           </div>
 
           <main className="flex-1">
-            <div className="lg:container lg:mx-auto px-6 xl:px-28 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)] ">{children}</div>
+            <div
+              className={classNames('', {
+                'lg:container lg:mx-auto px-6 xl:px-0 my-6 md:my-10 md:mb-[6.6rem] min-h-[calc(100vh-440px)]': !isHome,
+              })}>
+              {children}
+            </div>
             <MainSharedFooter></MainSharedFooter>
           </main>
         </div>

@@ -17,8 +17,8 @@ const HeaderCard: React.FC<{
         ) : (
           <>
             <Icon size={42} className="text-primary"></Icon>
-            <p className="font-semibold text-lg">{title}</p>
-            <p className="font-bold text-xl">{data}</p>
+            <p className="font-medium text mt-1">{title}</p>
+            <p className="font-semibold text-lg">{data}</p>
           </>
         )}
       </div>

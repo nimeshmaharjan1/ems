@@ -9,12 +9,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = req.query.userId as string;
   const { role } = req.body;
   if (req.method === 'PATCH') {
-    if (!(await isSuperAdmin(req, res))) {
-      return res.status(401).json({ message: 'This action needs a super admin role authority.' });
-    }
     const auth = await isAuthenticated(req, res);
     if (!auth) {
       return res.status(401).json({ message: 'Unauthorized.' });
+    }
+    if (role === USER_ROLES.SUPER_ADMIN && !(await isSuperAdmin(req, res))) {
+      return res.status(401).json({ message: 'This action needs a super admin role authority.' });
     }
     try {
       const updatedUser = await prisma.user.update({
