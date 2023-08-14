@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { render } from "@react-email/render";
-import SpringSalesMail from "react-email-starter/emails/spring-sales";
 import nodemailer from "nodemailer";
+import SpringSalesMail from "@/features/email";
 
 export default async function handler(
   req: NextApiRequest,
