@@ -23,23 +23,26 @@ interface OrderConfirmationEmailProps {
 }
 
 export const OrderConfirmationEmail = ({
-  orderNumber,
-  customerName,
-  customerPhone,
-  customerAddress,
-  orderedProducts,
-  subTotal,
-  deliveryCharge,
-  total,
-  trackingLink,
-  customerSupportPhone,
+  orderNumber = "1008",
+  customerName = "Nimesh Maharjan",
+  customerPhone = "9843323200",
+  customerAddress = "Imadole, Lalitpur Outside Ring Road",
+  orderedProducts = [
+    { name: "Third", price: 23232323, quantity: 1 },
+    // Add more products as needed
+  ],
+  subTotal = 23232323,
+  deliveryCharge = 0,
+  total = 23232323,
+  trackingLink = "https://intite.blanxer.com/track/64da61a1ddc34a940daed18b",
+  customerSupportPhone = "9843323200",
 }: OrderConfirmationEmailProps) => {
   return (
-    <Html>
-      <Head />
-      <Tailwind>
+    <Tailwind>
+      <Html>
+        <Head />
         <Body className="bg-white my-auto mx-auto font-sans">
-          <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
+          <Container className="border border-solid border-gray-300 rounded-md my-4 mx-auto p-4 max-w-xs md:max-w-md lg:max-w-2xl">
             <Text className="text-black text-[18px] font-semibold text-center mb-4">
               Intite - Order Confirmation
             </Text>
@@ -111,8 +114,8 @@ export const OrderConfirmationEmail = ({
             </Text>
           </Container>
         </Body>
-      </Tailwind>
-    </Html>
+      </Html>
+    </Tailwind>
   );
 };
 
