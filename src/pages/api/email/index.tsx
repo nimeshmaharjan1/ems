@@ -2,7 +2,23 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { render } from "@react-email/render";
 import nodemailer from "nodemailer";
-import SpringSalesMail from "@/features/email";
+import OrderConfirmationEmail from "@/features/email";
+
+const exampleArgs = {
+  orderNumber: "1008",
+  customerName: "Nimesh Maharjan",
+  customerPhone: "9843323200",
+  customerAddress: "Imadole, Lalitpur Outside Ring Road",
+  orderedProducts: [
+    { name: "Thurd", price: 23232323, quantity: 1 },
+    // Add more products as needed
+  ],
+  subTotal: 23232323,
+  deliveryCharge: 0,
+  total: 23232323,
+  trackingLink: "https://intite.blanxer.com/track/64da61a1ddc34a940daed18b",
+  customerSupportPhone: "9843323200",
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +27,7 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       const { name, email } = req.body;
-      const emailHtml = render(SpringSalesMail({ userName: name }));
+      const emailHtml = render(OrderConfirmationEmail(exampleArgs));
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {

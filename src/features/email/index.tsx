@@ -1,240 +1,119 @@
 import {
-  Html,
-  Head,
-  Preview,
   Body,
   Container,
+  Head,
+  Html,
   Link,
-  Img,
+  Tailwind,
   Text,
-  Section,
-  Hr,
-  Row,
-  Column,
 } from "@react-email/components";
+import * as React from "react";
 
-// configure assest folder based on node environment
-const baseUrl = process.env.VERCEL_URL
-  ? `${process.env.VERCEL_URL}`
-  : "/static";
-interface SpringMailProps {
-  userName: string;
+interface OrderConfirmationEmailProps {
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  customerAddress: string;
+  orderedProducts: { name: string; price: number; quantity: number }[];
+  subTotal: number;
+  deliveryCharge: number;
+  total: number;
+  trackingLink: string;
+  customerSupportPhone: string;
 }
 
-export const SpringSalesMail = ({ userName = "Mary" }: SpringMailProps) => (
-  <Html>
-    <Head />
-    <Preview>Brighten up your home for less!</Preview>
-    <Body style={main}>
-      <Container style={parentContainer}>
-        <Link href="#" style={headingLink}>
-          Petal Palace
-        </Link>
-        <Section style={heroSection}>
-          <Img src={`${baseUrl}/vercel-user.png`} style={banner} />
-          <Link href="#" style={cta}>
-            Get 33% off sale
-          </Link>
-        </Section>
-        <Container style={container}>
-          <Text style={paragraph}>Dear {userName},</Text>
-          <Text style={paragraph}>
-            Spring is in full swing, and what better way to celebrate the season
-            of new beginnings than with fresh flowers? Our beautiful collection
-            of blooms is now available at discounted prices that you don&apos;t
-            want to miss!
-          </Text>
-          <Section style={storeLinks}>
-            <Link href="#" style={secondaryCTA}>
-              View Sales
-            </Link>
-            <Link href="#" style={secondaryCTA}>
-              View Store
-            </Link>
-          </Section>
-          <Section>
-            <Text style={sectionHeading}>Popular Flower Bundles</Text>
-            <Section>
-              <Link href="#">
-                <Row>
-                  <Column align="left">
-                    <Img
-                      src={`${baseUrl}/plant.jpg`}
-                      width="145"
-                      height="120"
-                      alt="Karupu Plant"
-                      style={plantImg}
-                    />
-                  </Column>
-                  <Column style={plantCopy}>
-                    <Text style={plantName}>Karupu Plant</Text>
-                    <Text>
-                      This plant is a rare breed and grows up to 1-5 meters.
-                    </Text>
-                  </Column>
-                </Row>
-              </Link>
-            </Section>
-            <Hr style={{ margin: "1.5rem 0" }} />
-            <Section style={socialLinks}>
-              <Row>
-                <Column align="left">
-                  <Link href="#" style={socialIcon}>
-                    <Img
-                      src={`${baseUrl}/twitter.png`}
-                      height="19"
-                      width="19"
-                    />
-                  </Link>
-                </Column>
-                <Column align="center">
-                  <Link href="#" style={socialIcon}>
-                    <Img
-                      src={`${baseUrl}/instagram.png`}
-                      height="19"
-                      width="19"
-                    />
-                  </Link>
-                </Column>
-                <Column align="right">
-                  <Link href="#" style={socialIcon}>
-                    <Img src={`${baseUrl}/mail.png`} height="19" width="19" />
-                  </Link>
-                </Column>
-              </Row>
-            </Section>
-            <Section style={unsubscribe}>
-              <Link href="#" style={link}>
-                Unsubscribe
-              </Link>
-              <Text style={paragraph}>
-                Want to hear from us again?{" "}
-                <Link href="#" style={link}>
-                  Click here
-                </Link>
+export const OrderConfirmationEmail = ({
+  orderNumber,
+  customerName,
+  customerPhone,
+  customerAddress,
+  orderedProducts,
+  subTotal,
+  deliveryCharge,
+  total,
+  trackingLink,
+  customerSupportPhone,
+}: OrderConfirmationEmailProps) => {
+  return (
+    <Html>
+      <Head />
+      <Tailwind>
+        <Body className="bg-white my-auto mx-auto font-sans">
+          <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
+            <Text className="text-black text-[18px] font-semibold text-center mb-4">
+              Intite - Order Confirmation
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              Hello, {customerName}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              This email is to confirm that we have received your order #
+              {orderNumber} and is being processed.
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Order status:</strong> Received
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Order number:</strong> #{orderNumber}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Name:</strong> {customerName}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Phone:</strong> {customerPhone}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Address:</strong> {customerAddress}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              <strong>Ordered Products:</strong>
+            </Text>
+            {orderedProducts.map((product) => (
+              <Text
+                key={product.name}
+                className="text-black text-[14px] leading-[24px] ml-4"
+              >
+                {product.name}
+                <br />
+                Rs. {product.price} x {product.quantity}
               </Text>
-            </Section>
-          </Section>
-        </Container>
-      </Container>
-    </Body>
-  </Html>
-);
-
-export default SpringSalesMail;
-
-const main = {
-  backgroundColor: "#FFFFFF",
-  margin: "auto auto",
-  color: "#000",
-  fontFamily:
-    'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            ))}
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              <strong>Sub-total:</strong> Rs. {subTotal}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Delivery Charge:</strong> Rs. {deliveryCharge}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              <strong>Total:</strong> Rs. {total}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              We are working our best to fulfill your order.
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              Order Tracking Link:{" "}
+              <Link href={trackingLink} className="text-blue-600 no-underline">
+                {trackingLink}
+              </Link>
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              Customer Support: If you have any questions or need assistance,
+              please contact us at {customerSupportPhone}
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-4">
+              We appreciate your patience and understanding. Thank you for
+              choosing us!
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px] mt-8">
+              Best regards,
+              <br />
+              Intite
+            </Text>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  );
 };
 
-const headingLink = {
-  display: "block",
-  fontSize: "1.2rem",
-  padding: "0.5rem 0",
-  fontWeight: "700",
-  color: "#66634B",
-  textAlign: "center" as const,
-};
-
-const paragraph = {
-  fontSize: "1rem",
-};
-
-const link = {
-  color: "#000",
-  textDecoration: "underline",
-};
-
-const parentContainer = {
-  border: "1px solid #eaeaea",
-  margin: "40px auto",
-  width: "390px",
-};
-
-const container = {
-  maxWidth: "90%",
-  margin: "0 auto",
-  padding: "1.2rem",
-};
-
-const heroSection = {
-  position: "relative" as const,
-  width: "100%",
-  display: "inline-block",
-};
-
-const banner = {
-  width: "inherit" as const,
-  height: "auto",
-};
-
-const cta = {
-  padding: "13px 20px",
-  borderRadius: "5px",
-  backgroundColor: "#D13928",
-  textAlign: "center" as const,
-  color: "#fff",
-  display: "block",
-  width: "45%",
-  margin: "0.5rem auto 0 auto",
-};
-
-const secondaryCTA = {
-  padding: "0.7rem 1rem",
-  border: "2px solid #D13928",
-  color: "#D13928",
-  borderRadius: "15px",
-  margin: "0 1rem",
-};
-
-const plantName = {
-  fontWeight: "600",
-  fontSize: "1.125rem",
-};
-
-const plantImg = {
-  borderRadius: "15px",
-  objectFit: "cover" as const,
-};
-
-const plantCopy = {
-  color: "#000",
-  padding: "0 0.8rem",
-};
-
-const unsubscribe = {
-  textAlign: "center" as const,
-  width: "inherit" as const,
-  margin: "1rem auto",
-};
-
-const storeLinks = {
-  margin: "2.5rem 0",
-  display: "flex",
-  justifyContent: "space-around",
-};
-
-const sectionHeading = {
-  fontSize: "1.125rem",
-  fontWeight: "bold",
-};
-
-const socialLinks = {
-  width: "150px",
-  margin: "0 auto",
-};
-
-const socialIcon = {
-  display: "flex",
-  width: "30px",
-  height: "30px",
-  margin: "0 0.5rem",
-  alignItems: "center",
-  justifyContent: "center",
-  borderRadius: "50%",
-  backgroundColor: "#000",
-};
+export default OrderConfirmationEmail;
