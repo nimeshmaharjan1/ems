@@ -1,12 +1,12 @@
-import { USER_ROLES } from '@prisma/client';
-import { User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import { AiOutlineUser, AiOutlineLogout } from 'react-icons/ai';
-import { GiSettingsKnobs } from 'react-icons/gi';
-import { RxDashboard } from 'react-icons/rx';
+import { USER_ROLES } from "@prisma/client";
+import { User } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { GiSettingsKnobs } from "react-icons/gi";
+import { RxDashboard } from "react-icons/rx";
 
 const NavAvatarDropdown: React.FC<{
   profileModalRef: React.RefObject<HTMLDialogElement>;
@@ -18,7 +18,12 @@ const NavAvatarDropdown: React.FC<{
         {session?.user?.image ? (
           <div className="avatar online">
             <div className="w-8 h-8 rounded-full shadow">
-              <Image src={session?.user?.image} height={500} width={500} alt="user" />
+              <Image
+                src={session?.user?.image}
+                height={500}
+                width={500}
+                alt="user"
+              />
             </div>
           </div>
         ) : (
@@ -27,12 +32,28 @@ const NavAvatarDropdown: React.FC<{
           </>
         )}
       </label>
-      <ul tabIndex={0} className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52">
-        {(session?.user?.role === USER_ROLES.STAFF || session?.user?.role === USER_ROLES.SUPER_ADMIN) && (
+      <ul
+        tabIndex={0}
+        className="z-50 p-2 flex flex-col dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52"
+      >
+        {(session?.user?.role === USER_ROLES.STAFF ||
+          session?.user?.role === USER_ROLES.SUPER_ADMIN) && (
           <li>
             <Link
               className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
-              href="/admin/dashboard">
+              href="/admin/dashboard"
+            >
+              <RxDashboard></RxDashboard>
+              Dashboard
+            </Link>
+          </li>
+        )}
+        {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
+          <li>
+            <Link
+              className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
+              href="/business-client"
+            >
               <RxDashboard></RxDashboard>
               Dashboard
             </Link>
@@ -41,7 +62,8 @@ const NavAvatarDropdown: React.FC<{
         <li>
           <a
             className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer"
-            onClick={() => profileModalRef.current?.show()}>
+            onClick={() => profileModalRef.current?.show()}
+          >
             <AiOutlineUser></AiOutlineUser>
             Profile
           </a>
@@ -51,7 +73,7 @@ const NavAvatarDropdown: React.FC<{
             <GiSettingsKnobs></GiSettingsKnobs>Settings
           </a>
         </li> */}
-        <li onClick={() => signOut({ callbackUrl: '/products' })}>
+        <li onClick={() => signOut({ callbackUrl: "/products" })}>
           <a className="flex items-center p-2 rounded-lg gap-2 hover:bg-base-200 transition-all hover:text-primary cursor-pointer">
             <AiOutlineLogout></AiOutlineLogout>Logout
           </a>

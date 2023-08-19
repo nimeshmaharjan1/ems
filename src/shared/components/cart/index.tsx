@@ -26,7 +26,7 @@ const Cart = () => {
     removeFromCart(productId);
   };
   return (
-    <div className="mr-0 dropdown dropdown-hover dropdown-end">
+    <div className=" dropdown dropdown-hover dropdown-end mr-3 md:mr-0">
       <label
         tabIndex={0}
         className="relative transition-all cursor-pointer hover:text-amber-500"
