@@ -118,3 +118,13 @@ Home.getLayout = (page) => (
     {page}
   </MainSharedLayout>
 );
+
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: '/products',
+    },
+    props: {},
+  };
+};
