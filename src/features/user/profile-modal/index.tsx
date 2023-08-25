@@ -1,9 +1,7 @@
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import axios from 'axios';
 import classNames from 'classnames';
-import { MonitorUp, Upload } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 import { Dispatch, SetStateAction, forwardRef, useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -251,7 +249,8 @@ const UserProfileModal = forwardRef<HTMLDialogElement, UserProfileModalProps>((p
                 Close
               </button>
             )}
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-primary" disabled={isSubmitting} type="submit">
+              {isSubmitting && <span className="loading loading-spinner loading-xs"></span>}
               Submit
             </button>
           </div>

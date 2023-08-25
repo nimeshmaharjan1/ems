@@ -1,35 +1,33 @@
-import React, { useEffect, useState } from "react";
-import BusinessClientLayoutHeader from "./header";
-import BusinessLgAside from "./lg-aside";
-import { Inter } from "@next/font/google";
-import { signIn, useSession } from "next-auth/react";
-import { USER_ROLES } from "@prisma/client";
-import { useRouter } from "next/router";
-import { Toast, showToast } from "@/shared/utils/toast.util";
-import { toast } from "react-toastify";
-const inter = Inter({ subsets: ["latin"] });
-const customId = "custom-id-yes";
+import { Inter } from '@next/font/google';
+import { USER_ROLES } from '@prisma/client';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import BusinessClientLayoutHeader from './header';
+import BusinessLgAside from './lg-aside';
+const inter = Inter({ subsets: ['latin'] });
+const customId = 'custom-id-yes';
 const BusinessClientDashboardLayout: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const session = useSession();
   const [isLoading, setIsLoading] = useState(true);
-  console.log(session);
   const router = useRouter();
   useEffect(() => {
-    if (session.status === "unauthenticated") {
+    if (session.status === 'unauthenticated') {
       signIn();
     } else {
       if (session.data) {
         if (session.data?.user?.role === USER_ROLES.BUSINESS_CLIENT) {
           setIsLoading(false);
         } else {
-          toast.warning("Unauthorized", {
+          toast.warning('Unauthorized', {
             toastId: customId,
             autoClose: 2000,
           });
           // showToast(Toast.warning, "Unauthorized");
-          router.replace("/");
+          router.replace('/');
         }
       }
     }

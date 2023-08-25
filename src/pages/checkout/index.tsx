@@ -8,17 +8,16 @@ import axios from 'axios';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Trash2 } from 'lucide-react';
-import { GetServerSideProps, NextPage } from 'next';
-import { getServerSession, Session } from 'next-auth';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { ReactNode, useRef, useState } from 'react';
 import ContactInformation from '../../features/checkout/components/contact-information';
-import { authOptions } from '../api/auth/[...nextauth]';
 import { NextPageWithLayout } from '../_app';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const prisma = new PrismaClient();
@@ -109,6 +108,7 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
       } else {
         localStorage.removeItem('cartItems');
         setCartItems([]);
+        showToast(Toast.success, 'Your order has been placed.');
         router.push('/products');
       }
     } catch (error) {
