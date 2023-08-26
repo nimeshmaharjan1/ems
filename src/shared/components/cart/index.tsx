@@ -26,12 +26,12 @@ const Cart = () => {
     removeFromCart(productId);
   };
   return (
-    <div className="mr-0 dropdown dropdown-hover dropdown-end">
+    <div className=" dropdown dropdown-hover dropdown-end mr-3 md:mr-0">
       <label
         tabIndex={0}
         className="relative transition-all cursor-pointer hover:text-amber-500"
       >
-        <ShoppingCart />
+        <ShoppingCart className="w-5 h-5" />
         <div className="badge badge-primary rounded-full p-2 badge-xs absolute -top-2 -right-2.5">
           <span className="text-[8px]">
             {cartItems.length > 9 ? "9+" : cartItems.length}

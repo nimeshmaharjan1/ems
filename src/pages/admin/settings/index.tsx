@@ -16,9 +16,8 @@ import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 
-const prisma = new PrismaClient();
-
 export const getServerSideProps: GetServerSideProps = async () => {
+  const prisma = new PrismaClient();
   try {
     const settings = await prisma.settings.findFirst();
     return {
@@ -31,6 +30,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {},
     };
+  } finally {
+    await prisma.$disconnect();
   }
 };
 

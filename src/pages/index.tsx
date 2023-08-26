@@ -1,12 +1,5 @@
-import ProductCard from '@/features/products/components/product-card';
-import BrandsScrolling from '@/shared/components/brands-scrolling';
-import { IProduct } from '@/shared/interfaces/product.interface';
-import MainSharedLayout from '@/shared/layouts/main';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { ArrowDown, BadgeCheck, Boxes, CalendarHeart, Sparkles } from 'lucide-react';
-import { useQuery } from 'react-query';
-import { NextPageWithLayout } from './_app';
+import MainSharedLayout from "@/shared/layouts/main";
+import { NextPageWithLayout } from "./_app";
 
 // const Home: NextPageWithLayout = () => {
 //   const { data: featuredProducts, isLoading: isTopSellingProductLoading } =
@@ -80,13 +73,11 @@ import { NextPageWithLayout } from './_app';
 
 // export default Home;
 
-import React from 'react';
-import Image from 'next/image';
-import WhyChooseUs from '@/features/home/components/why-choose-us';
-import Link from 'next/link';
-import Testimonials from '@/features/home/components/testimonials';
-import TellTheVisitor from '@/features/home/components/tell-the-visitor';
-import HeroSection from '@/features/home/components/hero-section';
+import HeroSection from "@/features/home/components/hero-section";
+import TellTheVisitor from "@/features/home/components/tell-the-visitor";
+import Testimonials from "@/features/home/components/testimonials";
+import WhyChooseUs from "@/features/home/components/why-choose-us";
+import Image from "next/image";
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -95,9 +86,10 @@ const Home: NextPageWithLayout = () => {
         className="h-[28rem] object-cover w-full"
         height={800}
         width={1920}
-        src={'/home/hero-three.jpg'}
+        src={"/home/hero-three.jpg"}
         quality={100}
-        alt="Shop Image"></Image>
+        alt="Shop Image"
+      ></Image>
       <HeroSection></HeroSection>
       <WhyChooseUs></WhyChooseUs>
       <TellTheVisitor></TellTheVisitor>
@@ -111,10 +103,22 @@ export default Home;
 Home.getLayout = (page) => (
   <MainSharedLayout
     metaData={{
-      title: 'Home',
+      title: "Home",
       isHome: true,
-      description: 'Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal',
-    }}>
+      description:
+        "Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal",
+    }}
+  >
     {page}
   </MainSharedLayout>
 );
+
+// export const getServerSideProps = () => {
+//   return {
+//     redirect: {
+//       permanent: false,
+//       destination: '/products',
+//     },
+//     props: {},
+//   };
+// };

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
-  plugins: [require("daisyui"), require("@tailwindcss/typography")],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  plugins: [require('daisyui'), require('@tailwindcss/typography')],
   theme: {
     container: {
       center: true,
@@ -11,14 +11,20 @@ module.exports = {
     themes: [
       {
         winter: {
-          ...require("daisyui/src/theming/themes")["[data-theme=winter]"],
-          "base-200": "#F7F7F7",
-          "base-300": "#F0F0F0",
-          "base-content": "#444E59",
-          accent: "#facc13",
+          ...require('daisyui/src/theming/themes')['[data-theme=winter]'],
+          'base-200': '#F7F7F7',
+          'base-300': '#F0F0F0',
+          'base-content': '#444E59',
+          accent: '#facc13',
         },
       },
-      "dark",
+
+      {
+        dark: {
+          ...require('daisyui/src/theming/themes')['[data-theme=dark]'],
+          primary: '#057aff',
+        },
+      },
       // {
       //   night: {
       //     ...require('daisyui/src/theming/themes')['[data-theme=night]'],

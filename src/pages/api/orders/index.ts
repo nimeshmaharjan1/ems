@@ -1,8 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Order, OrderItem, SELECTED_WHOLESALE_OPTION, PAYMENT_METHOD, USER_ROLES } from '@prisma/client';
-import isAuthenticated from '@/features/admin/hof/is-authenticated';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
+import isAuthenticated from "@/features/admin/hof/is-authenticated";
+import {
+  Order,
+  OrderItem,
+  PAYMENT_METHOD,
+  PrismaClient,
+  SELECTED_WHOLESALE_OPTION,
+  USER_ROLES,
+} from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 
@@ -26,13 +33,22 @@ interface CreateOrderResponse {
   order: Order & { items: OrderItem[] };
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === "POST") {
     await isAuthenticated(req, res);
     const session = await getServerSession(req, res, authOptions);
     try {
-      const { items, userId, customerAddress, additionalPhoneNumber, selectedWholesaleOption, paymentMethod }: CreateOrderRequest =
-        req.body;
+      const {
+        items,
+        userId,
+        customerAddress,
+        additionalPhoneNumber,
+        selectedWholesaleOption,
+        paymentMethod,
+      }: CreateOrderRequest = req.body;
 
       // Calculate the total price by iterating over the items and multiplying the quantity with the provided price
       const totalPrice = items.reduce((sum, item) => {
@@ -46,7 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const settings = await prisma.settings.findFirst();
           deliveryCharge = settings?.deliveryCharge!;
         } catch (error) {
-          return res.status(500).json({ error, message: 'Something went wrong while trying to get the delivery charge.' });
+          return res.status(500).json({
+            error,
+            message:
+              "Something went wrong while trying to get the delivery charge.",
+          });
         }
       }
 
@@ -55,42 +75,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.$connect();
       //TODO Create order needs to have customer details and stuff
       await prisma.$transaction(async (prisma) => {
-        const order: Order & { items: OrderItem[] } = await prisma.order.create({
-          data: {
-            items: {
-              create: items.map((item) => ({
-                quantity: item.quantity,
-                productId: item.productId,
-                price: item.price,
-              })),
+        const order: Order & { items: OrderItem[] } = await prisma.order.create(
+          {
+            data: {
+              items: {
+                create: items.map((item) => ({
+                  quantity: item.quantity,
+                  productId: item.productId,
+                  price: item.price,
+                })),
+              },
+              userId,
+              customerAddress,
+              deliveryCharge,
+              totalPrice:
+                session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+                  ? Math.round(totalPrice)
+                  : Math.round(totalPrice + deliveryCharge),
+              additionalPhoneNumber,
+              selectedWholesaleOption,
+              paymentMethod,
+              amountLeftToPay:
+                session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+                  ? Math.round(totalPrice)
+                  : Math.round(totalPrice + deliveryCharge),
+              partiallyPaidAmount: 0,
             },
-            userId,
-            customerAddress,
-            deliveryCharge,
-            totalPrice:
-              session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? Math.round(totalPrice) : Math.round(totalPrice + deliveryCharge),
-            additionalPhoneNumber,
-            selectedWholesaleOption,
-            paymentMethod,
-            amountLeftToPay:
-              session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? Math.round(totalPrice) : Math.round(totalPrice + deliveryCharge),
-            partiallyPaidAmount: 0,
-          },
-          include: {
-            items: true,
-          },
-        });
+            include: {
+              items: true,
+            },
+          }
+        );
 
         // Update product quantities
         for (const item of items) {
-          const product = await prisma.product.findUnique({ where: { id: item.productId } });
+          const product = await prisma.product.findUnique({
+            where: { id: item.productId },
+          });
 
           if (!product) {
-            throw new Error(`Product with ID ${item.productId} does not exist.`);
+            throw new Error(
+              `Product with ID ${item.productId} does not exist.`
+            );
           }
 
           if (Number(product.quantity) < item.quantity) {
-            throw new Error(`Insufficient quantity for product with ID ${item.productId}.`);
+            throw new Error(
+              `Insufficient quantity for product with ID ${item.productId}.`
+            );
           }
 
           const updatedQuantity = Number(product.quantity) - item.quantity;
@@ -101,18 +133,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
         }
 
-        const response: CreateOrderResponse = { message: 'Your order has been placed.', order };
+        const response: CreateOrderResponse = {
+          message: "Your order has been placed.",
+          order,
+        };
 
-        res.status(200).json(response);
+        return res.status(200).json(response);
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error, message: 'Something went wrong' });
+      return res.status(500).json({ error, message: "Something went wrong" });
     } finally {
       await prisma.$disconnect();
     }
   } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });
+    return res.setHeader("Allow", ["POST"]);
   }
 }

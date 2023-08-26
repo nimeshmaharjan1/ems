@@ -1,8 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import OrderConfirmationEmail from "@/features/email";
 import { PrismaClient } from "@prisma/client";
 import { render } from "@react-email/render";
+import { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
-import SpringSalesMail from "@/features/email";
+
+const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,8 +12,30 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const { name, email } = req.body;
-      const emailHtml = render(SpringSalesMail({ userName: name }));
+      const { name, email, orderId } = req.body;
+      const order = await prisma.order.findUnique({
+        where: {
+          id: orderId,
+        },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+        },
+      });
+
+      console.log(order);
+
+      if (!order) {
+        return res.status(404).json({
+          message: "Order not found.",
+        });
+      }
+
+      const emailHtml = render(OrderConfirmationEmail(order));
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -24,8 +48,8 @@ export default async function handler(
       });
       const mailOptions = {
         from: process.env.GMAIL_USER,
-        to: email,
-        subject: "Spring flower sales💐 Don't miss out!",
+        to: order.user.email as string,
+        subject: "Intite💐 Order Confirmation",
         html: emailHtml,
       };
       transporter.sendMail(mailOptions, (error, info) => {
@@ -44,6 +68,8 @@ export default async function handler(
       res.status(500).json({
         message: "Failed to send the email please try again later again.",
       });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.setHeader("Allow", ["POST"]);
