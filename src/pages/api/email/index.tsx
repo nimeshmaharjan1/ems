@@ -1,4 +1,4 @@
-import OrderConfirmationEmail from "@/features/email";
+import { OrderEmail } from "@/features/email/order";
 import { PrismaClient } from "@prisma/client";
 import { render } from "@react-email/render";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -35,7 +35,7 @@ export default async function handler(
         });
       }
 
-      const emailHtml = render(OrderConfirmationEmail(order));
+      const emailHtml = render(OrderEmail(order));
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {

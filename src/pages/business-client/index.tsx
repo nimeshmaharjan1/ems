@@ -6,8 +6,7 @@ import { ORDER_STATUS, PAYMENT_STATUS } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { toast } from "react-toastify";
+import { useQuery } from "react-query";
 import { NextPageWithLayout } from "../_app";
 
 const BusinessClientDashboard: NextPageWithLayout = () => {
@@ -34,20 +33,6 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
         },
       });
       return response.data;
-    }
-  );
-
-  const mutation = useMutation(
-    async (orderId: string) => {
-      const response = await axios.post(`/api/email`, {
-        orderId: orderId,
-      });
-      return response.data;
-    },
-    {
-      onSuccess: (data) => {
-        toast.success(data?.message);
-      },
     }
   );
 
@@ -110,13 +95,7 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
             ) : (
               orderData?.orders.map((order) => (
                 <tr key={order.id}>
-                  <td
-                    onClick={() => {
-                      mutation.mutate(order.id);
-                    }}
-                  >
-                    {order.orderNumber}
-                  </td>
+                  <td>{order.orderNumber}</td>
                   <td>{order.user.name}</td>
                   <td>{order.items.length}</td>
                   <td>
