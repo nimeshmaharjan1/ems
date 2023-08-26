@@ -1,23 +1,27 @@
-import classNames from 'classnames';
-import { useTheme } from 'next-themes';
-import { BsFillMoonFill, BsSun } from 'react-icons/bs';
+import { useTheme } from "next-themes";
+import { BsFillMoonFill, BsSun } from "react-icons/bs";
 
 const ThemeToggler = () => {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
-    <button
-      aria-label="Theme Toggler"
-      onClick={() => {
-        resolvedTheme === 'winter' ? setTheme('dark') : setTheme('winter');
-      }}
-      className={classNames('!bg-transparent btn-sm !h-0 !p-2 mb-[0.4rem]')}>
-      {resolvedTheme === 'winter' ? (
-        <BsFillMoonFill className="hover:text-primary duration-300 h-5 w-5"></BsFillMoonFill>
+    <>
+      {resolvedTheme === "winter" ? (
+        <BsFillMoonFill
+          onClick={() => {
+            resolvedTheme === "winter" ? setTheme("dark") : setTheme("winter");
+          }}
+          className="hover:text-primary cursor-pointer duration-300 h-5 mb-1 w-5"
+        ></BsFillMoonFill>
       ) : (
-        <BsSun className="text-lg hover:text-amber-400 duration-300 h-5 w-5"></BsSun>
+        <BsSun
+          onClick={() => {
+            resolvedTheme === "winter" ? setTheme("dark") : setTheme("winter");
+          }}
+          className="text-lg hover:text-amber-400 cursor-pointer duration-300 h-5 w-5"
+        ></BsSun>
       )}
-    </button>
+    </>
   );
 };
 

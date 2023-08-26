@@ -1,15 +1,18 @@
-import { PrismaClient, USER_ROLES } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]';
+import { PrismaClient, USER_ROLES } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === "GET") {
     const session = await getServerSession(req, res, authOptions);
     if (session?.user?.role !== USER_ROLES.BUSINESS_CLIENT) {
-      return res.status(401).json({ message: 'Unauthorized.' });
+      return res.status(401).json({ message: "Unauthorized." });
     }
     try {
       const { page = 1, user_id, order_status } = req.query;
@@ -24,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })) as number) ?? 0;
       const totalPages = Math.ceil(totalRecords / (limit as number));
       let ordersQuery = {
-        orderBy: { createdAt: 'desc' }, // newest orders first
+        orderBy: { createdAt: "desc" }, // newest orders first
         skip: (Number(page) - 1) * (limit as number) || 0,
         take: limit as number,
         include: {
@@ -75,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (e) {
       console.error(e);
       res.status(500).json({
-        message: 'Something went wrong while trying to fetch the orders.',
+        message: "Something went wrong while trying to fetch the orders.",
         error: e,
       });
     } finally {
@@ -83,7 +86,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else {
     await prisma.$disconnect();
-    res.setHeader('Allow', ['GET']);
-    res.status(405).json({ message: `HTTP method ${req.method} is not supported.` });
+    res.setHeader("Allow", ["GET"]);
+    res
+      .status(405)
+      .json({ message: `HTTP method ${req.method} is not supported.` });
   }
 }

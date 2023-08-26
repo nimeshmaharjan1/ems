@@ -1,41 +1,66 @@
-import BusinessClientDashboardLayout from '@/features/business-client/layout';
-import Pagination from '@/shared/components/pagination';
-import { PaginatedOrders } from '@/shared/interfaces/order.interface';
-import { formatPrice, rupees } from '@/shared/utils/helper.util';
-import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { NextPageWithLayout } from '../_app';
+import BusinessClientDashboardLayout from "@/features/business-client/layout";
+import Pagination from "@/shared/components/pagination";
+import { PaginatedOrders } from "@/shared/interfaces/order.interface";
+import { formatPrice, rupees } from "@/shared/utils/helper.util";
+import { ORDER_STATUS, PAYMENT_STATUS } from "@prisma/client";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { toast } from "react-toastify";
+import { NextPageWithLayout } from "../_app";
 
 const BusinessClientDashboard: NextPageWithLayout = () => {
   const { data: session } = useSession();
 
-  const [selectedOrderStatus, setSelectedOrderStatus] = useState<ORDER_STATUS | 'all'>('all');
+  const [selectedOrderStatus, setSelectedOrderStatus] = useState<
+    ORDER_STATUS | "all"
+  >("all");
 
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: orderData,
     isError,
     isLoading,
-  } = useQuery<PaginatedOrders>(['getBusinessClientMyOrders', currentPage, selectedOrderStatus], async () => {
-    const response = await axios.get('/api/business-client/my-orders', {
-      params: {
-        user_id: session?.user?.id,
-        page: currentPage,
-        order_status: selectedOrderStatus === 'all' ? '' : selectedOrderStatus,
+  } = useQuery<PaginatedOrders>(
+    ["getBusinessClientMyOrders", currentPage, selectedOrderStatus],
+    async () => {
+      const response = await axios.get("/api/business-client/my-orders", {
+        params: {
+          user_id: session?.user?.id,
+          page: currentPage,
+          order_status:
+            selectedOrderStatus === "all" ? "" : selectedOrderStatus,
+        },
+      });
+      return response.data;
+    }
+  );
+
+  const mutation = useMutation(
+    async (orderId: string) => {
+      const response = await axios.post(`/api/email`, {
+        orderId: orderId,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(data?.message);
       },
-    });
-    return response.data;
-  });
+    }
+  );
+
   return (
     <>
       <section className="mb-8 flex justify-between">
         <select
-          onChange={(e) => setSelectedOrderStatus(e.target.value as ORDER_STATUS)}
+          onChange={(e) =>
+            setSelectedOrderStatus(e.target.value as ORDER_STATUS)
+          }
           name="order-status"
-          className="select select-bordered">
+          className="select select-bordered"
+        >
           <option value="all">All</option>
           {Object.keys(ORDER_STATUS).map((status) => (
             <option value={status} key={status}>
@@ -70,7 +95,7 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
               </tr>
             ) : isLoading ? (
               <tr>
-                <td colSpan={9} className="text-center bg-base-200">
+                <td colSpan={9} className="text-center">
                   <div className="flex justify-center h-72 items-center gap-x-2">
                     <span className="loading-spinner loading"></span> Loading...
                   </div>
@@ -85,15 +110,23 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
             ) : (
               orderData?.orders.map((order) => (
                 <tr key={order.id}>
-                  <td>{order.orderNumber}</td>
+                  <td
+                    onClick={() => {
+                      mutation.mutate(order.id);
+                    }}
+                  >
+                    {order.orderNumber}
+                  </td>
                   <td>{order.user.name}</td>
                   <td>{order.items.length}</td>
                   <td>
-                    {order.status === ORDER_STATUS.Cancelled || order.status === ORDER_STATUS.Returned ? (
+                    {order.status === ORDER_STATUS.Cancelled ||
+                    order.status === ORDER_STATUS.Returned ? (
                       <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-md ring-1 ring-inset ring-green-600/20">
                         {order.status}
                       </span>
-                    ) : order.status === ORDER_STATUS.Pending || order.status === ORDER_STATUS.Processing ? (
+                    ) : order.status === ORDER_STATUS.Pending ||
+                      order.status === ORDER_STATUS.Processing ? (
                       <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-amber-700 bg-amber-100 rounded-md ring-1 ring-inset ring-green-600/20">
                         {order.status}
                       </span>
@@ -136,7 +169,10 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
         </table>
         <div className="flex justify-end mt-4 place-self-end">
           {orderData?.totalPages !== undefined && (
-            <Pagination {...{ currentPage, setCurrentPage }} totalPages={orderData.totalPages}></Pagination>
+            <Pagination
+              {...{ currentPage, setCurrentPage }}
+              totalPages={orderData.totalPages}
+            ></Pagination>
           )}
         </div>
       </div>
@@ -146,4 +182,6 @@ const BusinessClientDashboard: NextPageWithLayout = () => {
 
 export default BusinessClientDashboard;
 
-BusinessClientDashboard.getLayout = (page) => <BusinessClientDashboardLayout>{page}</BusinessClientDashboardLayout>;
+BusinessClientDashboard.getLayout = (page) => (
+  <BusinessClientDashboardLayout>{page}</BusinessClientDashboardLayout>
+);
