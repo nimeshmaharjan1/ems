@@ -1,23 +1,38 @@
-import { Order } from '@/shared/interfaces/order.interface';
-import { ORDER_STATUS, PAYMENT_STATUS } from '@prisma/client';
-import { Dispatch, SetStateAction, forwardRef, useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { changeOrderStatus } from '../../services/orders';
-import { Toast, showToast } from '@/shared/utils/toast.util';
+import { Order } from "@/shared/interfaces/order.interface";
+import { Toast, showToast } from "@/shared/utils/toast.util";
+import { ORDER_STATUS, PAYMENT_STATUS } from "@prisma/client";
+import axios from "axios";
+import {
+  Dispatch,
+  SetStateAction,
+  forwardRef,
+  useEffect,
+  useState,
+} from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { changeOrderStatus } from "../../services/orders";
 
 type EditOrderStatusModalProps = {
   order: Order;
   setSelectedOrder: Dispatch<SetStateAction<Order | undefined>>;
 };
 
-const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalProps>(({ order, setSelectedOrder }, ref) => {
+const EditOrderStatusModal = forwardRef<
+  HTMLDialogElement,
+  EditOrderStatusModalProps
+>(({ order, setSelectedOrder }, ref) => {
   const [status, setStatus] = useState<undefined | ORDER_STATUS>(undefined);
-  const [paymentStatus, setPaymentStatus] = useState<undefined | PAYMENT_STATUS>(undefined);
+  const [paymentStatus, setPaymentStatus] = useState<
+    undefined | PAYMENT_STATUS
+  >(undefined);
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation(changeOrderStatus, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await axios.post("/api/email", {
+        orderId: data?.order.id,
+      });
       showToast(Toast.success, data.message);
-      queryClient.invalidateQueries(['fetchOrders']);
+      queryClient.invalidateQueries(["fetchOrders"]);
       (ref as any).current?.close();
     },
     onError: (error: any) => {
@@ -36,7 +51,9 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
   return (
     <dialog ref={ref} className="modal">
       <form method="dialog" className="modal-box">
-        <h3 className="text-lg font-medium">Change Status [#{order.orderNumber}]</h3>
+        <h3 className="text-lg font-medium">
+          Change Status [#{order.orderNumber}]
+        </h3>
         <p className="py-4">
           Current Status: {order.status} & {order.paymentStatus}
         </p>
@@ -48,7 +65,8 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
             value={status}
             disabled={isLoading}
             onChange={(e) => setStatus(e.target.value as ORDER_STATUS)}
-            className="w-full select select-bordered">
+            className="w-full select select-bordered"
+          >
             {Object.entries(ORDER_STATUS).map(([key, value]) => (
               <option key={key} value={value}>
                 {value}
@@ -64,7 +82,8 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
             disabled={isLoading}
             value={paymentStatus}
             onChange={(e) => setPaymentStatus(e.target.value as PAYMENT_STATUS)}
-            className="w-full select select-bordered">
+            className="w-full select select-bordered"
+          >
             {Object.entries(PAYMENT_STATUS).map(([key, value]) => (
               <option key={key} value={value}>
                 {value}
@@ -81,7 +100,8 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
               resetValues();
               (ref as any).current?.close();
             }}
-            className="btn">
+            className="btn"
+          >
             Close
           </button>
           <button
@@ -92,7 +112,8 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
               }
             }}
             disabled={isLoading}
-            className="btn btn-primary">
+            className="btn btn-primary"
+          >
             {isLoading && <span className="loading loading-spinner"></span>}
             Save
           </button>
@@ -104,4 +125,4 @@ const EditOrderStatusModal = forwardRef<HTMLDialogElement, EditOrderStatusModalP
 
 export default EditOrderStatusModal;
 
-EditOrderStatusModal.displayName = 'Profile Modal';
+EditOrderStatusModal.displayName = "Profile Modal";

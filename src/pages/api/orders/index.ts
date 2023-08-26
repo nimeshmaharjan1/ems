@@ -72,74 +72,67 @@ export default async function handler(
 
       const vat = totalPrice + deliveryCharge + 0.13;
 
-      await prisma.$connect();
       //TODO Create order needs to have customer details and stuff
-      await prisma.$transaction(async (prisma) => {
-        const order: Order & { items: OrderItem[] } = await prisma.order.create(
-          {
-            data: {
-              items: {
-                create: items.map((item) => ({
-                  quantity: item.quantity,
-                  productId: item.productId,
-                  price: item.price,
-                })),
-              },
-              userId,
-              customerAddress,
-              deliveryCharge,
-              totalPrice:
-                session?.user?.role === USER_ROLES.BUSINESS_CLIENT
-                  ? Math.round(totalPrice)
-                  : Math.round(totalPrice + deliveryCharge),
-              additionalPhoneNumber,
-              selectedWholesaleOption,
-              paymentMethod,
-              amountLeftToPay:
-                session?.user?.role === USER_ROLES.BUSINESS_CLIENT
-                  ? Math.round(totalPrice)
-                  : Math.round(totalPrice + deliveryCharge),
-              partiallyPaidAmount: 0,
-            },
-            include: {
-              items: true,
-            },
-          }
-        );
+      const order: Order & { items: OrderItem[] } = await prisma.order.create({
+        data: {
+          items: {
+            create: items.map((item) => ({
+              quantity: item.quantity,
+              productId: item.productId,
+              price: item.price,
+            })),
+          },
+          userId,
+          customerAddress,
+          deliveryCharge,
+          totalPrice:
+            session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+              ? Math.round(totalPrice)
+              : Math.round(totalPrice + deliveryCharge),
+          additionalPhoneNumber,
+          selectedWholesaleOption,
+          paymentMethod,
+          amountLeftToPay:
+            session?.user?.role === USER_ROLES.BUSINESS_CLIENT
+              ? Math.round(totalPrice)
+              : Math.round(totalPrice + deliveryCharge),
+          partiallyPaidAmount: 0,
+        },
+        include: {
+          items: true,
+        },
+      });
 
-        // Update product quantities
-        for (const item of items) {
-          const product = await prisma.product.findUnique({
-            where: { id: item.productId },
-          });
+      // Update product quantities
+      for (const item of items) {
+        const product = await prisma.product.findUnique({
+          where: { id: item.productId },
+        });
 
-          if (!product) {
-            throw new Error(
-              `Product with ID ${item.productId} does not exist.`
-            );
-          }
-
-          if (Number(product.quantity) < item.quantity) {
-            throw new Error(
-              `Insufficient quantity for product with ID ${item.productId}.`
-            );
-          }
-
-          const updatedQuantity = Number(product.quantity) - item.quantity;
-
-          await prisma.product.update({
-            where: { id: item.productId },
-            data: { quantity: updatedQuantity.toString() },
-          });
+        if (!product) {
+          throw new Error(`Product with ID ${item.productId} does not exist.`);
         }
 
-        const response: CreateOrderResponse = {
-          message: "Your order has been placed.",
-          order,
-        };
+        if (Number(product.quantity) < item.quantity) {
+          throw new Error(
+            `Insufficient quantity for product with ID ${item.productId}.`
+          );
+        }
 
-        return res.status(200).json(response);
-      });
+        const updatedQuantity = Number(product.quantity) - item.quantity;
+
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: { quantity: updatedQuantity.toString() },
+        });
+      }
+
+      const response: CreateOrderResponse = {
+        message: "Your order has been placed.",
+        order,
+      };
+
+      return res.status(200).json(response);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error, message: "Something went wrong" });

@@ -89,14 +89,6 @@ const Orders: NextPageWithLayout = () => {
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const sendEmail = async () => {
-    const res = await axios.post("/api/email", {
-      name: "Nimesh",
-      email: "maharjannimesh11@gmail.com",
-    });
-    console.log({ res });
-  };
-
   if (!isMounted) return null;
   return (
     <>
@@ -108,9 +100,9 @@ const Orders: NextPageWithLayout = () => {
         <>
           <section className="flex justify-between mb-5">
             <h2 className="text-2xl font-semibold">Orders</h2>
-            <button className="btn btn-primary btn-sm" onClick={sendEmail}>
+            {/* <button className="btn btn-primary btn-sm" onClick={sendEmail}>
               Create Order
-            </button>
+            </button> */}
           </section>
           <section className="flex gap-3 mb-5">
             <button
