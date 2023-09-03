@@ -6,6 +6,11 @@ module.exports = {
     container: {
       center: true,
     },
+    extend: {
+      screens: {
+        '2xl': '1400px', // Change the screen size name and width here
+      },
+    },
   },
   daisyui: {
     themes: [
