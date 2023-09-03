@@ -145,7 +145,7 @@ const Login: NextPageWithLayout = () => {
         <button
           type="button"
           className="gap-2 btn btn-md btn-outline"
-          disabled={isSubmitting}
+          disabled={true || isSubmitting}
           onClick={() => handleLoginWithProviders('facebook')}>
           <FaFacebook className="text-lg" />
           Facebook

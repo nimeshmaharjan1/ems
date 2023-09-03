@@ -174,8 +174,8 @@ const MainSharedLayout: React.FC<{
                   </>
                 )}
 
-                {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 <div className="ml-0">
                   <ThemeToggler></ThemeToggler>
                 </div>
