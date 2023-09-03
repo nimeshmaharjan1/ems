@@ -74,7 +74,7 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Full Name"
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.name,
           })}
         />
@@ -93,7 +93,7 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="Username"
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
@@ -115,7 +115,7 @@ const Register: NextPageWithLayout = () => {
           disabled={isSubmitting}
           placeholder="E-mail"
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.email,
           })}
         />
@@ -134,7 +134,7 @@ const Register: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
@@ -165,7 +165,7 @@ const Register: NextPageWithLayout = () => {
           placeholder="Phone Number"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.phone_number,
           })}
         />
@@ -205,7 +205,7 @@ const Register: NextPageWithLayout = () => {
               disabled={isSubmitting}
               placeholder="Tax ID"
               autoComplete="off"
-              className={classNames('input input-sm lg:input-md input-bordered w-full', {
+              className={classNames('input input-md input-bordered w-full', {
                 'input-error': errors?.taxId,
               })}
             />
@@ -228,7 +228,7 @@ const Register: NextPageWithLayout = () => {
               disabled={isSubmitting}
               placeholder="Shop Address"
               autoComplete="off"
-              className={classNames('input input-sm lg:input-md input-bordered w-full', {
+              className={classNames('input input-md input-bordered w-full', {
                 'input-error': errors?.shopAddress,
               })}
             />
@@ -249,12 +249,19 @@ const Register: NextPageWithLayout = () => {
         Sign Up
       </button>
 
-      <p className="text-sm text-center">
-        Already have an account?{' '}
-        <span className="duration-300 cursor-pointer text-secondary hover:text-primary hover:underline" onClick={() => signIn()}>
-          Sign In now
-        </span>
-      </p>
+      <div className="flex flex-col-reverse lg:flex-row items-start gap-y-4 lg:gap-y-0 lg:items-center justify-between px-2">
+        <p className="text-sm">
+          <span className="link" onClick={() => router.back()}>
+            Go Back
+          </span>
+        </p>
+        <p className="text-sm text-right">
+          Already have an account?{' '}
+          <span className="duration-300 cursor-pointer text-secondary hover:text-primary hover:underline" onClick={() => signIn()}>
+            Sign In now
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

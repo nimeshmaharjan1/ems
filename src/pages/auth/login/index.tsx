@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AiOutlineGoogle } from 'react-icons/ai';
-import { FaGithub, FaUser } from 'react-icons/fa';
+import { FaFacebook, FaGithub, FaUser } from 'react-icons/fa';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import styles from './login.module.scss';
 import { getCookie, setCookie } from 'cookies-next';
@@ -82,7 +82,7 @@ const Login: NextPageWithLayout = () => {
           placeholder="Username or E-mail"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.username,
           })}
         />
@@ -101,7 +101,7 @@ const Login: NextPageWithLayout = () => {
           placeholder="Password"
           disabled={isSubmitting}
           autoComplete="off"
-          className={classNames('input input-sm lg:input-md input-bordered w-full', {
+          className={classNames('input input-md input-bordered w-full', {
             'input-error': errors?.password,
           })}
         />
@@ -124,12 +124,19 @@ const Login: NextPageWithLayout = () => {
         {isSubmitting && <span className="loading loading-spinner"></span>}
         Sign In
       </button>
-      <p className="text-[13px] font-light opacity-70 hover:opacity-100 cursor-pointer mt-2">Forgot password?</p>
+
+      <div className="flex justify-between items-center">
+        <button onClick={() => router.back()} className="btn btn-xs btn-link link">
+          Go Back
+        </button>
+
+        {/* <button className="btn btn-xs btn-link">Go Back</button> */}
+      </div>
       <p className={`text-center my-3 ${styles['or-sign-in']} text-xs md:text-md`}>Or Sign in with</p>
       <div className="card-actions justify-center !gap-3">
         <button
           type="button"
-          className="gap-2 btn btn-sm lg:btn-md btn-outline"
+          className="gap-2 btn btn-md btn-outline"
           disabled={isSubmitting}
           onClick={() => handleLoginWithProviders('google')}>
           <AiOutlineGoogle className="text-lg" />
@@ -137,11 +144,11 @@ const Login: NextPageWithLayout = () => {
         </button>
         <button
           type="button"
-          className="gap-2 btn btn-sm lg:btn-md btn-outline"
+          className="gap-2 btn btn-md btn-outline"
           disabled={isSubmitting}
-          onClick={() => handleLoginWithProviders('github')}>
-          <FaGithub className="text-lg" />
-          Github
+          onClick={() => handleLoginWithProviders('facebook')}>
+          <FaFacebook className="text-lg" />
+          Facebook
         </button>
         {/* <button className="gap-2 btn btn-outline" disabled={isSubmitting}>
           <BsFacebook className="text-lg" />

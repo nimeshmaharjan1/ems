@@ -77,7 +77,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <header className="mb-8 flex justify-between items-center gap-x-24">
+      <header className="mb-8 flex flex-col md:flex-row items-start gap-y-9 justify-between md:items-center gap-x-24">
         <h1 className="relative pb-1 text-2xl font-bold uppercase">
           Products
           <span

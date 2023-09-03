@@ -27,7 +27,7 @@ const AuthLayout: React.FC<{ children: ReactNode; title: string }> = ({ children
       </Head>
       <div className={`${inter.className} py-8 min-h-screen flex items-center justify-center bg-base-300`}>
         <button
-          className="absolute z-20 top-6 right-14"
+          className="absolute z-20 top-28 right-20 md:top-6 md:right-12"
           onClick={() => {
             theme === 'dark' ? setTheme('winter') : setTheme('dark');
           }}>
