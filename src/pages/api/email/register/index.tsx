@@ -1,6 +1,7 @@
 import { OrderEmail } from '@/features/email/order';
+import { WelcomeEmail } from '@/features/email/register';
 import { transporter } from '@/shared/utils/email-transporter.util';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { render } from '@react-email/render';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -9,33 +10,20 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      const { name, email, orderId } = req.body;
-      const order = await prisma.order.findUnique({
-        where: {
-          id: orderId,
-        },
-        include: {
-          items: {
-            include: {
-              product: true,
-            },
-          },
-          user: true,
-        },
-      });
+      const { user } = req.body as {
+        user: User;
+      };
 
-      if (!order) {
-        return res.status(404).json({
-          message: 'Order not found.',
-        });
-      }
-
-      const emailHtml = render(OrderEmail(order));
+      const emailHtml = render(
+        WelcomeEmail({
+          userFirstname: user.name,
+        })
+      );
 
       const mailOptions = {
         from: process.env.GMAIL_USER,
-        to: order.user.email as string,
-        subject: 'Eeshan Mahadev Enterprises💐 | Order',
+        to: user.email as string,
+        subject: 'Welcome to Eeshan Mahadev Enterprises💐',
         html: emailHtml,
       };
       transporter.sendMail(mailOptions, (error, info) => {
@@ -43,8 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error(error);
           return res.status(400).json({ message: 'Error: Could not send email' });
         }
-
-        console.log('Email sent: ' + info.response);
+        console.log('here: ', info.response);
         return res.status(200).json({ message: 'Email has been sent.' });
       });
     } catch (error) {

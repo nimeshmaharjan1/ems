@@ -10,8 +10,8 @@ import { IRegister } from '@/features/auth/interfaces';
 import classNames from 'classnames';
 import ErrorMessage from '@/shared/components/error-message';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import axios, { AxiosError } from 'axios';
-import { USER_ROLES } from '@prisma/client';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { USER_ROLES, User } from '@prisma/client';
 import { RxLetterCaseCapitalize } from 'react-icons/rx';
 import { emailPattern, phonePattern } from '@/shared/utils/pattern.util';
 import { signIn, useSession } from 'next-auth/react';
@@ -47,18 +47,31 @@ const Register: NextPageWithLayout = () => {
 
   const signUp: SubmitHandler<IRegister> = async (values) => {
     setIsSubmitting(true);
-    try {
-      await axios.post('/api/auth/register', values);
-      showToast(Toast.success, 'User has been successfully created.');
-      signIn();
-    } catch (error: any) {
-      console.error(error);
-      setIsSubmitting(false);
-      if (error?.response?.data?.message) {
-        return showToast(Toast.error, error.response.data.message);
-      }
-      showToast(Toast.error, 'Something went wrong while trying to create the user.');
-    }
+    // const response: AxiosResponse<{ user: User; message: string }> =
+
+    axios
+      .post('/api/auth/register', values)
+      .then((response: AxiosResponse<{ user: User; message: string }>) => {
+        console.log('response here: ', response.data.user);
+
+        axios
+          .post('/api/email/register', {
+            user: response.data.user,
+          })
+          .then(() => {
+            showToast(Toast.success, 'Your account has been registered please login.');
+            signIn();
+          })
+          .catch((error) => console.log('email error: ', error));
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsSubmitting(false);
+        if (error?.response?.data?.message) {
+          return showToast(Toast.error, error.response.data.message);
+        }
+        showToast(Toast.error, 'Something went wrong while trying to create the user.');
+      });
   };
 
   return (
