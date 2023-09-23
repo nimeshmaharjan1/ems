@@ -14,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     try {
       const { page = 1, customer_type = 'b2b', user_id } = req.query;
-      const limit = parseInt(req.query.limit as string) || 6;
-      const totalRecords = ((await prisma.product.count()) as number) ?? 0;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const totalRecords = ((await prisma.order.count()) as number) ?? 0;
       const totalPages = Math.ceil(totalRecords / (limit as number));
       let ordersQuery = {
         orderBy: { createdAt: 'desc' }, // newest orders first
@@ -27,6 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               name: true,
               phone_number: true,
               email: true,
+              role: true,
             },
           },
           items: {
@@ -48,16 +49,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
 
-      if (customer_type) {
-        ordersQuery = {
-          ...ordersQuery,
-          where: {
-            user: {
-              role: customer_type === 'b2b' ? USER_ROLES.BUSINESS_CLIENT : USER_ROLES.USER || USER_ROLES.SUPER_ADMIN || USER_ROLES.STAFF,
-            },
-          },
-        };
-      }
+      // if (customer_type) {
+      //   ordersQuery = {
+      //     ...ordersQuery,
+      //     where: {
+      //       user: {
+      //         role: customer_type === 'b2b' ? USER_ROLES.BUSINESS_CLIENT : USER_ROLES.USER || USER_ROLES.SUPER_ADMIN || USER_ROLES.STAFF,
+      //       },
+      //     },
+      //   };
+      // }
 
       const orders = await prisma.order.findMany(ordersQuery);
       res.status(200).json({ orders, limit: limit as number, page: Number(page), totalPages, totalRecords });

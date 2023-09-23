@@ -1,4 +1,4 @@
-import { ORDER_STATUS, PAYMENT_METHOD, PAYMENT_STATUS } from '@prisma/client';
+import { ORDER_STATUS, PAYMENT_METHOD, PAYMENT_STATUS, USER_ROLES } from '@prisma/client';
 
 export interface PaginatedOrders {
   orders: Order[];
@@ -64,4 +64,5 @@ export interface User {
   name: string;
   phone_number: string;
   email: string;
+  role: USER_ROLES;
 }
