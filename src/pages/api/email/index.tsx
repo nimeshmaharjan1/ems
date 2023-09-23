@@ -24,8 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
-      console.log(order);
-
       if (!order) {
         return res.status(404).json({
           message: 'Order not found.',

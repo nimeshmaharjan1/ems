@@ -11,7 +11,6 @@ const NProgressProvider = () => {
     <NextNProgress
       options={{ showSpinner: false }}
       color={theme === 'winter' ? daisyuiColors['[data-theme=winter]'].primary : daisyuiColors['[data-theme=dark]'].primary}
-      showOnShallow
       height={4}
     />
   );
