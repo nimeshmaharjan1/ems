@@ -27,7 +27,7 @@ const OrderSummary = ({
   const { data: session } = useSession();
   const { cartItems, getTotalCrossedPrice, getTotalPrice, getTotalWholesaleCashPrice, getTotalWholesaleCreditPrice } = useCartStore();
   return (
-    <div className="card shadow-lg min-h-[244px] mt-2 bg-base-200">
+    <div className="card mb-4 shadow-lg min-h-[244px] bg-base-200">
       <div className="card-body">
         <div className="card-title">Order Summary</div>
         {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
@@ -112,10 +112,10 @@ const OrderSummary = ({
           </>
         )}
 
-        <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>
+        {/* <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>
           {isLoading && <span className="loading loading-infinity"></span>}
           Place Order
-        </button>
+        </button> */}
       </div>
     </div>
   );

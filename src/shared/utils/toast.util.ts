@@ -7,10 +7,10 @@ export enum Toast {
   warning,
 }
 
-export const showToast = (type: Toast, message: string) => {
+export const showToast = (type: Toast, message: string, autoClose?: number) => {
   const defaultValues = {
     position: 'top-right',
-    autoClose: 5000,
+    autoClose: autoClose ?? 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,

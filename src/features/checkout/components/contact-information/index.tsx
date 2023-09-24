@@ -10,10 +10,12 @@ import { motion } from 'framer-motion';
 const ContactInformation: React.FC<{
   checkoutDetails: ICheckoutDetails;
   setCheckoutDetails: Dispatch<SetStateAction<ICheckoutDetails>>;
-}> = ({ checkoutDetails, setCheckoutDetails }) => {
+  handleCreateOrder: () => void;
+  isLoading: boolean;
+}> = ({ checkoutDetails, setCheckoutDetails, handleCreateOrder, isLoading }) => {
   const { data: session } = useSession();
   return (
-    <div className="mb-4 shadow-lg card bg-base-200">
+    <div className="shadow-lg card bg-base-200">
       <div className="card-body">
         <div className="card-title">Contact Information</div>
         <FormControl label="Full Name">
@@ -138,6 +140,10 @@ const ContactInformation: React.FC<{
             </div>
           </motion.div>
         </section>
+        <button className="mt-4 btn btn-primary btn-block" onClick={handleCreateOrder} disabled={isLoading}>
+          {isLoading && <span className="loading loading-infinity"></span>}
+          Place Order
+        </button>
       </div>
     </div>
   );
