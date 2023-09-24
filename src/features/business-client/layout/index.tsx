@@ -1,4 +1,4 @@
-import { Inter } from '@next/font/google';
+import { Inter, Public_Sans } from '@next/font/google';
 import { USER_ROLES } from '@prisma/client';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import BusinessClientLayoutHeader from './header';
 import BusinessLgAside from './lg-aside';
-const inter = Inter({ subsets: ['latin'] });
+const inter = Public_Sans({ subsets: ['latin'] });
 const customId = 'custom-id-yes';
 const BusinessClientDashboardLayout: React.FC<{
   children: React.ReactNode;
