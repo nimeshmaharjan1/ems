@@ -2,7 +2,7 @@ import { useTheme } from 'next-themes';
 import React, { ReactNode } from 'react';
 import { BsFillMoonFill, BsSun } from 'react-icons/bs';
 import Head from 'next/head';
-import { Inter, Work_Sans } from '@next/font/google';
+import { Inter, Work_Sans, Public_Sans } from '@next/font/google';
 
 // const inter = Work_Sans({
 //   preload: false,
@@ -11,7 +11,7 @@ import { Inter, Work_Sans } from '@next/font/google';
 //   weight: ['200', '300', '400', '500', '600', '700'],
 // });
 
-const inter = Inter({
+const inter = Public_Sans({
   preload: false,
   fallback: ['system-ui'],
   subsets: ['latin'],

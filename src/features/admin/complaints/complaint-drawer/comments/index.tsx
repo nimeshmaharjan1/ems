@@ -54,7 +54,7 @@ const ComplaintComments: React.FC<{
     isLoading: isCommentsLoading,
     isError: isCommentsError,
   } = useQuery<ICommentsData, Error>(['fetchComplaintComments', currentPage, limit, complaint.id], async () => {
-    const response = await axios.get(`/api/admin/complaints/comments/`, {
+    const response = await axios.get(`/api/admin/complaints/comments`, {
       params: {
         complaintId: complaint.id,
         page: currentPage,

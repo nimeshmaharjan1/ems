@@ -1,4 +1,4 @@
-import { Inter } from '@next/font/google';
+import { Inter, Public_Sans } from '@next/font/google';
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
@@ -25,7 +25,7 @@ import { LogOut } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { BsBoxSeam, BsMailbox2 } from 'react-icons/bs';
 
-const inter = Inter({
+const inter = Public_Sans({
   preload: false,
   fallback: ['system-ui'],
   subsets: ['latin'],
