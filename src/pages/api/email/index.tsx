@@ -33,11 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const emailHtml = render(OrderEmail(order));
 
       const mailOptions = {
-        from: process.env.GMAIL_USER,
-        to: order.user.email as string,
+        from: 'Fred Foo 👥 <foo@blurdybloop.com>',
+        // to: order.user.email as string,
+        to: 'hello@mailinator.com',
         subject: 'Eeshan Mahadev Enterprises💐 | Order',
         html: emailHtml,
       };
+      console.log(mailOptions);
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.error(error);

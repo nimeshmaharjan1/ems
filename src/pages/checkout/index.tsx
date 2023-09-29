@@ -115,10 +115,12 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
         showToast(Toast.success, 'Your order has been placed.');
         router.push('/products');
       }
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false);
-      showToast(Toast.error, 'Something went wrong while trying to create the order.');
       console.error(error);
+      if (error?.response?.data?.message) {
+        return showToast(Toast.error, error?.response?.data?.message, 30000);
+      } else showToast(Toast.error, 'Something went wrong while trying to create the order.');
     }
   };
   const router = useRouter();
@@ -260,7 +262,6 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
           </div>
         </motion.section>
         <motion.section layout className={`${cartItems.length === 0 ? 'opacity-0' : 'col-span-6 lg:col-span-2 opacity-100'}`}>
-          <ContactInformation {...{ checkoutDetails, setCheckoutDetails }}></ContactInformation>
           <OrderSummary
             deliveryCharge={settings?.deliveryCharge!}
             {...{
@@ -271,6 +272,7 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
               checkoutDetails,
               setCheckoutDetails,
             }}></OrderSummary>
+          <ContactInformation {...{ checkoutDetails, setCheckoutDetails, isLoading, handleCreateOrder }}></ContactInformation>
         </motion.section>
       </div>
     </>

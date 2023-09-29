@@ -1,11 +1,11 @@
-import { formatPrice } from "@/shared/utils/helper.util";
-import { useShopByStore } from "@/store/use-shop-by";
-import { useCartStore } from "@/store/user-cart";
-import { SELECTED_WHOLESALE_OPTION, USER_ROLES } from "@prisma/client";
-import { ShoppingCart, Trash2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { useRouter } from "next/router";
+import { formatPrice } from '@/shared/utils/helper.util';
+import { useShopByStore } from '@/store/use-shop-by';
+import { useCartStore } from '@/store/user-cart';
+import { SELECTED_WHOLESALE_OPTION, USER_ROLES } from '@prisma/client';
+import { ShoppingCart, Trash2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const Cart = () => {
   const {
@@ -27,93 +27,60 @@ const Cart = () => {
   };
   return (
     <div className=" dropdown dropdown-hover dropdown-end mr-3 md:mr-0">
-      <label
-        tabIndex={0}
-        className="relative transition-all cursor-pointer hover:text-amber-500"
-      >
+      <label tabIndex={0} className="relative transition-all cursor-pointer hover:text-amber-500">
         <ShoppingCart className="w-5 h-5" />
         <div className="badge badge-primary rounded-full p-2 badge-xs absolute -top-2 -right-2.5">
-          <span className="text-[8px]">
-            {cartItems.length > 9 ? "9+" : cartItems.length}
-          </span>
+          <span className="text-[8px]">{cartItems.length > 9 ? '9+' : cartItems.length}</span>
         </div>
       </label>
-      <div
-        tabIndex={0}
-        className="dropdown-content w-64 md:w-[30rem] z-20 card mt-2 shadow-2xl bg-base-100 "
-      >
+      <div tabIndex={0} className="dropdown-content w-64 md:w-[30rem] z-20 card mt-2 shadow-2xl bg-base-100 ">
         <div className="card-body ">
           <h3 className="card-title">Your Cart</h3>
           {cartItems.length === 0 && (
             <>
               <div className="flex items-center justify-center mt-2">
-                <Image
-                  src={"/images/empty-cart.png"}
-                  alt="empty cart"
-                  width={100}
-                  height={100}
-                ></Image>
+                <Image src={'/images/empty-cart.png'} alt="empty cart" width={100} height={100}></Image>
               </div>
-              <p className="pr-5 mt-3 text-lg font-bold text-center">
-                Your cart is empty.
-              </p>
-              <p className="text-lg text-center">
-                Looks like you have not added anything to your cart.
-              </p>
+              <p className="pr-5 mt-3 text-lg font-bold text-center">Your cart is empty.</p>
+              <p className="text-lg text-center">Looks like you have not added anything to your cart.</p>
             </>
           )}
           {cartItems.length > 0 && (
             <>
               <ul className="block space-y-1 divide-y divide-gray-700 md:hidden">
                 {cartItems.map((item) => (
-                  <li
-                    key={item.productId}
-                    className="flex items-center gap-4 py-3"
-                  >
+                  <li key={item.productId} className="flex items-center gap-4 py-3">
                     <div className="relative object-cover w-20 h-16 rounded">
                       <Image src={item.image} alt={item.slug} fill />
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-medium">
-                        {item.slug.length > 30
-                          ? `${item.slug.slice(0, 30)}...`
-                          : item.slug}
-                      </h3>
+                      <h3 className="text-sm font-medium">{item.slug.length > 30 ? `${item.slug.slice(0, 30)}...` : item.slug}</h3>
                       <div className="flex justify-between mt-1.5">
                         <dl className="text-[13px] "> x{item.quantity}</dl>
                         <button
                           type="button"
                           onClick={() => handleRemoveFromCart(item.productId)}
-                          className="transition-all hover:text-error"
-                        >
-                          <Trash2 strokeWidth={"1px"} size={16}></Trash2>
+                          className="transition-all hover:text-error">
+                          <Trash2 strokeWidth={'1px'} size={16}></Trash2>
                         </button>
                       </div>
                       {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
                         <dl className="mt-1.5  text-[13px] font-medium ">
-                          रू{" "}
+                          रू{' '}
                           {formatPrice(
-                            wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH
-                              ? item.wholesaleCashPrice!
-                              : item.wholesaleCreditPrice!
+                            wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? item.wholesaleCashPrice! : item.wholesaleCreditPrice!
                           )}
                         </dl>
                       ) : (
                         <>
                           {item.hasOffer ? (
                             <>
-                              <dl className="mt-1.5 line-through text-[11px] ">
-                                रू {formatPrice(item.crossedPrice!)}
-                              </dl>
-                              <dl className="mt-1.5 text-[13px] font-medium ">
-                                रू {formatPrice(item.sellingPrice!)}
-                              </dl>
+                              <dl className="mt-1.5 line-through text-[11px] ">रू {formatPrice(item.crossedPrice!)}</dl>
+                              <dl className="mt-1.5 text-[13px] font-medium ">रू {formatPrice(item.sellingPrice!)}</dl>
                             </>
                           ) : (
-                            <dl className="mt-1.5  text-[13px] font-medium ">
-                              रू {formatPrice(item.sellingPrice)}
-                            </dl>
+                            <dl className="mt-1.5  text-[13px] font-medium ">रू {formatPrice(item.sellingPrice)}</dl>
                           )}
                         </>
                       )}
@@ -123,41 +90,27 @@ const Cart = () => {
               </ul>
               <ul className="flex-col hidden divide-y divide-gray-700 md:flex">
                 {cartItems.map((cartItem) => (
-                  <li
-                    key={cartItem.productId}
-                    className="flex flex-col py-2 md:py-4 lg:py-6 sm:flex-row sm:justify-between"
-                  >
+                  <li key={cartItem.productId} className="flex flex-col py-2 md:py-4 lg:py-6 sm:flex-row sm:justify-between">
                     <div className="flex w-full sm:space-x-4">
                       <div className="relative flex-shrink-0 hidden w-20 h-20 rounded outline-none md:block dark:border-transparent sm:w-32 sm:h-[7rem] dark:bg-gray-500 aspect-video">
-                        <Image
-                          src={cartItem.image}
-                          alt={cartItem.slug}
-                          fill
-                        ></Image>
+                        <Image src={cartItem.image} alt={cartItem.slug} fill></Image>
                       </div>
                       <div className="flex flex-col justify-between w-full pb-4">
                         <div className="flex flex-col w-full pb-2 gap-y-3 md:gap-y-0 md:flex-row md:justify-between md:space-x-2">
                           <div className="space-y-1">
                             <h3 className="text-sm font-medium leading-snug md:text-[1rem] sm:pr-8">
-                              {cartItem.slug.length > 60
-                                ? `${cartItem.slug.slice(0, 60)}...`
-                                : cartItem.slug}
-                              <span className="text-primary font-[600]">
-                                {" "}
-                                x {cartItem.quantity}
-                              </span>
+                              {cartItem.slug.length > 60 ? `${cartItem.slug.slice(0, 60)}...` : cartItem.slug}
+                              <span className="text-primary font-[600]"> x {cartItem.quantity}</span>
                             </h3>
                             {/* <p className="text-sm dark:text-gray-400">Classic</p> */}
                           </div>
                           {/* //TODO cart wholesaele */}
                           <div className="md:text-right">
-                            {session?.user?.role ===
-                            USER_ROLES.BUSINESS_CLIENT ? (
+                            {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
                               <p className="text-sm font-medium md:text-[1rem]">
                                 रू
                                 {formatPrice(
-                                  wholesaleOption ===
-                                    SELECTED_WHOLESALE_OPTION.CASH
+                                  wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH
                                     ? cartItem.wholesaleCashPrice!
                                     : cartItem.wholesaleCreditPrice!
                                 )}
@@ -167,30 +120,18 @@ const Cart = () => {
                                 <p className="text-sm line-through font-medium text-gray-400 md:text-[0.8rem]">
                                   रू{formatPrice(cartItem.crossedPrice!)}
                                 </p>
-                                <p className="text-sm font-medium mt-1 md:text-[1rem]">
-                                  रू{formatPrice(cartItem.sellingPrice!)}
-                                </p>
+                                <p className="text-sm font-medium mt-1 md:text-[1rem]">रू{formatPrice(cartItem.sellingPrice!)}</p>
                               </>
                             ) : (
-                              <p className="text-sm font-medium md:text-[1rem]">
-                                रू{formatPrice(cartItem.sellingPrice)}
-                              </p>
+                              <p className="text-sm font-medium md:text-[1rem]">रू{formatPrice(cartItem.sellingPrice)}</p>
                             )}
                             {/* <p className="text-sm line-through dark:text-gray-600">75.50€</p> */}
                           </div>
                         </div>
                         <section className="flex justify-between w-full">
-                          <div
-                            className="flex text-sm divide-x"
-                            onClick={() =>
-                              handleRemoveFromCart(cartItem.productId)
-                            }
-                          >
-                            <button
-                              type="button"
-                              className="transition-all hover:text-error"
-                            >
-                              <Trash2 strokeWidth={"1px"}></Trash2>
+                          <div className="flex text-sm divide-x" onClick={() => handleRemoveFromCart(cartItem.productId)}>
+                            <button type="button" className="transition-all hover:text-error">
+                              <Trash2 strokeWidth={'1px'}></Trash2>
                             </button>
                           </div>
                           {/* <button type="button" className="flex items-center px-2 py-1 space-x-1">
@@ -240,37 +181,27 @@ const Cart = () => {
               <div className="hidden space-y-1 text-right md:block">
                 {session?.user?.role === USER_ROLES.BUSINESS_CLIENT ? (
                   <p>
-                    Total amount:{" "}
+                    Total amount:{' '}
                     <span className="font-semibold">
                       रू
                       {formatPrice(
-                        wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH
-                          ? getTotalWholesaleCashPrice()
-                          : getTotalWholesaleCreditPrice()
+                        wholesaleOption === SELECTED_WHOLESALE_OPTION.CASH ? getTotalWholesaleCashPrice() : getTotalWholesaleCreditPrice()
                       )}
                     </span>
                   </p>
                 ) : cartItems.find((item) => item.hasOffer) ? (
                   <>
                     <p>
-                      <span className="text-sm font-medium text-gray-400 line-through">
-                        रू{formatPrice(getTotalCrossedPrice())}
-                      </span>
+                      <span className="text-sm font-medium text-gray-400 line-through">रू{formatPrice(getTotalCrossedPrice())}</span>
                     </p>
 
                     <p>
-                      Total amount:{" "}
-                      <span className="font-semibold">
-                        रू{formatPrice(getTotalPrice())}
-                      </span>
+                      Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                     </p>
                   </>
                 ) : (
                   <p>
-                    Total amount:{" "}
-                    <span className="font-semibold">
-                      रू{formatPrice(getTotalPrice())}
-                    </span>
+                    Total amount: <span className="font-semibold">रू{formatPrice(getTotalPrice())}</span>
                   </p>
                 )}
                 {/* <p className="text-sm dark:text-gray-400">Not including taxes and delivery charges.</p> */}
@@ -283,12 +214,11 @@ const Cart = () => {
                   //   showToast(Toast.warning, 'You must be logged in.');
                   //   signIn();
                   // } else {
-                  router.push("/checkout");
+                  router.push('/checkout');
                   // }
                 }}
                 type="button"
-                className="mt-3 btn btn-primary btn-block"
-              >
+                className="mt-3 btn btn-primary btn-block">
                 Checkout
               </button>
               {/* </Link> */}

@@ -2,8 +2,20 @@ import MainSharedLayout from '@/shared/layouts/main/index';
 import Image from 'next/image';
 import React from 'react';
 import { NextPageWithLayout } from '../_app';
+import { GetServerSideProps } from 'next';
+import { prisma } from '@/shared/utils/db';
+import { Settings } from '@prisma/client';
 
-const About: NextPageWithLayout = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const settings = await prisma.settings.findFirst();
+  return {
+    props: {
+      settings,
+    },
+  };
+};
+
+const About: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
   return (
     <div className="prose xl:prose-xl prose-img:rounded-xl prose-img:shadow lg:prose-lg !max-w-none">
       <h1>Welcome to Eeshan Mahadev Enterprises Ltd.</h1>
@@ -57,19 +69,22 @@ const About: NextPageWithLayout = () => {
       <h2>Contact Information</h2>
 
       <p>
-        <strong>Address:</strong> Bangemudha, Asson, Kathmandu, Nepal
+        <strong>Address:</strong> {settings?.storeAddress}
       </p>
 
       <p>
-        <strong>Phone:</strong> +977-XXXXXXX
+        <strong>Phone:</strong> {settings?.contactNumber}
       </p>
 
       <p>
-        <strong>Email:</strong> info@eeshanmahadeventerprises.com
+        <strong>Email:</strong> {settings?.email}
       </p>
 
       <p>
-        <strong>Website:</strong> <a href="http://www.eeshanmahadeventerprises.com">www.eeshanmahadeventerprises.com</a>
+        <strong>Website:</strong>{' '}
+        <a href="https://www.eeshanmahadev.com.np/" target="_blank" rel="noreferrer">
+          Eeshan Mahadev
+        </a>
       </p>
     </div>
   );

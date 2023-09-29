@@ -1,4 +1,4 @@
-import * as z from "zod";
+import { z } from 'zod';
 
 export const settingsSchema = z.object({
   id: z.union([z.null(), z.string()]).optional(),
@@ -7,5 +7,6 @@ export const settingsSchema = z.object({
   contactNumber: z.union([z.null(), z.string()]).optional(),
   tiktok: z.union([z.null(), z.string()]).optional(),
   facebook: z.union([z.null(), z.string()]).optional(),
+  email: z.union([z.null(), z.string().email()]).optional(),
 });
 export type SettingsSchema = z.infer<typeof settingsSchema>;
