@@ -252,4 +252,5 @@ model Settings {
   contactNumber  String?
   tiktok         String?
   facebook       String?
+  email          String?
 }

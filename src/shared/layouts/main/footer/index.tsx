@@ -20,14 +20,13 @@ const MainSharedFooter = () => {
     return response.data?.settings;
   });
 
-  console.log(settings);
-
   if (!isMounted) return null;
   return (
     <footer className="footer p-10 bg-base-300 text-base-content mt-16">
       <div>
         <h2 className="text-3xl text-primary font-bold">EME</h2>
         <p>Bangemudha, New Road, Kathmandu</p>
+        <p>{settings?.email}</p>
         <p>{settings?.contactNumber}</p>
         <p>TM © 2023 - Eeshan Mahadev Enterprises - All Rights Reserved.</p>
       </div>
@@ -49,14 +48,14 @@ const MainSharedFooter = () => {
       <div>
         <span className="footer-title">Social</span>
         <div className="grid grid-flow-col gap-4">
-          <a href={settings?.tiktok} target="_blank" rel="noreferrer">
+          <a href={settings?.facebook} target="_blank" rel="noreferrer">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="fill-current">
                 <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
               </svg>
             </span>
           </a>
-          <a href={settings?.facebook} target="_blank" rel="noreferrer">
+          <a href={settings?.tiktok} target="_blank" rel="noreferrer">
             <FaTiktok className="w-6 h-6"></FaTiktok>
           </a>
         </div>
