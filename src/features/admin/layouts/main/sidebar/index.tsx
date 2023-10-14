@@ -41,7 +41,7 @@ export default function Sidebar({
         </div>
 
         <div className="space-y-3 ">
-          <label className="px-3 text-xs text-gray-500 uppercase">content</label>
+          <label className="px-3 text-xs text-gray-500 uppercase">modules</label>
 
           <SidebarItem
             isActive={router.pathname === DASHBOARD_LINKS.products}
@@ -71,15 +71,16 @@ export default function Sidebar({
             href={DASHBOARD_LINKS.complaints}
             Icon={Bug}
             title="Complaints"></SidebarItem>
-        </div>
-
-        <div className="space-y-3 ">
-          <label className="px-3 text-xs text-gray-500 uppercase">Customization</label>
           <SidebarItem
             isActive={router.pathname === DASHBOARD_LINKS.users}
             href={DASHBOARD_LINKS.users}
             Icon={Users}
             title="Users"></SidebarItem>
+        </div>
+
+        <div className="space-y-3 ">
+          <label className="px-3 text-xs text-gray-500 uppercase">Customization</label>
+
           <SidebarItem
             isActive={router.pathname === DASHBOARD_LINKS.settings}
             href={DASHBOARD_LINKS.settings}

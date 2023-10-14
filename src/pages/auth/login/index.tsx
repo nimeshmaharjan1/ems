@@ -176,7 +176,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session?.user?.role === USER_ROLES.STAFF || session?.user?.role === USER_ROLES.SUPER_ADMIN) {
     return {
       redirect: {
-        destination: '/admin/products',
+        destination: '/admin/dashboard',
         permanent: true,
       },
     };
