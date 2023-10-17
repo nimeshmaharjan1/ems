@@ -1,10 +1,8 @@
 import { OrderEmail } from '@/features/email/order';
+import { prisma } from '@/shared/utils/db';
 import { transporter } from '@/shared/utils/email-transporter.util';
-import { PrismaClient } from '@prisma/client';
 import { render } from '@react-email/render';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -33,9 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const emailHtml = render(OrderEmail(order));
 
       const mailOptions = {
-        from: 'Fred Foo 👥 <foo@blurdybloop.com>',
-        // to: order.user.email as string,
-        to: 'hello@mailinator.com',
+        from: 'Eeshan Mahadev 👥 <eeshanmahadev.enterprises@gmail.com>',
+        to: order.user.email as string,
         subject: 'Eeshan Mahadev Enterprises💐 | Order',
         html: emailHtml,
       };
