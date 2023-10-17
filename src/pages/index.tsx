@@ -110,12 +110,12 @@ Home.getLayout = (page) => (
   </MainSharedLayout>
 );
 
-// export const getServerSideProps = () => {
-//   return {
-//     redirect: {
-//       permanent: false,
-//       destination: '/products',
-//     },
-//     props: {},
-//   };
-// };
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: '/products',
+    },
+    props: {},
+  };
+};
