@@ -1,53 +1,6 @@
 import MainSharedLayout from '@/shared/layouts/main';
 import { NextPageWithLayout } from './_app';
 
-import HeroSection from '@/features/home/components/hero-section';
-import TellTheVisitor from '@/features/home/components/tell-the-visitor';
-import Testimonials from '@/features/home/components/testimonials';
-import WhyChooseUs from '@/features/home/components/why-choose-us';
-import Image from 'next/image';
-
-const Home: NextPageWithLayout = () => {
-  return (
-    <>
-      <Image
-        className="h-[28rem] object-cover w-full"
-        height={800}
-        width={1920}
-        src={'/home/hero-three.jpg'}
-        quality={100}
-        alt="Shop Image"></Image>
-      <HeroSection></HeroSection>
-      <WhyChooseUs></WhyChooseUs>
-      <TellTheVisitor></TellTheVisitor>
-      <Testimonials></Testimonials>
-    </>
-  );
-};
-
-export default Home;
-
-Home.getLayout = (page) => (
-  <MainSharedLayout
-    metaData={{
-      title: 'Home',
-      isHome: true,
-      description: 'Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal',
-    }}>
-    {page}
-  </MainSharedLayout>
-);
-
-// export const getServerSideProps = () => {
-//   return {
-//     redirect: {
-//       permanent: false,
-//       destination: '/products',
-//     },
-//     props: {},
-//   };
-// };
-
 // const Home: NextPageWithLayout = () => {
 //   const { data: featuredProducts, isLoading: isTopSellingProductLoading } =
 //     useQuery<IProduct[]>("fetchFeaturedProducts", async () => {
@@ -119,3 +72,50 @@ Home.getLayout = (page) => (
 // };
 
 // export default Home;
+
+import HeroSection from '@/features/home/components/hero-section';
+import TellTheVisitor from '@/features/home/components/tell-the-visitor';
+import Testimonials from '@/features/home/components/testimonials';
+import WhyChooseUs from '@/features/home/components/why-choose-us';
+import Image from 'next/image';
+
+const Home: NextPageWithLayout = () => {
+  return (
+    <>
+      <Image
+        className="h-[28rem] object-cover w-full"
+        height={800}
+        width={1920}
+        src={'/home/hero-three.jpg'}
+        quality={100}
+        alt="Shop Image"></Image>
+      <HeroSection></HeroSection>
+      <WhyChooseUs></WhyChooseUs>
+      <TellTheVisitor></TellTheVisitor>
+      <Testimonials></Testimonials>
+    </>
+  );
+};
+
+export default Home;
+
+Home.getLayout = (page) => (
+  <MainSharedLayout
+    metaData={{
+      title: 'Home',
+      isHome: true,
+      description: 'Home page for Eeshan Mahadev Enterprises Private Limited which is located at Bangemudha, Asson, Kathmandu, Nepal',
+    }}>
+    {page}
+  </MainSharedLayout>
+);
+
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: '/products',
+    },
+    props: {},
+  };
+};
