@@ -259,3 +259,25 @@ input[type='number']::-webkit-inner-spin-button {
     width: 768px;
   }
 }
+
+//here
+@keyframes infiniteScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.horizontal-scrolling-items {
+  display: flex;
+  animation-name: infiniteScroll;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-duration: 10s;
+}
+
+.horizontal-scrolling-items__item {
+  white-space: nowrap;
+}

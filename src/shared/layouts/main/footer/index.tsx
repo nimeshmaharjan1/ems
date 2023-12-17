@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames';
-import { useTheme } from 'next-themes';
-import { useQuery } from 'react-query';
 import axios from 'axios';
-import { ICommentsData } from '@/shared/interfaces/comments.interface';
-import { Facebook } from 'lucide-react';
-import { FaTiktok } from 'react-icons/fa';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { FaTiktok } from 'react-icons/fa';
+import { useQuery } from 'react-query';
 
 const MainSharedFooter = () => {
   const { resolvedTheme, theme, setTheme } = useTheme();
@@ -22,7 +19,11 @@ const MainSharedFooter = () => {
 
   if (!isMounted) return null;
   return (
-    <footer className="footer p-10 bg-base-300 text-base-content mt-16">
+    <footer
+      style={{
+        minWidth: 0,
+      }}
+      className="footer bg-base-300 p-4 md:p-10 text-base-content mt-16">
       <div>
         <h2 className="text-3xl text-primary font-bold">EME</h2>
         <p>Bangemudha, New Road, Kathmandu</p>

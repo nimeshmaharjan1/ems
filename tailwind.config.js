@@ -8,6 +8,7 @@ module.exports = {
     },
     extend: {
       screens: {
+        xs: '290px',
         '2xl': '1400px', // Change the screen size name and width here
       },
     },
