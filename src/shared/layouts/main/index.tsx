@@ -1,4 +1,4 @@
-import { Inter, Public_Sans } from '@next/font/google';
+import { Public_Sans } from '@next/font/google';
 import Head from 'next/head';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import MainSharedFooter from './footer';
@@ -15,15 +15,14 @@ import { BadgeInfo, Bug, LayoutGrid } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaBox } from 'react-icons/fa';
 import { FiUserPlus } from 'react-icons/fi';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdLogin } from 'react-icons/md';
 
 import classNames from 'classnames';
 import { LogOut } from 'lucide-react';
+import { BsBoxSeam } from 'react-icons/bs';
 import { useInView } from 'react-intersection-observer';
-import { BsBoxSeam, BsMailbox2 } from 'react-icons/bs';
 
 const inter = Public_Sans({
   preload: false,
@@ -123,7 +122,11 @@ const MainSharedLayout: React.FC<{
       )}
       <div className="drawer">
         <input aria-label="toggle drawer" id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-        <div className="flex flex-col drawer-content">
+        <div
+          style={{
+            minWidth: 0,
+          }}
+          className="flex flex-col overflow-x-auto drawer-content">
           <div className="shadow nav-wrapper bg-base-100">
             <div className="!justify-between w-full gap-3 lg:px-12 h-[5rem] navbar lg:container lg:mx-auto !px-5">
               <div className="flex-none lg:hidden">

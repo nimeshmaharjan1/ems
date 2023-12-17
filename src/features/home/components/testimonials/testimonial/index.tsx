@@ -1,16 +1,15 @@
-import React from "react";
-import RatingSection from "./rating-section";
-import QuoteSection from "./quote-section";
-import UserSection from "./user-section";
+import QuoteSection from './quote-section';
+import RatingSection from './rating-section';
+import UserSection from './user-section';
 
-const Testimonial = () => {
+const Testimonial = ({ testimonial }: any) => {
   return (
     <div className="z-0">
       <div className="card bg-base-200">
         <div className="card-body !gap-y-4">
           <RatingSection></RatingSection>
-          <QuoteSection></QuoteSection>
-          <UserSection></UserSection>
+          <QuoteSection {...{ testimonial }}></QuoteSection>
+          <UserSection {...{ testimonial }}></UserSection>
         </div>
       </div>
     </div>

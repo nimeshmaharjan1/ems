@@ -1,7 +1,6 @@
 import Image from 'next/image';
-import React from 'react';
 
-const UserSection = () => {
+const UserSection = ({ testimonial }: any) => {
   return (
     <section className="user-section flex gap-x-4 items-center mt-3">
       <div className="avatar">
@@ -10,8 +9,7 @@ const UserSection = () => {
         </div>
       </div>
       <section className="user-details">
-        <h2 className="text-sm font-bold mb-1">John Doe</h2>
-        <p className="text-sm">Position, Company Name</p>
+        <h2 className="text-sm font-bold mb-1">{testimonial.userName}</h2>
       </section>
     </section>
   );

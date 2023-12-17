@@ -1,5 +1,3 @@
-import React from 'react';
-
 const RatingSection = () => {
   return (
     <section className="rating-section">

@@ -1,10 +1,9 @@
-import { Sparkles, Boxes, BadgeCheck, CalendarHeart } from 'lucide-react';
-import React from 'react';
+import { BadgeCheck, Boxes, CalendarHeart, Sparkles } from 'lucide-react';
 
 const WhyChooseUs = () => {
   return (
-    <section className="container why-choose-us grid grid-cols-1 md:grid-cols-8 gap-6 md:gap-12 p-6 mt-6 md:mt-0 md:py-24">
-      <div className="col-span-1 md:col-span-2 flex gap-x-4">
+    <section className="container why-choose-us grid grid-cols-1 md:grid-cols-8 gap-6 md:gap-12 px-6  mt-12 md:mt-0 ">
+      <div className="col-span-1 md:col-span-4 flex gap-x-4">
         <div>
           <Sparkles size={30} strokeWidth={1.3}></Sparkles>
         </div>
@@ -16,7 +15,7 @@ const WhyChooseUs = () => {
           </p>
         </div>
       </div>
-      <div className="col-span-1 md:col-span-2 flex gap-x-4">
+      <div className="col-span-1 md:col-span-4 flex gap-x-4">
         <div>
           <Boxes size={32} strokeWidth={1} />
         </div>
@@ -28,7 +27,7 @@ const WhyChooseUs = () => {
           </p>
         </div>
       </div>{' '}
-      <div className="col-span-1 md:col-span-2 flex gap-x-4">
+      <div className="col-span-1 md:col-span-4 flex gap-x-4">
         <div>
           <BadgeCheck size={30} strokeWidth={1.3} />
         </div>
@@ -40,7 +39,7 @@ const WhyChooseUs = () => {
           </p>
         </div>
       </div>
-      <div className="col-span-1 md:col-span-2 flex gap-x-4">
+      <div className="col-span-1 md:col-span-4 flex gap-x-4">
         <div>
           <CalendarHeart size={30} strokeWidth={1.3} />
         </div>

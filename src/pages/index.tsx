@@ -1,6 +1,7 @@
 import MainSharedLayout from '@/shared/layouts/main';
 import { NextPageWithLayout } from './_app';
 
+import CompaniesScroll from '@/features/home/components/companies-scroll';
 import HeroSection from '@/features/home/components/hero-section';
 import TellTheVisitor from '@/features/home/components/tell-the-visitor';
 import Testimonials from '@/features/home/components/testimonials';
@@ -21,6 +22,7 @@ const Home: NextPageWithLayout = () => {
       <WhyChooseUs></WhyChooseUs>
       <TellTheVisitor></TellTheVisitor>
       <Testimonials></Testimonials>
+      <CompaniesScroll></CompaniesScroll>
     </>
   );
 };
@@ -38,15 +40,15 @@ Home.getLayout = (page) => (
   </MainSharedLayout>
 );
 
-export const getServerSideProps = () => {
-  return {
-    redirect: {
-      permanent: false,
-      destination: '/products',
-    },
-    props: {},
-  };
-};
+// export const getServerSideProps = () => {
+//   return {
+//     redirect: {
+//       permanent: false,
+//       destination: '/products',
+//     },
+//     props: {},
+//   };
+// };
 
 // const Home: NextPageWithLayout = () => {
 //   const { data: featuredProducts, isLoading: isTopSellingProductLoading } =

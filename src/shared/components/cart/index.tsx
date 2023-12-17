@@ -41,7 +41,7 @@ const Cart = () => {
               <div className="flex items-center justify-center mt-2">
                 <Image src={'/images/empty-cart.png'} alt="empty cart" width={100} height={100}></Image>
               </div>
-              <p className="pr-5 mt-3 text-lg font-bold text-center">Your cart is empty.</p>
+              <p className="pr-0 lg:pr-5 mt-3 text-lg font-bold text-center">Your cart is empty.</p>
               <p className="text-lg text-center">Looks like you have not added anything to your cart.</p>
             </>
           )}
