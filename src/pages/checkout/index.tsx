@@ -132,12 +132,12 @@ const Checkout: NextPageWithLayout<{ settings: Settings }> = ({ settings }) => {
 
       <dialog ref={modalRef} id="payment_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
-          <h3 className="text-lg font-bold">ESEWA Payment</h3>
-          <Image className="my-6" src="/images/esewa.png" alt="payment qr code" width={500} height={200}></Image>
+          <h3 className="text-lg font-bold">Fonepay Payment</h3>
+          <Image className="my-6" src="/images/fonepay.png" alt="payment qr code" width={500} height={200}></Image>
           <p className="text-sm font-medium leading-relaxed text-amber-400">
             NOTE: Please only close this <span className="font-bold">modal</span> only after the payment has been completed or after you
             have scanned the QR code. If you have any questions feel free to contact support{' '}
-            <span className="font-bold">+977-9841444423</span>.
+            <span className="font-bold">{settings.contactNumber}</span>.
           </p>
           <div className="modal-action">
             {/* if there is a button in form, it will close the modal */}

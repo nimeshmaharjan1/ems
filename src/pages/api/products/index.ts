@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Review } from '@prisma/client';
 import { ShopBySearchParams } from '@/store/use-shop-by';
+import { PrismaClient, Review } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { RatingSummary } from './reviews';
 const prisma = new PrismaClient();
 function getRatingSummary(reviews: Review[]): RatingSummary {
