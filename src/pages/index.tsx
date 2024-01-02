@@ -12,7 +12,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Image
-        className="h-[28rem] object-cover w-full"
+        className="h-[30rem] object-cover w-full"
         height={800}
         width={1920}
         src={'/home/hero-three.jpg'}
