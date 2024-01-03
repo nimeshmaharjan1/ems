@@ -2,7 +2,7 @@ import { BadgeCheck, Boxes, CalendarHeart, Sparkles } from 'lucide-react';
 
 const WhyChooseUs = () => {
   return (
-    <section className="container why-choose-us grid grid-cols-1 md:grid-cols-8 gap-6 md:gap-12 px-6  mt-12 md:mt-0 ">
+    <section className="container px-4 why-choose-us grid grid-cols-1 md:grid-cols-8 gap-6 md:gap-12 mt-12 md:mt-0 ">
       <div className="col-span-1 md:col-span-4 flex gap-x-4">
         <div>
           <Sparkles size={30} strokeWidth={1.3}></Sparkles>
