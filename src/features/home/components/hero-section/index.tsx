@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const HeroSection = () => {
   return (
-    <section className="container hero-section md:grid md:grid-cols-6 gap-x-12 p-6 md:py-[130px] md:px-[64px]">
+    <section className="container hero-section px-4 md:grid md:grid-cols-6 gap-x-12 py-6 md:py-[130px] md:px-[64px]">
       <div className="col-span-12 md:col-span-3 prose-lg prose-h2:font-bold prose-h2:text-4xl prose-h2:leading-[1.4]">
         <h2>
           Welcome to <br /> Eeshan Mahadev Enterprises

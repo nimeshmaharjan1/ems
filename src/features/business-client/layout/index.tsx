@@ -1,4 +1,4 @@
-import { Inter, Public_Sans } from '@next/font/google';
+import { Public_Sans } from '@next/font/google';
 import { USER_ROLES } from '@prisma/client';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -41,7 +41,7 @@ const BusinessClientDashboardLayout: React.FC<{
       </div>
     );
   return (
-    <div className={`flex min-h-screen ${inter.className}`}>
+    <div className={`block lg:flex min-h-screen ${inter.className}`}>
       <BusinessLgAside></BusinessLgAside>
       <section className="flex-1">
         <BusinessClientLayoutHeader></BusinessClientLayoutHeader>

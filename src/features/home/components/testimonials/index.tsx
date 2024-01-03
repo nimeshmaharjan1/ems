@@ -21,7 +21,7 @@ const testimonials = [
 ];
 const Testimonials = () => {
   return (
-    <section className="testimonials-section px-6 pb-16 md:py-36 md:container">
+    <section className="testimonials-section px-4 md:px-0 pt-8  pb-16 md:py-36 md:container">
       <h2 className="font-bold text-2xl md:text-4xl leading-[1.4] mb-10">What people say about us</h2>
       <section className="grid gap-3 grid-cols-1 md:grid-cols-3">
         {testimonials.map((t) => (

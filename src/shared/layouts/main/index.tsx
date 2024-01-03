@@ -161,11 +161,7 @@ const MainSharedLayout: React.FC<{
                 </button>
               </div>
               <div className="flex items-center gap-3 lg:hidden theme">
-                {router.pathname !== '/checkout' && (
-                  <div className="mr-2">
-                    <Cart></Cart>
-                  </div>
-                )}
+                {router.pathname !== '/checkout' && <Cart></Cart>}
                 {status === 'authenticated' && <NavAvatarDropdown {...{ profileModalRef }} />}
                 <ThemeToggler></ThemeToggler>
               </div>
