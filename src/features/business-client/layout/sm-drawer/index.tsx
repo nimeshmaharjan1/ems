@@ -1,11 +1,12 @@
 import Drawer from '@/shared/components/drawer';
-import { Menu, X } from 'lucide-react';
+import { Home, Menu, ShoppingCart, X } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const BusinessClientSmDrawer = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const router = useRouter();
   return (
     <>
       <button className="btn-ghost btn btn-sm flex lg:hidden" onClick={() => setIsDrawerOpen(true)}>
@@ -20,6 +21,16 @@ const BusinessClientSmDrawer = () => {
             <X size={18}></X>
           </button>
         </header>
+        <main className="mt-4 space-y-3">
+          <button className="btn btn-primary btn-block btn-sm !text-base !h-10 !gap-x-2 !justify-start">
+            <ShoppingCart className="w-4 h-4"></ShoppingCart>
+            <span className="text-sm">My Orders</span>
+          </button>
+          <button onClick={() => router.push('/products')} className="btn btn-block btn-sm !text-base !h-10 !gap-x-2 !justify-start">
+            <Home className="w-4 h-4"></Home>
+            <span className="text-sm">Home</span>
+          </button>
+        </main>
       </Drawer>
     </>
   );

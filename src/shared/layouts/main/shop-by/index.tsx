@@ -1,18 +1,17 @@
 import { getCategories } from '@/features/admin/services/categories/categories.service';
 import { getCompanies } from '@/features/admin/services/companies/companies.service';
+import Pagination from '@/shared/components/pagination';
 import { ICategoryResponse } from '@/shared/interfaces/category.interface';
 import { ICompanyResponse } from '@/shared/interfaces/company.interface';
 import { showToast, Toast } from '@/shared/utils/toast.util';
 import { ShopBySearchParams, useShopByStore } from '@/store/use-shop-by';
-import { SELECTED_WHOLESALE_OPTION } from '@prisma/client';
+import { SELECTED_WHOLESALE_OPTION, USER_ROLES } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { USER_ROLES } from '@prisma/client';
-import { useSession } from 'next-auth/react';
-import Pagination from '@/shared/components/pagination';
 const ShopByAside = () => {
   const { data: session } = useSession();
-  const { handleShopBySearchParamsUpdate, shopBySearchParams, setShopBySearchParams } = useShopByStore();
+  const { handleShopBySearchParamsUpdate, setShopBySearchParams } = useShopByStore();
   const [companyPage, setCompanyPage] = useState(1);
   const [categoryPage, setCategoryPage] = useState(1);
   const {
@@ -82,7 +81,6 @@ const ShopByAside = () => {
     setMinPrice('');
     setMaxPrice('');
     setShopBySearchParams({
-      title: '',
       category: '',
       company: '',
       priceLt: '',
@@ -96,6 +94,11 @@ const ShopByAside = () => {
         Shop By
       </header>
       <div className="p-6 border-2">
+        <section className="flex justify-end mb-5">
+          <div className="clear-all-filters btn btn-primary btn-sm" onClick={clearAllFilters}>
+            Clear All Filters
+          </div>
+        </section>
         {session?.user?.role === USER_ROLES.BUSINESS_CLIENT && (
           <div className="pb-4 mb-6 border-b border-gray-300 wholesale-option-section">
             <h3 className="mb-2 uppercase">Wholesale option</h3>
@@ -232,9 +235,6 @@ const ShopByAside = () => {
               </label>
             </div>
           </div>
-        </div>
-        <div className="self-end clear-all-filters btn btn-primary btn-sm" onClick={clearAllFilters}>
-          Clear All
         </div>
       </div>
     </>

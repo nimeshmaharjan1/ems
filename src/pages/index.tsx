@@ -40,15 +40,15 @@ Home.getLayout = (page) => (
   </MainSharedLayout>
 );
 
-// export const getServerSideProps = () => {
-//   return {
-//     redirect: {
-//       permanent: false,
-//       destination: '/products',
-//     },
-//     props: {},
-//   };
-// };
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: '/products',
+    },
+    props: {},
+  };
+};
 
 // const Home: NextPageWithLayout = () => {
 //   const { data: featuredProducts, isLoading: isTopSellingProductLoading } =
