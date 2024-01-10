@@ -65,8 +65,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
 
-      console.log({ title, filters });
-
       const { page = 1 } = req.query;
       const limit = parseInt(req.query.limit as string) || 6;
       const totalRecords = ((await prisma.product.count()) as number) ?? 0;
