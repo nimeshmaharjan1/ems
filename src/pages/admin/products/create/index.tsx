@@ -1,26 +1,23 @@
-import ImageUpload from '@/features/admin/components/image-upload';
 import AdminDashboardLayout from '@/features/admin/layouts/main';
+import { getCategories } from '@/features/admin/services/categories/categories.service';
+import { getCompanies } from '@/features/admin/services/companies/companies.service';
 import { NextPageWithLayout } from '@/pages/_app';
 import FormControl from '@/shared/components/form-control';
+import StyledReactSelect from '@/shared/components/styled-react-select';
 import { Toast, showToast } from '@/shared/utils/toast.util';
+import { UploadButton } from '@/shared/utils/uploadthing.util';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PRODUCT_STATUS } from '@prisma/client';
 import axios from 'axios';
 import classNames from 'classnames';
-import React, { ReactNode, useState } from 'react';
-import { Controller, SubmitHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { FaRupeeSign } from 'react-icons/fa';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from 'react-query';
-import { Category, Company, PRODUCT_STATUS } from '@prisma/client';
-import { getCompanies } from '@/features/admin/services/companies/companies.service';
-import StyledReactSelect from '@/shared/components/styled-react-select';
-import { getCategories } from '@/features/admin/services/categories/categories.service';
 import dynamic from 'next/dynamic';
-import { UploadButton } from '@/shared/utils/uploadthing.util';
+import { ReactNode, useState } from 'react';
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { z } from 'zod';
 // import TextEditor from '@/shared/components/text-editor';
 import '@uploadthing/react/styles.css';
+import { X } from 'lucide-react';
 import Image from 'next/image';
-import { Cross, X } from 'lucide-react';
 
 const TextEditor = dynamic(() => import('../../../../shared/components/text-editor/index' as any), {
   ssr: false,
@@ -82,7 +79,7 @@ const CreateProduct: NextPageWithLayout = () => {
     company: { label: 'Select company', value: '' },
     modal: '',
     description: '',
-    images: ['/images/empty-cart.png', '/images/esewa.png'],
+    images: [],
     price: '',
     sellingPrice: '',
     crossedPrice: '',
