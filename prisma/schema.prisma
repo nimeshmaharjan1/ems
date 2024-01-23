@@ -215,11 +215,11 @@ model Review {
 model FaultItem {
   id          String     @id @default(cuid())
   description String?
-  orderItem   OrderItem  @relation(fields: [orderItemId], references: [id])
+  orderItem   OrderItem  @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
   orderItemId String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  complaint   Complaint? @relation(fields: [complaintId], references: [id])
+  complaint   Complaint? @relation(fields: [complaintId], references: [id], onDelete: Cascade)
   complaintId String?
 }
 

@@ -3,12 +3,12 @@ import { NextPageWithLayout } from '@/pages/_app';
 import Pagination from '@/shared/components/pagination';
 import { PaginatedUsers } from '@/shared/interfaces/users.interface';
 import { Toast, showToast } from '@/shared/utils/toast.util';
-import { PrismaClient, USER_ROLES } from '@prisma/client';
+import { USER_ROLES } from '@prisma/client';
 import axios from 'axios';
 import classNames from 'classnames';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
+import { BsTrash } from 'react-icons/bs';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 // const prisma = new PrismaClient();
@@ -49,6 +49,25 @@ const Users: NextPageWithLayout = () => {
       },
     }
   );
+  const { mutate: mutateDeleteUser, isLoading: isDeletingUser } = useMutation(
+    async (userId: string) => {
+      const response = await axios.delete(`/api/admin/users/${userId}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        showToast(Toast.success, data?.message);
+        queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+      },
+      onError: (error: any) => {
+        console.log(error);
+        showToast(Toast.error, error?.response?.data?.message);
+      },
+    }
+  );
+  const handleUserDelete = (userId: string) => {
+    mutateDeleteUser(userId);
+  };
   const handleRoleChange = (args: { userId: string; role: USER_ROLES }) => {
     mutateChangeRole(args);
   };
@@ -68,6 +87,7 @@ const Users: NextPageWithLayout = () => {
               <th className="">Username</th>
               {/* <th className="">Applying as a Business</th> */}
               <th className="">Role</th>
+              <th className=""></th>
               {/* <th className="">Actions</th> */}
             </tr>
           </thead>
@@ -110,14 +130,14 @@ const Users: NextPageWithLayout = () => {
                             ))}
                           </select>
                         </td>
-                        {/* <td className="text-center ">
-                    <Link href={`/admin/users/edit/${user.id}`} className="gap-1 btn btn-info btn-xs btn-outline">
-                      <FaCogs></FaCogs> Edit
-                    </Link> 
-                    <button className="gap-1 ml-2 btn btn-error btn-xs btn-outline">
-                      <BsTrash></BsTrash> Delete
-                    </button>
-                  </td> */}
+                        <td className="text-center ">
+                          <button
+                            onClick={() => handleUserDelete(user.id)}
+                            disabled={isDeletingUser}
+                            className="gap-1 ml-2 btn btn-error btn-xs btn-outline">
+                            {isDeletingUser ? <span className="loading loading-xs loading-spinner"></span> : <BsTrash></BsTrash>}
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
