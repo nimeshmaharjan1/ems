@@ -1,7 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-import isAuthenticated from '@/features/admin/hof/is-authenticated';
 import isSuperAdmin from '@/features/admin/hof/is-super-admin';
+import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'PATCH') {
     const auth = await isSuperAdmin(req, res);
     if (!auth) {
+      await prisma.$disconnect();
       return res.status(401).json({ message: 'This action needs a super admin role authority.' });
     }
     try {
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const order = await prisma.order.findUnique({ where: { id: orderId } });
       if (!order) {
-        res.status(404).json({ message: 'Order has already been deleted please try refreshing the page.' });
+        return res.status(404).json({ message: 'Order has already been deleted please try refreshing the page.' });
       }
     } catch (error) {
       console.error(error);
