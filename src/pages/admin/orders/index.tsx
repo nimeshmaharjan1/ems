@@ -37,8 +37,6 @@ const Orders: NextPageWithLayout = () => {
     setIsMounted(true);
   }, []);
 
-  console.log(ordersData);
-
   const { mutate: mutateHasBeenPaid, isLoading: isHasBeenPaidLoading } = useMutation(
     async (args: ChangePaidStatus) => {
       const response = await axios.patch(`/api/admin/orders/${args.orderId}`, {
@@ -134,7 +132,11 @@ const Orders: NextPageWithLayout = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {ordersData?.orders?.length === 0 && <h2 className="p-2 text-warning">No orders have been listed at this moment.</h2>}
+                  <tr>
+                    <td colSpan={10}>
+                      {ordersData?.orders?.length === 0 && <h2 className="p-2 text-warning">No orders have been listed at this moment.</h2>}
+                    </td>
+                  </tr>
                   {ordersData &&
                     ordersData.orders.length > 0 &&
                     ordersData?.orders.map((order) => {

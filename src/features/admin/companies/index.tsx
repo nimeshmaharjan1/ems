@@ -5,14 +5,13 @@ import FormControl from '@/shared/components/form-control';
 import Pagination from '@/shared/components/pagination';
 import StyledReactSelect from '@/shared/components/styled-react-select';
 import { ICompany, ICompanyResponse } from '@/shared/interfaces/company.interface';
-import { getDateWithWeekDay, getSlashDate } from '@/shared/utils/helper.util';
+import { getSlashDate } from '@/shared/utils/helper.util';
 import { Toast, showToast } from '@/shared/utils/toast.util';
 import { Company } from '@prisma/client';
 import classNames from 'classnames';
 import { Trash } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Controller, SubmitHandler, UseFormReturn, useForm } from 'react-hook-form';
-import { BsTrash } from 'react-icons/bs';
+import React, { useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { FiSettings } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ChangeCompanyPosition from './change-company-position-modal';
@@ -225,9 +224,11 @@ const SettingCompany = () => {
                       <div className="flex flex-wrap gap-2">
                         {company.categories?.length
                           ? company.categories.map((category) => (
-                              <span className="badge badge-accent badge-sm !text-white" key={category.id}>
-                                {category.name}
-                              </span>
+                              <>
+                                <span className="badge badge-accent !text-white" key={category.id}>
+                                  {category.name.length > 20 ? `${category.name.slice(0, 20)}...` : category.name}
+                                </span>
+                              </>
                             ))
                           : '-'}
                       </div>
