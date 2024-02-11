@@ -1,17 +1,18 @@
-import { getOrderItems, getUserOrders } from '@/features/admin/services/orders';
-import FormControl from '@/shared/components/form-control';
-import StyledReactSelect from '@/shared/components/styled-react-select';
-import MainSharedLayout from '@/shared/layouts/main';
-import { Toast, showToast } from '@/shared/utils/toast.util';
-import axios from 'axios';
-import classNames from 'classnames';
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import Link from 'next/link';
-import { useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NextPageWithLayout } from '../_app';
-import { authOptions } from '../api/auth/[...nextauth]';
+import { getOrderItems, getUserOrders } from "@/features/admin/services/orders";
+import FormControl from "@/shared/components/form-control";
+import StyledReactSelect from "@/shared/components/styled-react-select";
+import MainSharedLayout from "@/shared/layouts/main";
+import { Toast, showToast } from "@/shared/utils/toast.util";
+import axios from "axios";
+import classNames from "classnames";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { NextPageWithLayout } from "../_app";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { useQuery } from "react-query";
 
 interface IDefaultValues {
   description: string;
@@ -38,10 +39,15 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
     reset,
   } = useForm<IDefaultValues>({
     defaultValues: {
-      description: '',
+      description: "",
       order: undefined,
       faultyItems: [],
     },
+  });
+
+  const { data: settings } = useQuery(["getSettings"], async () => {
+    const response = await axios.get(`/api/settings`);
+    return response.data?.settings;
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,11 +56,13 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
     const payload = {
       description: values.description,
       orderId: values.order?.value,
-      faultyItems: values.faultyItems.map((item) => ({ orderItemId: item.value })),
+      faultyItems: values.faultyItems.map((item) => ({
+        orderItemId: item.value,
+      })),
       userId: user_id,
     };
     try {
-      const res = await axios.post('/api/raise-issue', payload);
+      const res = await axios.post("/api/raise-issue", payload);
       showToast(Toast.success, res.data?.message);
       reset();
     } catch (error: any) {
@@ -65,14 +73,20 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
     }
   };
 
-  const loadOrders = async (searchValue: string, loadedData: any, { page }: any) => {
+  const loadOrders = async (
+    searchValue: string,
+    loadedData: any,
+    { page }: any
+  ) => {
     try {
       const response = await getUserOrders({ page, user_id });
       let filteredOptions: any;
       if (!searchValue) {
         filteredOptions = response.orders;
       } else {
-        filteredOptions = response.orders.filter((option: any) => option.orderNumber.toLowerCase().includes(searchValue.toLowerCase()));
+        filteredOptions = response.orders.filter((option: any) =>
+          option.orderNumber.toLowerCase().includes(searchValue.toLowerCase())
+        );
       }
       return {
         options: filteredOptions.map((option: any) => {
@@ -94,14 +108,23 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
     }
   };
 
-  const loadOrderItems = async (searchValue: string, loadedData: any, { page }: any) => {
+  const loadOrderItems = async (
+    searchValue: string,
+    loadedData: any,
+    { page }: any
+  ) => {
     try {
-      const response = await getOrderItems({ page, orderNumber: watch('order')!.label });
+      const response = await getOrderItems({
+        page,
+        orderNumber: watch("order")!.label,
+      });
       let filteredItems: any;
       if (!searchValue) {
         filteredItems = response.data[0].items;
       } else {
-        filteredItems = response.data[0].items.filter((option: any) => option.title.toLowerCase().includes(searchValue.toLowerCase()));
+        filteredItems = response.data[0].items.filter((option: any) =>
+          option.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
       }
       return {
         options: filteredItems.map((option: any) => {
@@ -130,22 +153,30 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
         <FormControl
           label="Select the order that you wish to raise the issue for
         "
-          errorMessage={errors?.order?.message}>
+          errorMessage={errors?.order?.message}
+        >
           <Controller
             control={control}
             name="order"
             rules={{
-              required: 'Order is required.',
+              required: "Order is required.",
             }}
-            render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
+            render={({
+              field: { onChange, value, name, ref },
+              fieldState: { error },
+            }) => (
               <>
                 <StyledReactSelect
                   isDisabled={isSubmitting}
                   onChange={onChange}
+                  noOptionsMessage={(input) => {
+                    if (input) return <>Could not find {input}</>;
+                    return <>No orders registered yet</>;
+                  }}
                   onMenuOpen={() => {
-                    setValue('order', {
-                      label: '',
-                      value: '',
+                    setValue("order", {
+                      label: "",
+                      value: "",
                     });
                   }}
                   name={name}
@@ -154,21 +185,29 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
                   loadOptions={loadOrders}
                   isMulti={false}
                   placeholder="Select order number..."
-                  isClearable></StyledReactSelect>
+                  isClearable
+                ></StyledReactSelect>
               </>
-            )}></Controller>
+            )}
+          ></Controller>
         </FormControl>
       </section>
-      {watch('order') && watch('order')?.label && (
+      {watch("order") && watch("order")?.label && (
         <section className="mt-4">
-          <FormControl label="Select the faulty products associated to the order" errorMessage={errors?.faultyItems?.message}>
+          <FormControl
+            label="Select the faulty products associated to the order"
+            errorMessage={errors?.faultyItems?.message}
+          >
             <Controller
               control={control}
               name="faultyItems"
               rules={{
-                required: 'Faulty item is required.',
+                required: "Faulty item is required.",
               }}
-              render={({ field: { onChange, value, name, ref }, fieldState: { error } }) => (
+              render={({
+                field: { onChange, value, name, ref },
+                fieldState: { error },
+              }) => (
                 <>
                   <StyledReactSelect
                     isDisabled={isSubmitting}
@@ -180,23 +219,29 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
                     loadOptions={loadOrderItems}
                     isMulti
                     placeholder="Select product/s..."
-                    isClearable></StyledReactSelect>
+                    isClearable
+                  ></StyledReactSelect>
                 </>
-              )}></Controller>
+              )}
+            ></Controller>
           </FormControl>
         </section>
       )}
       <section className="mt-4">
-        <FormControl errorMessage={errors?.description?.message} label="Please explain us your issue briefly">
+        <FormControl
+          errorMessage={errors?.description?.message}
+          label="Please explain us your issue briefly"
+        >
           <textarea
             disabled={isSubmitting}
-            {...register('description', {
-              required: 'Description is required.',
+            {...register("description", {
+              required: "Description is required.",
             })}
-            className={classNames('textarea textarea-bordered', {
-              'textarea-error': errors?.description,
+            className={classNames("textarea textarea-bordered", {
+              "textarea-error": errors?.description,
             })}
-            placeholder="Type here..."></textarea>
+            placeholder="Type here..."
+          ></textarea>
         </FormControl>
       </section>
       <section className="mt-8 flex gap-x-4">
@@ -205,13 +250,19 @@ const RaiseIssue: NextPageWithLayout<{ user_id: string }> = ({ user_id }) => {
             Cancel
           </button>
         </Link>
-        <button disabled={isSubmitting} className="btn-primary btn" onClick={handleSubmit(onSubmit)}>
+        <button
+          disabled={isSubmitting}
+          className="btn-primary btn"
+          onClick={handleSubmit(onSubmit)}
+        >
           {isSubmitting && <span className="loading loading-spinner"></span>}
           Submit your issue
         </button>
       </section>
       <section className="mt-8">
-        <p className="text-lg">Or you can contact our support on +977-9843XXXXXXX</p>
+        <p className="text-lg">
+          Or you can contact our support on {settings?.contactNumber}
+        </p>
       </section>
     </div>
   );
@@ -222,9 +273,11 @@ export default RaiseIssue;
 RaiseIssue.getLayout = (page) => (
   <MainSharedLayout
     metaData={{
-      title: 'Raise Issue',
-      description: 'Raise an issue related to your order from Eshan Mahadev Enterprises Private Limited.',
-    }}>
+      title: "Raise Issue",
+      description:
+        "Raise an issue related to your order from Eshan Mahadev Enterprises Private Limited.",
+    }}
+  >
     {page}
   </MainSharedLayout>
 );
@@ -235,7 +288,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         permanent: true,
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
       },
       props: {},
     };
